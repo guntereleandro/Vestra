@@ -1,0 +1,46 @@
+# Dependências
+/node_modules
+/.pnp
+.pnp.*
+
+# Testes e cobertura
+/coverage
+
+# Next.js
+/.next
+/out
+/build
+
+# Produção e deploy
+/.vercel
+
+# Variáveis de ambiente
+.env*
+!.env.example
+
+# Logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+*.log
+
+# Cache local
+/.npm-cache
+*.tsbuildinfo
+next-env.d.ts
+
+# Backups e dados locais do Vestra
+/backups/
+vestra-backup-*.json
+*.backup.json
+*.local.json
+
+# Sistema operacional e certificados locais
+.DS_Store
+Thumbs.db
+*.pem
+
+# Metadados locais das ferramentas de desenvolvimento
+/.agents
+/.codex
