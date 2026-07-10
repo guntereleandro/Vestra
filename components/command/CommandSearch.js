@@ -1,0 +1,14 @@
+"use client";
+
+import { Search } from "lucide-react";
+import { useEffect, useRef } from "react";
+
+export default function CommandSearch({ value, onChange, onKeyDown }) {
+  const inputRef = useRef(null);
+  useEffect(() => { inputRef.current?.focus(); }, []);
+  return <label className="relative block">
+    <span className="sr-only">Pesquisar comando</span>
+    <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-[#626762]" size={17} />
+    <input ref={inputRef} value={value} onChange={(event) => onChange(event.target.value)} onKeyDown={onKeyDown} className="w-full border-0 border-b border-white/[.06] bg-transparent py-5 pl-11 pr-4 text-sm text-white outline-none placeholder:text-[#555b56]" placeholder="Pesquisar no Vestra..." />
+  </label>;
+}
