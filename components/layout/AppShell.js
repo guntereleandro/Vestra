@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { BarChart3, Bot, Calculator, ChartNoAxesCombined, ClipboardList, Coins, Goal, Landmark, LayoutDashboard, Menu, Settings, WalletCards, X } from "lucide-react";
+import { BarChart3, Bot, Calculator, ChartNoAxesCombined, ClipboardList, Coins, Goal, Landmark, LayoutDashboard, Menu, Search, Settings, WalletCards, X } from "lucide-react";
 import { useEffect, useState } from "react";
 import CommandPalette from "@/components/command/CommandPalette";
 
@@ -12,6 +12,7 @@ const navigation = [
   { href: "/operacoes", label: "Operações", icon: ClipboardList },
   { href: "/proventos", label: "Proventos", icon: Coins },
   { href: "/objetivos", label: "Objetivos", icon: Goal },
+  { href: "/mercado", label: "Mercado", icon: Search },
   { href: "/relatorios", label: "Relatórios", icon: BarChart3 },
   { href: "/imposto-de-renda", label: "Imposto de Renda", icon: Calculator },
   { href: "/simulacoes", label: "Simulações", icon: ChartNoAxesCombined },

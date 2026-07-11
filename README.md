@@ -1,6 +1,6 @@
 # Vestra
 
-Versao 0.5.0
+Versao 0.6.0
 
 Gerenciador pessoal de investimentos para investidores brasileiros, com interface escura, responsiva e foco em acompanhamento patrimonial.
 
@@ -12,6 +12,8 @@ O Vestra funciona sem banco de dados e sem autenticacao. Dados financeiros do us
 - Experiencia diaria do Dashboard na versao 0.4.2, com Timeline, recordes, jornada, insights por regras e conquistas discretas.
 - Resumo "Desde sua ultima visita" na versao 0.4.3, com comparacao local de patrimonio, dividendos, operacoes e recordes.
 - Modulo Objetivos na versao 0.5.0, com metas patrimoniais, renda passiva e objetivos manuais acompanhados no navegador.
+- Area publica Mercado na versao 0.6.0, com pesquisa de ativos em `/mercado` e pagina publica em `/mercado/[ticker]`.
+- Asset Experience 2.0, com pagina publica do ativo mais premium, hero de cotacao e indicadores em hierarquia clara.
 - Command Palette com `Ctrl+K` para navegar, buscar ativos e objetivos, e acessar acoes rapidas.
 - Operacoes como fonte da verdade para quantidade, custo, preco medio e proventos.
 - Carteira consolidada automaticamente a partir do historico de operacoes.
@@ -19,6 +21,7 @@ O Vestra funciona sem banco de dados e sem autenticacao. Dados financeiros do us
 - Pagina de detalhes por ativo em `/carteira/[ticker]`.
 - Cotacoes manuais e automaticas com prioridade explicita.
 - Integracao brapi.dev no servidor, com fallback local.
+- Pagina publica do ativo com cotacao, variacao diaria, indicadores disponiveis, dividendos e informacoes da empresa.
 - Cache temporario de mercado em `vestra:marketCache:v1`.
 - Cadastro mestre expandido e autocomplete com busca local + externa.
 - Central de dados de mercado em Configuracoes.
@@ -41,6 +44,16 @@ Rotas internas:
 - `/api/market/status`
 
 A interface consome apenas as rotas internas e `marketService`. Nenhum componente React importa provider externo.
+
+## Mercado publico
+
+A area `/mercado` permite pesquisar ativos sem autenticacao. O campo principal aceita ticker, nome ou empresa e abre `/mercado/[ticker]` ao selecionar um resultado ou pressionar Enter.
+
+A pagina publica do ativo mostra nome, ticker, cotacao, variacao diaria, setor, segmento, bolsa, ultima atualizacao, indicadores disponiveis, historico de dividendos quando retornado pelo provedor e uma secao sobre a empresa. A experiencia visual separa cotacao, indicadores principais e indicadores secundarios para leitura rapida.
+
+Indicadores ausentes sao exibidos como `Dado indisponivel`. O Vestra nao transforma ausencia de dados em zero.
+
+Quando `BRAPI_TOKEN` nao estiver configurado, a area continua usando o fallback local e mostra estados apropriados para cotacao ausente ou ativo nao encontrado.
 
 ## Prioridade de cotacoes
 

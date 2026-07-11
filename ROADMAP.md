@@ -36,6 +36,10 @@
 - Objetivos manuais.
 - Marcos de objetivos na timeline.
 - Command Palette com Ctrl+K.
+- Area publica Mercado.
+- Pesquisa publica de ativos.
+- Pagina publica de ativo com indicadores e dividendos disponiveis.
+- Asset Experience 2.0 para a pagina publica do ativo.
 
 ## Futuro
 
