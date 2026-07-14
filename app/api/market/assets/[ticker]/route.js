@@ -10,5 +10,5 @@ export const GET = safeRoute(async (_request, { params }) => {
   const ticker = normalizeTicker(routeParams?.ticker);
   if (!ticker) throw new MarketError(MARKET_ERRORS.INVALID_TICKER, "Invalid ticker", 400);
   const asset = await brapiProvider.getAsset(ticker);
-  return jsonOk({ asset });
+  return jsonOk({ asset, quote: asset.quote || null });
 });

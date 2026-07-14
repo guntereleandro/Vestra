@@ -1,0 +1,4 @@
+"use client";
+import { useCallback, useEffect, useState } from "react";
+import { EMPTY_RISK_PROFILE, hasRiskProfile, readRiskProfile, writeRiskProfile } from "@/lib/data/riskProfile";
+export default function useRiskProfile() { const [riskProfile, setRiskProfile] = useState(EMPTY_RISK_PROFILE), [loaded, setLoaded] = useState(false), [error, setError] = useState(null); useEffect(() => { try { setRiskProfile(readRiskProfile()); } catch { setError("Não foi possível carregar o perfil."); } setLoaded(true); }, []); const saveRiskProfile = useCallback((value) => { try { const saved = writeRiskProfile(value); setRiskProfile(saved); setError(null); return { ok: true, value: saved }; } catch { setError("Revise as respostas antes de salvar."); return { ok: false }; } }, []); return { riskProfile, saveRiskProfile, loaded, error, configured: hasRiskProfile(riskProfile) }; }

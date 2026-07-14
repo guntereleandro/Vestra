@@ -43,7 +43,7 @@ function formatDate(value) {
 
 function formatIndicator(value, type) {
   const parsed = Number(value);
-  if (!Number.isFinite(parsed) || parsed === 0) return null;
+  if (value === "" || value == null || !Number.isFinite(parsed)) return null;
   if (type === "currency") return currency.format(parsed);
   if (type === "percent") return `${number.format(Math.abs(parsed) <= 1 ? parsed * 100 : parsed)}%`;
   return number.format(parsed);
@@ -52,7 +52,7 @@ function formatIndicator(value, type) {
 function UnavailableBadge({ compact = false }) {
   return <span className={`inline-flex items-center gap-2 rounded-full border border-white/[.06] bg-white/[.025] font-semibold text-[#777d78] ${compact ? "px-2.5 py-1 text-[10px]" : "px-3 py-1.5 text-xs"}`}>
     <Minus size={compact ? 12 : 14} />
-    Indisponivel
+    Indicador indisponível no provedor atual
   </span>;
 }
 
@@ -91,7 +91,7 @@ export default function MarketAssetPage({ ticker }) {
         const [assetData, quoteData] = await Promise.all([getMarketAsset(normalizedTicker), getMarketQuote(normalizedTicker)]);
         if (!active) return;
         setAsset(assetData);
-        setQuote(quoteData);
+        setQuote(quoteData || assetData?.quote || null);
         if (!assetData && !quoteData) setError("ASSET_NOT_FOUND");
       } catch {
         if (active) setError("PROVIDER_ERROR");
@@ -187,6 +187,8 @@ export default function MarketAssetPage({ ticker }) {
         </div>
       </div>
     </div>
+
+    {asset?.providerLimitations?.includes("ADVANCED_MODULES_UNAVAILABLE") && <div className="rounded-2xl border border-amber-300/15 bg-amber-300/[.04] px-5 py-4 text-sm leading-6 text-amber-100/75">A cotação e os dados básicos estão disponíveis. Os indicadores avançados não foram liberados pelo provedor atual.</div>}
 
     <section>
       <div className="mb-5 flex items-center gap-2">

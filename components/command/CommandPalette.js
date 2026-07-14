@@ -2,7 +2,7 @@
 
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
-import { BriefcaseBusiness, ClipboardList, Download, FileUp, Goal, Home, RefreshCw, Settings, Target } from "lucide-react";
+import { BookOpen, BriefcaseBusiness, ClipboardList, Download, FileUp, Goal, Home, RefreshCw, Settings, Target } from "lucide-react";
 import CommandItem from "@/components/command/CommandItem";
 import CommandSearch from "@/components/command/CommandSearch";
 import useCommandPalette from "@/hooks/useCommandPalette";
@@ -11,6 +11,7 @@ import { applyAutomaticQuotes } from "@/lib/data/quotes";
 import { createBackup, readLocalData, registerPortfolioSnapshot, restoreBackup, validateBackup, writeLocalData } from "@/lib/data/storage";
 import { calculatePositions } from "@/lib/engine/portfolio";
 import { fetchAutomaticQuotes } from "@/lib/market/marketService";
+import { getAllArticles, getArticleHref, getCategoryLabel } from "@/lib/knowledge/knowledgeService";
 
 function normalize(value) {
   return String(value || "").normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
@@ -83,7 +84,8 @@ export default function CommandPalette() {
     ];
     const assetCommands = assets.slice(0, 60).map((asset) => ({ id: `asset-${asset.ticker}`, title: asset.ticker, subtitle: asset.name || "Ativo da carteira", group: "Ativo", icon: Target, run: () => openRoute(`/carteira/${asset.ticker}`) }));
     const goalCommands = goals.map((goal) => ({ id: `goal-${goal.id}`, title: goal.title, subtitle: "Objetivo patrimonial", group: "Objetivo", icon: Goal, run: () => openRoute("/objetivos") }));
-    return [...base, ...assetCommands, ...goalCommands];
+    const knowledgeCommands = getAllArticles().map((item) => ({ id: `knowledge-${item.id}`, title: item.title, subtitle: `${getCategoryLabel(item.category)} · ${item.tags.join(", ")} · ${item.description} · ${item.content.join(" ")}`, group: "Conhecimento", icon: BookOpen, run: () => openRoute(getArticleHref(item)) }));
+    return [...base, ...knowledgeCommands, ...assetCommands, ...goalCommands];
   }, [assets, goals]);
 
   const filtered = useMemo(() => {

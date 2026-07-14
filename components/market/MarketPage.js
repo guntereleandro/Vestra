@@ -21,6 +21,8 @@ export default function MarketPage() {
       </div>
     </div>
 
+    <p className="mx-auto max-w-3xl text-center text-xs leading-5 text-[#777d78]">A disponibilidade de indicadores fundamentalistas depende dos módulos liberados pelo plano atual da BRAPI. Cotações e dados básicos continuam funcionando quando módulos avançados não estão disponíveis.</p>
+
     <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
       {features.map(({ title, description, icon: Icon }) => <article key={title} className="card fade-in rounded-2xl p-5 transition duration-200 hover:-translate-y-0.5 hover:border-[#d9b86c]/20">
         <span className="grid h-10 w-10 place-items-center rounded-xl border border-[#d9b86c]/15 bg-[#d9b86c]/8 text-[#d9b86c]"><Icon size={18} /></span>

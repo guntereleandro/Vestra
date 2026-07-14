@@ -2,9 +2,10 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { BarChart3, Bot, Calculator, ChartNoAxesCombined, ClipboardList, Coins, Goal, Landmark, LayoutDashboard, Menu, Search, Settings, WalletCards, X } from "lucide-react";
+import { BarChart3, BookOpen, Bot, Calculator, ChartNoAxesCombined, ClipboardList, Coins, Goal, Landmark, LayoutDashboard, Menu, Search, Settings, WalletCards, X } from "lucide-react";
 import { useEffect, useState } from "react";
 import CommandPalette from "@/components/command/CommandPalette";
+import { getContextualHelpHref } from "@/lib/knowledge/knowledgeService";
 
 const navigation = [
   { href: "/", label: "Dashboard", icon: LayoutDashboard },
@@ -17,6 +18,7 @@ const navigation = [
   { href: "/imposto-de-renda", label: "Imposto de Renda", icon: Calculator },
   { href: "/simulacoes", label: "Simulações", icon: ChartNoAxesCombined },
   { href: "/ia", label: "IA", icon: Bot },
+  { href: "/conhecimento", label: "Central de Conhecimento", icon: BookOpen },
   { href: "/configuracoes", label: "Configurações", icon: Settings },
 ];
 
@@ -36,6 +38,7 @@ export default function AppShell({ children }) {
   useEffect(() => setMenuOpen(false), [pathname]);
   useEffect(() => { document.body.style.overflow = menuOpen ? "hidden" : ""; return () => { document.body.style.overflow = ""; }; }, [menuOpen]);
   const isActive = (href) => href === "/" ? pathname === "/" : pathname.startsWith(href);
+  const helpHref = getContextualHelpHref(pathname);
 
   return <div className="min-h-screen lg:grid lg:grid-cols-[16rem_minmax(0,1fr)]">
     <aside className="fixed inset-y-0 left-0 z-40 hidden w-64 border-r border-white/[.045] bg-[#090b0a]/92 p-5 lg:flex lg:flex-col">
@@ -58,7 +61,7 @@ export default function AppShell({ children }) {
     </aside>
     <div className="min-w-0 lg:col-start-2">
       <header className="sticky top-0 z-30 flex h-16 items-center justify-between border-b border-white/[.05] bg-[#090b0a]/90 px-4 backdrop-blur-xl lg:hidden"><Brand /><button onClick={() => setMenuOpen(true)} aria-label="Abrir navegação" className="icon-button"><Menu size={19} /></button></header>
-      <main className="min-h-screen pb-24 lg:pb-0">{children}</main>
+      <main className="min-h-screen pb-24 lg:pb-0">{helpHref && !pathname.startsWith("/conhecimento") && <div className="pointer-events-none fixed right-4 top-20 z-20 lg:right-8 lg:top-5"><Link href={helpHref} className="pointer-events-auto inline-flex items-center gap-2 rounded-full border border-[#d9b86c]/20 bg-[#101311]/95 px-3 py-2 text-[10px] font-semibold text-[#d9b86c] shadow-lg backdrop-blur-xl outline-none focus-visible:ring-2 focus-visible:ring-[#d9b86c]/60"><BookOpen size={13} />Aprender esta página</Link></div>}{children}</main>
     </div>
     <nav className="fixed inset-x-0 bottom-0 z-40 grid grid-cols-5 border-t border-white/[.07] bg-[#0b0e0c]/95 px-2 pb-[env(safe-area-inset-bottom)] backdrop-blur-xl lg:hidden">
       {navigation.slice(0, 4).map(({ href, label, icon: Icon }) => <Link key={href} href={href} className={`flex min-w-0 flex-col items-center gap-1 py-2.5 text-[9px] ${isActive(href) ? "text-[#d9b86c]" : "text-[#686e69]"}`}><Icon size={19} /><span className="truncate">{label}</span></Link>)}

@@ -22,6 +22,16 @@ A prioridade e manter uma arquitetura simples, escalavel e desacoplada.
 
 Responsavel por preco medio, custo, lucro/prejuizo, rentabilidade, carteira consolidada, proventos e analises derivadas.
 
+`lib/engine/diagnostics` recebe dados ja consolidados e produz diagnosticos patrimoniais estruturados. O modulo e puro, deterministico e independente de interface, persistencia, mercado, providers e APIs. O contrato esta em `docs/DIAGNOSTICS.md`.
+
+Preferencias de diagnostico pertencem a `lib/data/diagnosticPreferences.js`, usam `vestra:diagnosticPreferences:v1` e chegam a engine apenas por `parameters`. Diagnosticos gerais usam regras padrao; comparacoes personalizadas usam escopo `strategy`.
+
+`behaviorMetrics.js` transforma somente operacoes e datas em metricas historicas. `behaviorDiagnostics.js` aplica amostras minimas e regras centralizadas, produzindo itens com escopo `behavior` sem inferencias psicologicas.
+
+`lib/engine/performance` e um dominio puro e independente que explica crescimento, fluxos, valorizacao, proventos, drawdown e contribuicoes. Seu contrato esta em `docs/PERFORMANCE.md`.
+
+O questionario de risco e persistido por `lib/data/riskProfile.js` em `vestra:riskProfile:v1`. A classificacao e os parametros derivados pertencem a `riskProfileAssessment.js`; diagnósticos de coerencia usam escopo `risk_profile` e nao alteram preferencias automaticamente.
+
 ### Dados locais
 
 `lib/data` armazena e normaliza operacoes, cadastro mestre, cotacoes manuais, historico patrimonial e persistencia local.
@@ -58,6 +68,10 @@ Essas rotas leem `BRAPI_TOKEN` no servidor, validam entradas, aplicam limites e 
 ### Interface
 
 Componentes React exibem dados e acionam hooks/servicos. Eles nao importam provedores de mercado diretamente e nao concentram regras financeiras.
+
+### Conhecimento
+
+`knowledge/` e a fonte local oficial de documentacao estruturada. `lib/knowledge/repositories` define o contrato de origem, enquanto `knowledgeService.js` normaliza acesso, filtros, pesquisa, relacionados, rotas e fallback. Interface, Command Palette e rotas não conhecem a implementação local. `metadata.json` versiona o manifesto e a governanca esta em `docs/KNOWLEDGE.md`.
 
 ## LocalStorage
 

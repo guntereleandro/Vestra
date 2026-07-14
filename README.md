@@ -1,6 +1,6 @@
 # Vestra
 
-Versao 0.6.0
+Versao 0.8.2
 
 Gerenciador pessoal de investimentos para investidores brasileiros, com interface escura, responsiva e foco em acompanhamento patrimonial.
 
@@ -14,6 +14,13 @@ O Vestra funciona sem banco de dados e sem autenticacao. Dados financeiros do us
 - Modulo Objetivos na versao 0.5.0, com metas patrimoniais, renda passiva e objetivos manuais acompanhados no navegador.
 - Area publica Mercado na versao 0.6.0, com pesquisa de ativos em `/mercado` e pagina publica em `/mercado/[ticker]`.
 - Asset Experience 2.0, com pagina publica do ativo mais premium, hero de cotacao e indicadores em hierarquia clara.
+- Engine de diagnostico patrimonial 0.7.0, pura e deterministica, com diagnosticos de alocacao, diversificacao, concentracao, renda, risco e qualidade de dados.
+- Diagnostico da carteira 0.7.1 em `/carteira`, com quatro scores descritivos, confianca, limitacoes e detalhes expansiveis baseados somente na saida estruturada da engine.
+- Diagnostico personalizado 0.7.2, com estrategia local configuravel, divergencias separadas dos diagnosticos gerais e preferencias incluidas no backup.
+- Perfil e tolerancia a risco 0.7.3, com questionario deterministico, parametros derivados confirmaveis e coerencia contextual separada na Carteira.
+- Padroes de comportamento 0.7.4, calculados de forma deterministica a partir do historico real de operacoes, sem inferir intencao.
+- Performance Patrimonial 0.7.5, com crescimento decomposto em aportes, valorizacao e proventos, drawdown, contribuicoes e consistencia.
+- Knowledge Repository 0.8.2, com contrato desacoplado, schema editorial, conteúdo published/public e fallback local.
 - Command Palette com `Ctrl+K` para navegar, buscar ativos e objetivos, e acessar acoes rapidas.
 - Operacoes como fonte da verdade para quantidade, custo, preco medio e proventos.
 - Carteira consolidada automaticamente a partir do historico de operacoes.
@@ -137,6 +144,8 @@ Validacao:
 ```bash
 npm run lint
 npm run test:market
+node scripts/validate-diagnostics.mjs
+npm run test:knowledge
 npm run build
 ```
 
@@ -148,4 +157,5 @@ npm run build
 - Sem autenticacao.
 - Sem painel administrativo funcional.
 - Sem recomendacoes de investimento.
+- Os diagnosticos nao avaliam retorno esperado, volatilidade, correlacao ou liquidez.
 - A disponibilidade e limites da brapi.dev dependem do fornecedor e dos termos de uso.

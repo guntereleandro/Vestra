@@ -1,5 +1,79 @@
 # Decisoes Arquiteturais
 
+## 2026-07-14 — Central acessada por repositório
+
+Decisão:
+
+Interface, pesquisa, Command Palette, rotas e ajuda contextual consomem somente o serviço público de conhecimento. O catálogo permanece como fonte local atrás de um contrato de repositório e é o fallback para providers futuros.
+
+Motivo:
+
+Permitir conteúdo remoto e publicação administrativa futura sem acoplar componentes à origem, preservando funcionamento local e URLs estáveis.
+
+---
+
+## 2026-07-14 — Aportes separados de rentabilidade
+
+Decisão:
+
+A Engine de Performance Patrimonial trata aportes e retiradas como fluxos de capital. Rentabilidade deriva apenas da valorização residual, separada também dos proventos.
+
+Motivo:
+
+Explicar a evolução sem atribuir capital novo ao desempenho dos ativos.
+
+---
+
+## 2026-07-13 — Comportamento como padrão observado
+
+Decisão:
+
+Diagnósticos comportamentais descrevem somente padrões mensuráveis do histórico de operações. Nenhuma intenção, emoção ou julgamento é inferido.
+
+Motivo:
+
+Manter fatos auditáveis e distinguir atividade registrada de interpretações psicológicas.
+
+---
+
+## 2026-07-13 — Perfil de risco como contexto
+
+Decisão:
+
+O perfil é calculado por regras determinísticas e influencia apenas diagnósticos contextuais. Parâmetros derivados somente substituem partes da estratégia após prévia e confirmação explícita.
+
+Motivo:
+
+Separar respostas declaradas, referências calculadas e escolhas estratégicas persistentes, evitando sobrescritas implícitas.
+
+---
+
+## 2026-07-13 — Estratégia declarada pelo usuário
+
+Decisão:
+
+Preferências pessoais são dados locais validados e entram na engine somente como parâmetros opcionais. Diagnósticos gerais e diagnósticos da estratégia permanecem identificados separadamente.
+
+Motivo:
+
+Preservar o significado das regras gerais e permitir comparações transparentes com referências definidas pelo usuário, sem linguagem prescritiva.
+
+---
+
+## 2026-07-13
+
+### Diagnosticos determinísticos antes de IA
+
+Decisao:
+
+A IA futura não será fonte primária dos diagnósticos. Ela receberá fatos calculados por engines determinísticas e explicará esses fatos ao usuário.
+
+Motivo:
+
+Manter cálculos auditáveis, reproduzíveis e separados da camada de explicação.
+
+---
+
 ## 2026-07-10
 
 ### Operacoes sao a fonte da verdade

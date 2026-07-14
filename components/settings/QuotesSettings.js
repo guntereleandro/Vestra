@@ -8,6 +8,8 @@ import MarketDataCenter from "@/components/settings/MarketDataCenter";
 import useInvestmentData from "@/hooks/useInvestmentData";
 import { currency } from "@/lib/engine/totals";
 import { removeManualQuote, setManualQuote, useAutomaticQuote } from "@/lib/data/quotes";
+import DiagnosticPreferencesForm from "@/components/diagnostics/preferences/DiagnosticPreferencesForm";
+import RiskProfileForm from "@/components/diagnostics/risk/RiskProfileForm";
 
 export default function QuotesSettings() {
   const { positions, assetsMaster, setAssetsMaster, assetQuotes, setAssetQuotes, loaded, storageError } = useInvestmentData();
@@ -27,6 +29,8 @@ export default function QuotesSettings() {
       <div className="border-b border-white/[.06] p-5 sm:p-6"><h2 className="font-display text-xl">Dados e cotacoes</h2><p className="mt-1 text-xs text-[#777d78]">Atualizacao manual, sem conexao com APIs externas.</p></div>
       {!loaded ? <div className="p-12 text-center text-sm text-[#777d78]">Carregando ativos...</div> : positions.length === 0 ? <div className="px-5 py-12 text-center"><RefreshCw size={21} className="mx-auto text-[#d9b86c]" /><h3 className="font-display mt-4 text-xl">Nenhum ativo para atualizar</h3></div> : <div className="divide-y divide-white/[.05]">{positions.map((position) => { const quote = assetQuotes.find((item) => item.ticker === position.ticker), master = assetsMaster.find((item) => item.ticker === position.ticker); return <div key={position.ticker} className="flex flex-col gap-4 p-5 sm:flex-row sm:items-center sm:justify-between"><div><p className="font-bold">{position.ticker}</p><p className="mt-1 text-xs text-[#777d78]">{position.name}{master?.sector ? ` · ${master.sector}` : ""}</p></div><div className="flex items-center justify-between gap-5"><div className="text-right"><p className="text-sm font-semibold">{quote ? currency.format(quote.currentQuote) : "Nao informada"}</p><p className="mt-1 text-[9px] text-[#626762]">{quote ? `${quote.updatedAt.split("-").reverse().join("/")} · ${quote.origin || "manual"}` : "Usando preco medio"}</p></div><button onClick={() => setEditing(position)} aria-label={`Atualizar cotacao ${position.ticker}`} className="icon-button"><Edit3 size={15} /></button></div></div>; })}</div>}
     </section>
+    <DiagnosticPreferencesForm />
+    <RiskProfileForm />
     <MarketDataCenter positions={positions} setAssetQuotes={setAssetQuotes} />
     <DataManagement />
     {storageError && <p className="mt-4 text-xs text-rose-400">Nao foi possivel salvar os dados neste navegador.</p>}

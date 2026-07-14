@@ -1,0 +1,3 @@
+import Link from "next/link";
+const links = [["/conhecimento/tutorials", "Tutoriais"], ["/conhecimento/concepts", "Conceitos"], ["/conhecimento/faq", "FAQ"], ["/conhecimento/releases", "Release Notes"]];
+export default function KnowledgeSidebar() { return <aside className="card rounded-2xl p-4"><p className="eyebrow px-2">Categorias</p><nav className="mt-3 space-y-1">{links.map(([href, label]) => <Link key={href} href={href} className="block rounded-xl px-3 py-2.5 text-xs text-[#898e89] hover:bg-white/[.03] hover:text-white">{label}</Link>)}</nav><div className="mt-4 border-t border-white/[.06] pt-4"><p className="px-2 text-[11px] leading-5 text-[#626762]">Conteúdo oficial, versionado e preparado para consumo estruturado futuro.</p></div></aside>; }
