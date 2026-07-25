@@ -8,6 +8,7 @@ import useInvestmentData from "@/hooks/useInvestmentData";
 import { createGoal, readGoalMilestones, readGoals, writeGoalMilestones, writeGoals } from "@/lib/data/goals";
 import { enrichGoals, registerGoalMilestones, summarizeGoals } from "@/lib/dashboard/goalsAnalytics";
 import { percent } from "@/lib/engine/totals";
+import { brandConfig } from "@/lib/config/brandConfig";
 
 const filters = [
   { value: "all", label: "Todos" },
@@ -51,7 +52,7 @@ export default function GoalsPage() {
         <div>
           <p className="eyebrow">Objetivos</p>
           <h1 className="font-display mt-3 text-4xl leading-tight sm:text-5xl">Patrimônio com direção.</h1>
-          <p className="mt-4 max-w-2xl text-sm leading-relaxed text-[#898e89]">Acompanhe automaticamente metas de patrimônio e renda passiva usando os dados que você já registra no Vestra.</p>
+          <p className="mt-4 max-w-2xl text-sm leading-relaxed text-[#898e89]">Acompanhe automaticamente metas de patrimônio e renda passiva usando os dados que você já registra no {brandConfig.appName}.</p>
         </div>
         <button onClick={() => { setEditing(null); setModalOpen(true); }} className="gold-button flex items-center justify-center gap-2"><Plus size={16} />Criar objetivo</button>
       </div>

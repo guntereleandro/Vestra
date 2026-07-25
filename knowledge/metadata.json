@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
-  "updatedAt": "2026-07-14",
-  "lastFunctionalReview": "2026-07-14",
+  "updatedAt": "2026-07-25",
+  "lastFunctionalReview": "2026-07-25",
   "appVersion": "0.8.2",
   "requiredFields": ["id", "slug", "category", "title", "description", "tags", "version", "updatedAt", "content", "relatedIds", "status", "visibility", "author", "revision"],
   "articles": [

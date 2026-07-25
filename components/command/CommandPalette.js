@@ -8,10 +8,13 @@ import CommandSearch from "@/components/command/CommandSearch";
 import useCommandPalette from "@/hooks/useCommandPalette";
 import { readGoals } from "@/lib/data/goals";
 import { applyAutomaticQuotes } from "@/lib/data/quotes";
-import { createBackup, readLocalData, registerPortfolioSnapshot, restoreBackup, validateBackup, writeLocalData } from "@/lib/data/storage";
+import { createBackup, restoreBackup, validateBackup } from "@/lib/data/storage";
 import { calculatePositions } from "@/lib/engine/portfolio";
 import { fetchAutomaticQuotes } from "@/lib/market/marketService";
 import { getAllArticles, getArticleHref, getCategoryLabel } from "@/lib/knowledge/knowledgeService";
+import { brandConfig } from "@/lib/config/brandConfig";
+import { loadPortfolioData, savePortfolioData } from "@/lib/services/portfolioDataService";
+import { registerPortfolioSnapshot } from "@/lib/services/snapshotsService";
 
 function normalize(value) {
   return String(value || "").normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
@@ -23,20 +26,20 @@ function downloadBackup() {
   const url = URL.createObjectURL(blob);
   const link = document.createElement("a");
   link.href = url;
-  link.download = `vestra-backup-${new Date().toISOString().slice(0, 10)}.json`;
+  link.download = `${brandConfig.backupFilePrefix}-${new Date().toISOString().slice(0, 10)}.json`;
   link.click();
   URL.revokeObjectURL(url);
 }
 
 async function updateQuotes() {
-  const data = readLocalData();
+  const data = await loadPortfolioData();
   const positions = calculatePositions(data.operations, data.quotes, data.assetsMaster);
   const tickers = positions.map((position) => position.ticker);
   if (!tickers.length) return;
   const result = await fetchAutomaticQuotes(tickers);
   const quotes = applyAutomaticQuotes(data.quotes, result.quotes || []);
-  writeLocalData({ operations: data.operations, assetsMaster: data.assetsMaster, quotes });
-  registerPortfolioSnapshot({ operations: data.operations, assetsMaster: data.assetsMaster, quotes });
+  await savePortfolioData({ operations: data.operations, assetsMaster: data.assetsMaster, quotes });
+  await registerPortfolioSnapshot({ operations: data.operations, assetsMaster: data.assetsMaster, quotes });
   window.location.reload();
 }
 
@@ -53,9 +56,9 @@ export default function CommandPalette() {
     router.push(href);
   }
 
-  function loadData() {
+  async function loadData() {
     try {
-      const data = readLocalData();
+      const data = await loadPortfolioData();
       setAssets(data.assetsMaster);
       setGoals(readGoals());
       setMessage("");
@@ -80,7 +83,7 @@ export default function CommandPalette() {
       { id: "novo-objetivo", title: "Novo objetivo", subtitle: "Criar objetivo patrimonial", group: "Ação", icon: Goal, run: () => openRoute("/objetivos?new=goal") },
       { id: "atualizar-cotacoes", title: "Atualizar cotações", subtitle: "Buscar cotações automáticas disponíveis", group: "Ação", icon: RefreshCw, run: async () => { setMessage("Atualizando cotações..."); await updateQuotes(); } },
       { id: "exportar-backup", title: "Exportar backup", subtitle: "Baixar um arquivo JSON com seus dados", group: "Ação", icon: Download, run: () => { downloadBackup(); setMessage("Backup exportado."); palette.close(); } },
-      { id: "importar-backup", title: "Importar backup", subtitle: "Selecionar um arquivo JSON do Vestra", group: "Ação", icon: FileUp, run: () => fileRef.current?.click() },
+      { id: "importar-backup", title: "Importar backup", subtitle: `Selecionar um arquivo JSON do ${brandConfig.appName}`, group: "Ação", icon: FileUp, run: () => fileRef.current?.click() },
     ];
     const assetCommands = assets.slice(0, 60).map((asset) => ({ id: `asset-${asset.ticker}`, title: asset.ticker, subtitle: asset.name || "Ativo da carteira", group: "Ativo", icon: Target, run: () => openRoute(`/carteira/${asset.ticker}`) }));
     const goalCommands = goals.map((goal) => ({ id: `goal-${goal.id}`, title: goal.title, subtitle: "Objetivo patrimonial", group: "Objetivo", icon: Goal, run: () => openRoute("/objetivos") }));

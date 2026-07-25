@@ -1,6 +1,7 @@
 "use client";
 
 import { CheckCircle2, Circle } from "lucide-react";
+import { brandConfig } from "@/lib/config/brandConfig";
 
 export default function Achievements({ achievements }) {
   const unlocked = achievements.filter((item) => item.unlocked).length;
@@ -9,7 +10,7 @@ export default function Achievements({ achievements }) {
       <div>
         <p className="eyebrow">Conquistas</p>
         <h2 className="font-display mt-2 text-2xl">Marcos da carteira</h2>
-        <p className="mt-2 text-sm text-[#777d78]">Pequenos sinais do progresso registrado no Vestra.</p>
+        <p className="mt-2 text-sm text-[#777d78]">Pequenos sinais do progresso registrado no {brandConfig.appName}.</p>
       </div>
       <p className="text-xs font-semibold text-[#a0a5a0]">{unlocked} de {achievements.length}</p>
     </div>

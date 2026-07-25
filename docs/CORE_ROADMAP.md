@@ -1,0 +1,130 @@
+# Roadmap do Vestra Core
+
+Cada etapa deve ser pequena, documentada, compatível, aprovada separadamente e terminar com lint e build aprovados. A ordem solicitada foi preservada.
+
+## CORE-00 — Auditoria e documentação
+
+Entrega: mapa fiel, inventário local, dívidas, banco conceitual, marca e roadmap.
+
+Aceite: somente documentação alterada; nenhum dado, dependência, versão, interface ou comportamento alterado.
+
+## CORE-01 — Configuração central de marca e ambiente
+
+Dependência: CORE-00.
+
+Entrega: contrato único para identidade pública e variáveis por ambiente; consumidores migrados em lotes pequenos, mantendo “Vestra” e a aparência atuais.
+
+Aceite: busca residual classificada; metadados e shell usam configuração; variáveis obrigatórias têm validação; nenhuma chave local é renomeada.
+
+Status: concluída em 2026-07-25. Identidade, metadados e ambiente foram centralizados; segredos permanecem server-only; nenhuma chave ou comportamento foi alterado.
+
+## CORE-02 — Preparação da camada de persistência
+
+Dependência: CORE-01.
+
+Entrega: interfaces de repositório por domínio e adapter local compatível. Separar leitura/escrita de efeitos de UI e unificar backup.
+
+Aceite: mesmos dados e cálculos antes/depois; inventário coberto por testes; backup declara claramente inclusões; sem Supabase.
+
+Status: concluída em 2026-07-25. Sete contratos assíncronos, adapters locais, registry, serviços e validação isolada foram introduzidos sem novas chaves ou alteração do backup.
+
+## CORE-03 — Supabase e schema inicial
+
+Dependência: CORE-02.
+
+Entrega: cliente/server clients, migrations versionadas, tabelas mínimas de perfis, carteiras, membros, ativos e operações, políticas RLS e ambientes.
+
+Aceite: zero segredo no cliente; testes negativos de RLS; schema reproduzível; sem migração automática de dados reais.
+
+## CORE-04 — Autenticação e perfis
+
+Dependência: CORE-03.
+
+Entrega: login, logout, sessão, recuperação e perfil mínimo; estados de carregamento/erro.
+
+Aceite: rotas privadas protegidas no servidor e cliente; sessão expirada tratada; perfil isolado por usuário.
+
+## CORE-05 — Carteiras e permissões
+
+Dependência: CORE-04.
+
+Entrega: carteira padrão, seleção e papéis owner/editor/viewer.
+
+Aceite: isolamento comprovado entre usuários; viewer não escreve; troca de carteira não mistura estado.
+
+## CORE-06 — Migração de operações
+
+Dependência: CORE-05.
+
+Entrega: CRUD remoto de operações, validação de domínio, auditoria mínima e compatibilidade com a engine.
+
+Aceite: criar/editar/excluir é consistente; falhas não somem da UI; regressão de preço médio, saldo e proventos coberta; sem apagar dados locais.
+
+## CORE-07 — Carteira consolidada
+
+Dependência: CORE-06.
+
+Entrega: posições derivadas de operações remotas, metadados e cotações; estados vazios/erro/sincronização.
+
+Aceite: totais reconciliados contra fixtures; múltiplas carteiras isoladas; fallback de cotação explícito.
+
+## CORE-08 — Proventos
+
+Dependência: CORE-07.
+
+Entrega: página funcional, filtros, totais por período/ativo/tipo e CRUD integrado às operações.
+
+Aceite: nenhuma dupla contagem; edições refletem carteira/dashboard; fluxo substitui a função essencial de referência.
+
+## CORE-09 — Snapshots e dashboard
+
+Dependência: CORE-08.
+
+Entrega: snapshots determinísticos com regra de timezone, histórico confiável e dashboard Core.
+
+Aceite: job/processo idempotente; operações retroativas têm política; dashboard não depende de visita para registrar história.
+
+## CORE-10 — Migração assistida dos dados locais
+
+Dependência: CORE-09.
+
+Entrega: detecção, preview, escolha de carteira, validação, importação idempotente, reconciliação e export de segurança.
+
+Aceite: contagens/totais antes e depois; retry seguro; relatório por erro; dados locais mantidos até confirmação explícita.
+
+## CORE-11 — Estabilização e testes de uso diário
+
+Dependência: CORE-10.
+
+Entrega: testes dos fluxos críticos, acessibilidade e mobile, tratamento de erros, observabilidade mínima, backup/export e checklist operacional.
+
+Aceite: jornadas críticas automatizadas; nenhum bloqueador aberto; restauração e incidentes básicos documentados.
+
+## CORE-12 — Validação dos 30 dias
+
+Dependência: CORE-11.
+
+Entrega: protocolo de uso, diário de lacunas, métricas e decisão de conclusão.
+
+Aceite: 30 dias consecutivos sem recorrer ao Investidor10 para funções essenciais; qualquer exceção deve ser classificada e resolvida ou formalmente retirada do escopo.
+
+## Dependências críticas
+
+```text
+Configuração
+  -> contratos de persistência
+    -> schema/RLS
+      -> identidade
+        -> carteira/permissões
+          -> operações
+            -> consolidação
+              -> proventos
+                -> snapshots/dashboard
+                  -> migração real
+                    -> estabilização
+                      -> 30 dias
+```
+
+## Ajustes de ordem
+
+Só são permitidos mediante decisão registrada em `docs/DECISIONS.md`, contendo motivo, risco, impacto em dados, plano de reversão e novo critério de aceite. Trabalho preparatório pode ocorrer dentro de uma etapa, mas não deve ativar antecipadamente um domínio posterior.

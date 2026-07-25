@@ -1,5 +1,29 @@
 # Decisoes Arquiteturais
 
+## 2026-07-25 — Repositórios assíncronos antes do Supabase
+
+Decisão:
+
+Fluxos essenciais consomem serviços e sete contratos assíncronos resolvidos por `repositoryRegistry.js`. O provider local reutiliza `lib/data` e as chaves existentes. Proventos são uma visão filtrada de operações, sem persistência própria. Os IDs transitórios são `local-profile` e `local-default-portfolio`.
+
+Motivo:
+
+Desacoplar a interface do mecanismo de armazenamento, preservar dados e cálculos atuais e permitir um adapter Supabase posterior sem reescrever componentes.
+
+---
+
+## 2026-07-25 — Identidade pública separada de ambiente privado
+
+Decisão:
+
+`brandConfig.js` é a fonte central da identidade pública. Variáveis `NEXT_PUBLIC_*` ficam em um módulo explicitamente público; tokens e futuras credenciais Supabase ficam em `envConfig.js`, protegido por `server-only`. Namespaces `vestra:*`, nomes técnicos e dados de migração permanecem estáveis.
+
+Motivo:
+
+Permitir troca futura de marca e configuração por ambiente sem busca extensa, quebra de dados ou exposição de segredos no bundle cliente.
+
+---
+
 ## 2026-07-14 — Central acessada por repositório
 
 Decisão:

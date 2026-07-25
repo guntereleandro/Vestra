@@ -7,9 +7,18 @@
 - Todo cálculo deve ser determinístico.
 - Toda funcionalidade precisa ser testável.
 - Toda persistência deve passar pela camada de dados.
+- Fluxos Core migrados devem acessar persistência por `lib/services` e contratos de `lib/repositories`.
+- Componentes e hooks não importam adapters locais.
+- Todo método público de repositório retorna `Promise`.
+- Adapters normalizam e persistem; não contêm regra financeira, React ou DOM.
+- Erros de repositório usam códigos padronizados e mensagens sanitizadas.
 - Componentes React apenas apresentam dados.
 - Hooks coordenam comportamento.
 - Engine realiza cálculos.
+
+## Validação de repositórios
+
+`npm run test:repositories` executa contratos e CRUD contra um storage em memória. O teste deve cobrir identidade local, isolamento por carteira, imutabilidade de entradas, erros, chaves legadas e backup sem acessar dados reais.
 
 ## Diagnosticos patrimoniais
 

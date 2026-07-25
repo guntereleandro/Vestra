@@ -6,6 +6,22 @@ Gerenciador pessoal de investimentos para investidores brasileiros, com interfac
 
 O Vestra funciona sem banco de dados e sem autenticacao. Dados financeiros do usuario ficam no `localStorage`. A partir da versao 0.4.0, cotacoes automaticas podem ser consultadas pela brapi.dev por rotas internas do servidor Next.js.
 
+O nome atual e a identidade pública são configurados em `lib/config/brandConfig.js`. “Vestra” permanece como nome interno até a definição da marca final.
+
+## Vestra Core e governança
+
+O Vestra Core tem como objetivo tornar o produto confiável para administrar investimentos diariamente e substituir o Investidor10 nas funções essenciais. A conclusão será validada por 30 dias consecutivos de uso real sem depender do serviço de referência.
+
+O desenvolvimento ocorre em etapas pequenas, compatíveis e verificáveis. Cada etapa respeita o roadmap, preserva comportamento e dados existentes, atualiza a documentação aplicável e só avança após cumprir lint, build, validadores e critérios de aceite.
+
+As fontes oficiais de governança são:
+
+- `docs/CORE.md`: missão, escopo e critério dos 30 dias;
+- `docs/ARCHITECTURE_DECISIONS.md`: decisões arquitetônicas permanentes;
+- `docs/ENGINEERING_PRINCIPLES.md`: princípios de engenharia;
+- `docs/DEFINITION_OF_DONE.md`: critérios para conclusão de cada etapa;
+- `docs/CORE_ROADMAP.md`: ordem e dependências das entregas.
+
 ## Funcionalidades atuais
 
 - Dashboard 2.0 refinado, com hero patrimonial premium, grafico em destaque, cards padronizados, alocacao com legenda lateral, resumo em mini cards, carteira em cards e ultimas 5 operacoes.
@@ -33,6 +49,13 @@ O Vestra funciona sem banco de dados e sem autenticacao. Dados financeiros do us
 - Cadastro mestre expandido e autocomplete com busca local + externa.
 - Central de dados de mercado em Configuracoes.
 - Backup e restauracao sem incluir cache temporario ou credenciais.
+- Camada de repositorios assincronos para os dominios essenciais, com provider local compativel e preparada para adapters futuros.
+
+## Repositorios do Core
+
+`lib/repositories` define contratos para perfil, carteiras, operacoes, proventos, cotacoes, snapshots e preferencias. Todos os metodos publicos retornam `Promise`.
+
+`lib/services` e a entrada dos hooks e componentes. O provider atual continua usando as mesmas chaves do `localStorage`; nenhum Supabase, banco ou autenticacao foi introduzido. Consulte `docs/REPOSITORIES.md`.
 
 ## Camada de mercado
 
@@ -73,15 +96,20 @@ O Vestra calcula uma cotacao efetiva antes da engine financeira:
 
 Cotacoes antigas importadas ou ja salvas sao migradas como manuais.
 
-## Configuracao da brapi.dev
+## Configuracao de ambiente
 
-Crie `.env.local` na raiz do projeto:
+Copie `.env.example` para `.env.local` e preencha somente os valores necessários ao ambiente. As variáveis públicas aceitas são:
 
-```bash
-BRAPI_TOKEN=
-```
+- `NEXT_PUBLIC_APP_URL`
+- `NEXT_PUBLIC_SITE_URL`
+- `NEXT_PUBLIC_APP_ENV`
 
-Preencha o valor localmente, sem versionar esse arquivo.
+As variáveis privadas preparadas são:
+
+- `BRAPI_TOKEN`, usado atualmente apenas no servidor;
+- `SUPABASE_URL`, `SUPABASE_ANON_KEY` e `SUPABASE_SERVICE_ROLE_KEY`, reservadas para a CORE-03 e ainda sem uso.
+
+Nunca adicione prefixo `NEXT_PUBLIC_` a tokens ou chaves privadas. Valores ausentes continuam opcionais nesta etapa.
 
 Na Vercel:
 
@@ -91,7 +119,7 @@ Na Vercel:
 4. Crie `BRAPI_TOKEN`.
 5. Faça novo deploy.
 
-Nunca use `NEXT_PUBLIC_BRAPI_TOKEN`. O token deve existir apenas no servidor.
+`lib/config/envConfig.js` é server-only. Componentes clientes não devem importá-lo.
 
 ## LocalStorage
 
@@ -111,7 +139,7 @@ O cache e temporario e pode ser limpo sem afetar a carteira.
 
 ## Backup
 
-O backup schema atual e `3`.
+O backup schema atual e `5`.
 
 Inclui:
 
@@ -119,6 +147,8 @@ Inclui:
 - cotacoes persistentes;
 - ativos personalizados;
 - historico patrimonial.
+- preferencias de diagnostico;
+- perfil de risco.
 
 Nao inclui:
 
@@ -146,6 +176,7 @@ npm run lint
 npm run test:market
 node scripts/validate-diagnostics.mjs
 npm run test:knowledge
+npm run test:repositories
 npm run build
 ```
 

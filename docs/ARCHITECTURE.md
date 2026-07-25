@@ -36,6 +36,12 @@ O questionario de risco e persistido por `lib/data/riskProfile.js` em `vestra:ri
 
 `lib/data` armazena e normaliza operacoes, cadastro mestre, cotacoes manuais, historico patrimonial e persistencia local.
 
+### Repositorios e servicos
+
+`lib/repositories` define contratos assincronos para os dominios essenciais do Core. `repositoryRegistry.js` seleciona o provider; atualmente somente o adapter local existe e reutiliza `lib/data`.
+
+`lib/services` coordena repositorios para hooks e componentes. Nenhum componente importa adapters locais. Operacoes continuam como fonte da verdade e proventos sao derivados delas, sem persistencia duplicada.
+
 ### Mercado
 
 `lib/market` e a camada de mercado. Ela prepara o Vestra para APIs futuras sem acoplar componentes ou engine a provedores especificos.
