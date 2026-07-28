@@ -1,5 +1,45 @@
 # Decisoes Arquiteturais
 
+## 2026-07-27 — Auth não altera o provider de dados
+
+Decisão:
+
+Supabase Auth será funcional antes do schema de negócio, mas o registry continuará em `local`. Login, logout e cadastro não enviam, importam, associam ou removem dados financeiros.
+
+Motivo:
+
+Separar identidade de persistência, preservar compatibilidade e impedir sincronização implícita.
+
+---
+
+## 2026-07-27 — Sessão verificada por claims e usuário
+
+Decisão:
+
+O Proxy valida e renova a identidade com `getClaims()`; `/conta` consulta `getUser()`. `getSession()` não é usado como autorização.
+
+Motivo:
+
+Não confiar apenas na presença de cookies ou em sessão não revalidada.
+
+---
+
+## 2026-07-27 — Schema distribuído por domínio após infraestrutura Supabase
+
+Decisão:
+
+A CORE-03 prepara apenas SDKs, clientes, configuração, registry, stubs, segurança e validação. O schema será introduzido com os domínios que o utilizam: perfil na CORE-04, carteiras e membros na CORE-05, ativos e operações na CORE-06.
+
+Motivo:
+
+Respeitar a restrição de não criar tabelas nesta etapa, manter entregas pequenas e permitir que migrations, políticas RLS e testes negativos sejam entregues junto aos fluxos reais de autorização.
+
+Risco e reversão:
+
+O risco é postergar a validação remota até a CORE-04. A reversão consiste em restaurar o escopo anterior do roadmap antes de qualquer migration; não há dado ou schema a desfazer.
+
+---
+
 ## 2026-07-25 — Repositórios assíncronos antes do Supabase
 
 Decisão:

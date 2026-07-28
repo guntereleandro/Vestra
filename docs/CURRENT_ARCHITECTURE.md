@@ -1,10 +1,10 @@
 # Arquitetura atual
 
-Estado atualizado na CORE-02. Este documento descreve o repositório existente; não é a arquitetura-alvo.
+Estado atualizado na CORE-04. Este documento descreve o repositório existente; não é a arquitetura-alvo.
 
 ## Visão geral
 
-Aplicação Next.js com App Router, React e JavaScript. Fluxos essenciais usam serviços e contratos assíncronos com adapter local; domínios ainda não migrados continuam em `lib/data`. Cálculos determinísticos vivem majoritariamente em `lib/engine`; dados de mercado passam por `lib/market` e por quatro rotas internas de servidor.
+Aplicação Next.js com App Router, React e JavaScript. Dados essenciais usam serviços e contratos assíncronos com adapter local. Supabase Auth é opcional e funcional quando configurado, sem alterar a persistência financeira. Cálculos determinísticos vivem em `lib/engine`; mercado passa por `lib/market` e rotas internas.
 
 ```text
 Páginas App Router
@@ -18,9 +18,13 @@ Páginas App Router
         -> /api/market/*
            -> brapiProvider -> brapi.dev
         -> localProvider como fallback
+
+Supabase Auth opcional:
+  lib/supabase -> clients browser/server/admin
+  repositoryRegistry -> adapters Supabase stub -> NOT_IMPLEMENTED
 ```
 
-Não existem autenticação, banco, sincronização, jobs, filas ou observabilidade de produção.
+Não existem tabelas de negócio Supabase, sincronização, jobs, filas ou observabilidade de produção.
 
 ## Organização das pastas
 
@@ -30,7 +34,10 @@ Não existem autenticação, banco, sincronização, jobs, filas ou observabilid
 - `lib/config/`: identidade pública, ambiente público, ambiente privado server-only e flags operacionais.
 - `lib/data/`: contratos, normalização e persistência local.
 - `lib/repositories/`: contratos assíncronos, erros, registry e adapters locais.
+- `lib/repositories/supabase/`: sete adapters estruturais que respeitam os contratos e lançam `NOT_IMPLEMENTED`.
 - `lib/services/`: coordenação de operações, cotações, snapshots, preferências e dados do portfólio.
+- `lib/supabase/`: configuração server-only, clientes por contexto e helpers ainda sem consumidores.
+- `lib/auth/`: serviço de Auth, validação, redirects, erros e acesso server-only ao usuário.
 - `lib/engine/`: cálculos financeiros, diagnósticos e performance.
 - `lib/dashboard/`: experiência diária, fatos, recordes e objetivos.
 - `lib/market/`: contrato de provider, normalização, busca, cache e serviço.
@@ -39,6 +46,8 @@ Não existem autenticação, banco, sincronização, jobs, filas ou observabilid
 - `knowledge/`: índices Markdown e metadados editoriais; o conteúdo exibido está em `lib/knowledge/catalog.js`.
 - `docs/`: documentação técnica e de produto.
 - `public/`: inexistente no estado auditado; logos usam iniciais ou URLs remotas.
+- `proxy.js`: fronteira não bloqueante do Next.js 16, preparada para futura renovação de sessão.
+- `app/entrar`, `cadastrar`, `recuperar-senha`, `atualizar-senha`, `confirmar-email`, `auth/callback` e `conta`: fluxos de Auth.
 
 ## Rotas de interface
 
@@ -53,6 +62,9 @@ Não existem autenticação, banco, sincronização, jobs, filas ou observabilid
 | `/configuracoes` | Cotações, estratégia, risco, mercado e backup |
 | `/conhecimento/*` | Central local, categorias e artigos estáticos |
 | `/proventos` | Placeholder; os registros existem apenas como operações |
+| `/entrar`, `/cadastrar`, `/recuperar-senha`, `/atualizar-senha`, `/confirmar-email` | Auth público |
+| `/auth/callback` | callback PKCE/OTP |
+| `/conta` | única rota protegida; mostra dados seguros do Auth |
 | `/relatorios`, `/metas` | Placeholders |
 | `/imposto-de-renda`, `/simulacoes`, `/ia` | Placeholders fora do Core |
 
@@ -96,7 +108,7 @@ O backup continua direto na camada de dados por ser transversal ao formato legad
 
 ### Repositórios
 
-Sete contratos públicos cobrem profiles, portfolios, operations, dividends, quotes, portfolioSnapshots e preferences. `repositoryRegistry.js` resolve o provider `local`. Os IDs locais são `local-profile` e `local-default-portfolio`. Veja `docs/REPOSITORIES.md`.
+Sete contratos públicos cobrem profiles, portfolios, operations, dividends, quotes, portfolioSnapshots e preferences. `repositoryRegistry.js` conhece `local` e `supabase`, mas inicia e permanece em `local` nos fluxos da aplicação. Os adapters Supabase são stubs explícitos. Os IDs locais são `local-profile` e `local-default-portfolio`. Veja `docs/REPOSITORIES.md`.
 
 ### Navegação e Command Palette
 
@@ -136,13 +148,13 @@ O schema 5 inclui operações, cotações, ativos customizados, histórico, pref
 
 ## Configuração
 
-`lib/config/brandConfig.js` centraliza identidade, URLs, e-mails, assets, locale, moeda, metadados e prefixo de exportação. `publicEnvConfig.js` aceita apenas `NEXT_PUBLIC_*`; `envConfig.js` é server-only e concentra BRAPI e a preparação privada para Supabase. `appConfig.js` mantém a versão exibida e parâmetros operacionais/mercado.
+`lib/config/brandConfig.js` centraliza identidade e URLs. `publicEnvConfig.js` lê URL e publishable key Supabase, mantendo fallback para a anon key legada; `envConfig.js` concentra a secret key administrativa, seu fallback legado server-only e BRAPI. `supabaseConfig.js` combina a configuração por contexto e valida somente quando um cliente é criado.
 
-O provider BRAPI lê o token exclusivamente de `envConfig.js`. Componentes clientes importam somente `brandConfig`, `publicEnvConfig` ou `appConfig`; não há caminho cliente para segredos. Não há `next.config.*`; são usados defaults do Next.js. `jsconfig.json` define apenas o alias `@/*`.
+O provider BRAPI lê o token exclusivamente de `envConfig.js`. Componentes clientes importam somente configurações públicas; Browser Client recebe URL/publishable key explicitamente e não lê ambiente. Server Client, Admin Client e configuração Supabase são server-only. Não há caminho cliente para a secret key administrativa. Não há `next.config.*`; são usados defaults do Next.js. `jsconfig.json` define apenas o alias `@/*`.
 
 ## Dependências
 
-Produção: Next, React, React DOM, Tailwind/PostCSS e `lucide-react`, todos fixados como `latest` no manifesto, embora o lockfile registre resoluções concretas. Não há dependências de teste, banco ou autenticação.
+Produção: Next, React, React DOM, Tailwind/PostCSS, `lucide-react`, `@supabase/supabase-js` e `@supabase/ssr`. Não há biblioteca adicional de autenticação.
 
 ## Validação existente
 
@@ -151,5 +163,7 @@ Produção: Next, React, React DOM, Tailwind/PostCSS e `lucide-react`, todos fix
 - `test:diagnostics`: regras e contratos de diagnóstico.
 - `test:performance`: performance e decomposição.
 - `test:knowledge`: contrato, conteúdo e rotas do repositório local.
+- `test:supabase`: clientes, configuração, imports, segurança, stubs e provider ativo.
+- `test:auth`: rotas, contratos, erros, entradas, redirects, PKCE, separação client/server e ausência de migrations.
 - `test:brapi`: integração real, dependente de token e rede.
 - `next build`: compilação e geração das rotas.

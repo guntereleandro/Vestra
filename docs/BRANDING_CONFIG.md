@@ -30,11 +30,13 @@ Campos indefinidos permanecem vazios. URLs públicas inválidas ou ausentes rece
 | `NEXT_PUBLIC_SITE_URL` | pública | site/metadata base, com fallback para app |
 | `NEXT_PUBLIC_APP_ENV` | pública | `development`, `preview`, `production` ou `test` |
 | `BRAPI_TOKEN` | privada | provider BRAPI no servidor |
-| `SUPABASE_URL` | privada | preparada, não usada antes da CORE-03 |
-| `SUPABASE_ANON_KEY` | privada | preparada, não usada antes da CORE-03 |
-| `SUPABASE_SERVICE_ROLE_KEY` | privada | preparada, não usada antes da CORE-03 |
+| `NEXT_PUBLIC_SUPABASE_URL` | pública | URL do projeto usada pelos clientes Browser e Server |
+| `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY` | pública | chave recomendada para Browser e Server |
+| `NEXT_PUBLIC_SUPABASE_ANON_KEY` | pública | fallback legado temporário |
+| `SUPABASE_SECRET_KEY` | privada | chave administrativa opcional, somente servidor |
+| `SUPABASE_SERVICE_ROLE_KEY` | privada | fallback administrativo legado, somente servidor |
 
-Nenhuma credencial Supabase foi implementada. `envConfig.js` importa `server-only`, não retorna valores em diagnósticos e não pode ser importado por componentes clientes.
+As credenciais não são armazenadas no repositório. `envConfig.js` importa `server-only`, não retorna valores em diagnósticos e não pode ser importado por componentes clientes.
 
 ## Ocorrências por classificação
 

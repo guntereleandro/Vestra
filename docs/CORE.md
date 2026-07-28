@@ -70,3 +70,6 @@ Diagnósticos, comportamento, perfil, estratégia, objetivos, performance avanç
 - `CORE_ROADMAP.md`: ordem das entregas.
 - `DATABASE_PLAN.md`: modelo conceitual e segurança.
 - `BRANDING_CONFIG.md`: preparação para troca de marca.
+- `SUPABASE_INFRASTRUCTURE.md`: clientes, ambiente, providers e fronteiras de segurança.
+- `AUTHENTICATION.md`: fluxos de acesso, sessão, callback e configuração do Auth.
+- `SECURITY_AUDIT.md`: advisories, alcance e decisões sobre dependências.

@@ -55,7 +55,19 @@ As fontes oficiais de governança são:
 
 `lib/repositories` define contratos para perfil, carteiras, operacoes, proventos, cotacoes, snapshots e preferencias. Todos os metodos publicos retornam `Promise`.
 
-`lib/services` e a entrada dos hooks e componentes. O provider atual continua usando as mesmas chaves do `localStorage`; nenhum Supabase, banco ou autenticacao foi introduzido. Consulte `docs/REPOSITORIES.md`.
+`lib/services` e a entrada dos hooks e componentes. O provider de dados continua usando as mesmas chaves do `localStorage`; Supabase Auth não altera a persistência financeira. Consulte `docs/REPOSITORIES.md`.
+
+## Infraestrutura Supabase
+
+A CORE-03 instalou somente os SDKs oficiais `@supabase/supabase-js` e `@supabase/ssr` e preparou clientes separados para navegador, servidor e administração. A configuração privada passa por `envConfig`, e a secret key administrativa é server-only.
+
+O provider Supabase está registrado apenas com sete adapters stub que retornam `NOT_IMPLEMENTED`. O provider Local continua ativo; não existem tabelas, SQL, sincronização ou migração de dados. Consulte `docs/SUPABASE_INFRASTRUCTURE.md`.
+
+## Autenticação
+
+A CORE-04 implementa cadastro, confirmação de e-mail, login, logout, sessão SSR, recuperação e atualização de senha com Supabase Auth. `/conta` é a única rota protegida; as áreas financeiras permanecem acessíveis e locais.
+
+Auth User não é Profile de negócio. Criar uma conta não envia, associa ou remove operações, carteira, preferências ou snapshots. Consulte `docs/AUTHENTICATION.md`.
 
 ## Camada de mercado
 
@@ -103,11 +115,14 @@ Copie `.env.example` para `.env.local` e preencha somente os valores necessário
 - `NEXT_PUBLIC_APP_URL`
 - `NEXT_PUBLIC_SITE_URL`
 - `NEXT_PUBLIC_APP_ENV`
+- `NEXT_PUBLIC_SUPABASE_URL`
+- `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY` ou `NEXT_PUBLIC_SUPABASE_ANON_KEY`
 
 As variáveis privadas preparadas são:
 
 - `BRAPI_TOKEN`, usado atualmente apenas no servidor;
-- `SUPABASE_URL`, `SUPABASE_ANON_KEY` e `SUPABASE_SERVICE_ROLE_KEY`, reservadas para a CORE-03 e ainda sem uso.
+- `SUPABASE_SECRET_KEY`, opcional e reservada ao Admin Client server-only;
+- `SUPABASE_SERVICE_ROLE_KEY`, aceita temporariamente como compatibilidade com a chave administrativa legada.
 
 Nunca adicione prefixo `NEXT_PUBLIC_` a tokens ou chaves privadas. Valores ausentes continuam opcionais nesta etapa.
 
@@ -120,6 +135,8 @@ Na Vercel:
 5. Faça novo deploy.
 
 `lib/config/envConfig.js` é server-only. Componentes clientes não devem importá-lo.
+
+Variáveis Supabase ausentes não impedem o funcionamento local nem o build. Formulários de Auth exibem indisponibilidade controlada nesse estado.
 
 ## LocalStorage
 
@@ -177,6 +194,8 @@ npm run test:market
 node scripts/validate-diagnostics.mjs
 npm run test:knowledge
 npm run test:repositories
+npm run test:supabase
+npm run test:auth
 npm run build
 ```
 

@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { BarChart3, BookOpen, Bot, Calculator, ChartNoAxesCombined, ClipboardList, Coins, Goal, Landmark, LayoutDashboard, Menu, Search, Settings, WalletCards, X } from "lucide-react";
+import { BarChart3, BookOpen, Bot, Calculator, ChartNoAxesCombined, ClipboardList, Coins, Goal, Landmark, LayoutDashboard, Menu, Search, Settings, UserRound, WalletCards, X } from "lucide-react";
 import { useEffect, useState } from "react";
 import CommandPalette from "@/components/command/CommandPalette";
 import { getContextualHelpHref } from "@/lib/knowledge/knowledgeService";
@@ -21,6 +21,7 @@ const navigation = [
   { href: "/ia", label: "IA", icon: Bot },
   { href: "/conhecimento", label: "Central de Conhecimento", icon: BookOpen },
   { href: "/configuracoes", label: "Configurações", icon: Settings },
+  { href: "/conta", label: "Conta", icon: UserRound },
 ];
 
 function Brand() {

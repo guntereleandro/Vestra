@@ -2,6 +2,8 @@
 
 Respostas sobre dados locais, operações, carteira, mercado, objetivos, diagnósticos, performance, perfil, estratégia e backup.
 
+Também cobre conta e acesso: criar uma conta não envia a carteira, e sair não apaga operações ou preferências locais.
+
 Os artigos podem ser abertos pelos cards, pela pesquisa, pela ajuda contextual ou pela Command Palette. Cada resultado leva à URL individual correspondente.
 
 Nesta versão, o conteúdo vem do repositório local. A arquitetura está preparada para provider remoto, mas nenhuma chamada externa ou painel administrativo foi habilitado.

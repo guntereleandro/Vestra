@@ -12,15 +12,18 @@
     "test:performance": "node scripts/validate-performance.mjs",
     "test:knowledge": "node scripts/validate-knowledge.mjs",
     "test:repositories": "node scripts/validate-repositories.mjs",
+    "test:supabase": "node scripts/validate-supabase.mjs",
+    "test:auth": "node scripts/validate-auth.mjs",
     "test:brapi": "node --use-system-ca scripts/validate-brapi-integration.mjs"
   },
   "dependencies": {
+    "@supabase/ssr": "^0.12.3",
+    "@supabase/supabase-js": "^2.110.9",
     "@tailwindcss/postcss": "latest",
     "lucide-react": "latest",
     "next": "latest",
     "react": "latest",
     "react-dom": "latest",
     "tailwindcss": "latest"
-  },
-  "devDependencies": {}
+  }
 }

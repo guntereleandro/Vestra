@@ -28,27 +28,33 @@ Aceite: mesmos dados e cálculos antes/depois; inventário coberto por testes; b
 
 Status: concluída em 2026-07-25. Sete contratos assíncronos, adapters locais, registry, serviços e validação isolada foram introduzidos sem novas chaves ou alteração do backup.
 
-## CORE-03 — Supabase e schema inicial
+## CORE-03 — Infraestrutura Supabase
 
 Dependência: CORE-02.
 
-Entrega: cliente/server clients, migrations versionadas, tabelas mínimas de perfis, carteiras, membros, ativos e operações, políticas RLS e ambientes.
+Entrega: SDKs oficiais, clientes Browser/Server/Admin, configuração server-only, helpers, Proxy não bloqueante, adapters stub e registry preparado para múltiplos providers.
 
-Aceite: zero segredo no cliente; testes negativos de RLS; schema reproduzível; sem migração automática de dados reais.
+Aceite: zero segredo no cliente; variáveis ausentes não quebram build; stubs retornam `NOT_IMPLEMENTED`; Provider Local permanece ativo; sem tabela, autenticação ou migração.
+
+Status: concluída em 2026-07-27. A infraestrutura foi preparada sem conexão remota, SQL, tabelas, RLS, login, sincronização ou alteração de dados.
+
+Justificativa do ajuste: a especificação aprovada da CORE-03 restringiu a etapa à infraestrutura. Para preservar entregas pequenas e permitir políticas RLS testáveis junto ao domínio real, o schema foi distribuído entre CORE-04 (perfil), CORE-05 (carteiras e membros) e CORE-06 (ativos e operações).
 
 ## CORE-04 — Autenticação e perfis
 
 Dependência: CORE-03.
 
-Entrega: login, logout, sessão, recuperação e perfil mínimo; estados de carregamento/erro.
+Entrega: conexão do ambiente Supabase, login, logout, confirmação, recuperação, sessão SSR, callback PKCE e proteção incremental de `/conta`. Sem tabela de negócio; operações e carteira permanecem locais.
 
-Aceite: rotas privadas protegidas no servidor e cliente; sessão expirada tratada; perfil isolado por usuário.
+Aceite: `/conta` protegida por identidade verificada; demais rotas compatíveis; sessão expirada tratada; nenhum dado local associado ao Auth User.
+
+Status: implementada em 2026-07-27. Validação ponta a ponta depende das credenciais e configuração de um projeto Supabase Development.
 
 ## CORE-05 — Carteiras e permissões
 
 Dependência: CORE-04.
 
-Entrega: carteira padrão, seleção e papéis owner/editor/viewer.
+Entrega: schema de Profile, carteiras e membros com RLS; adaptação de ProfilesRepository; carteira padrão, seleção e papéis owner/editor/viewer.
 
 Aceite: isolamento comprovado entre usuários; viewer não escreve; troca de carteira não mistura estado.
 
@@ -56,7 +62,7 @@ Aceite: isolamento comprovado entre usuários; viewer não escreve; troca de car
 
 Dependência: CORE-05.
 
-Entrega: CRUD remoto de operações, validação de domínio, auditoria mínima e compatibilidade com a engine.
+Entrega: schema mínimo de ativos e operações com RLS, CRUD remoto, validação de domínio, auditoria mínima e compatibilidade com a engine.
 
 Aceite: criar/editar/excluir é consistente; falhas não somem da UI; regressão de preço médio, saldo e proventos coberta; sem apagar dados locais.
 

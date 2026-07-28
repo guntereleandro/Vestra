@@ -240,3 +240,48 @@ O Core evolui em etapas pequenas, ordenadas e aprovadas. Cada etapa deve manter 
 - Migrar todos os domínios de uma vez: rejeitada por ampliar a superfície de regressão.
 - Continuar adicionando funcionalidades sem sequência: rejeitada por não construir a fundação necessária ao uso diário.
 
+## ADR-011 — Autenticação independente dos dados locais
+
+### Contexto
+
+A identidade remota passa a existir antes da migração de carteira, operações e preferências. Associar dados locais automaticamente a uma conta criaria risco de envio ou mistura sem consentimento.
+
+### Decisão
+
+Supabase Auth identifica a pessoa, mas não altera o provider de dados. Login, cadastro e logout não selecionam repositories remotos, não apagam `localStorage` e não associam dados financeiros ao Auth User.
+
+### Consequências
+
+- Uma conta autenticada pode continuar usando a carteira local existente.
+- Auth User e futuro Profile de negócio permanecem conceitos distintos.
+- Sincronização exigirá fluxo próprio, explícito e reconciliável.
+- Logout remove a sessão de autenticação, não os dados financeiros locais.
+
+### Alternativas consideradas
+
+- Migrar dados automaticamente no primeiro login: rejeitada por risco de perda e associação indevida.
+- Tornar autenticação obrigatória para toda a aplicação: adiada até os dados protegidos existirem remotamente.
+- Criar `public.profiles` junto ao Auth: adiada para uma etapa com schema e RLS testáveis.
+
+## ADR-012 — Identidade verificada no servidor
+
+### Contexto
+
+Cookies podem conter sessão expirada ou manipulada. Ler apenas a presença de um cookie ou confiar em `getSession()` não é suficiente para proteger uma rota.
+
+### Decisão
+
+O Proxy usa `getClaims()` para validar e renovar a identidade; páginas protegidas usam `getUser()` quando precisam do registro atual. `getSession()` não autoriza rotas ou dados.
+
+### Consequências
+
+- `/conta` recebe proteção incremental sem bloquear o restante da aplicação.
+- Cookies renovados precisam ser preservados na request e na response.
+- Falha de validação equivale a estado não autenticado.
+- A checagem de autorização futura continuará próxima dos dados, além do Proxy.
+
+### Alternativas consideradas
+
+- Confiar apenas na existência do cookie: rejeitada por não validar identidade.
+- Usar somente `getSession()` no servidor: rejeitada por confiar em dados lidos do storage.
+- Proteger globalmente todas as rotas: rejeitada porque os dados ainda permanecem locais.

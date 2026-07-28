@@ -1,6 +1,6 @@
 # Repositórios assíncronos
 
-Status: implementado na CORE-02 com provider local. Supabase não faz parte desta etapa.
+Status: provider local implementado na CORE-02; infraestrutura Supabase registrada como stub na CORE-03.
 
 ## Objetivo
 
@@ -20,7 +20,7 @@ Todos os métodos públicos dos sete contratos retornam `Promise`, inclusive no 
 
 ## Registry
 
-`lib/repositories/repositoryRegistry.js` é o ponto único de resolução. O provider atual é `local`. Um provider diferente resulta em erro `UNSUPPORTED_OPERATION` ou `REPOSITORY_NOT_INITIALIZED`; não existe fallback silencioso para Supabase.
+`lib/repositories/repositoryRegistry.js` é o ponto único de resolução. Ele conhece os providers `local` e `supabase`, mas o provider inicial e único consumido pela aplicação continua sendo `local`. Providers desconhecidos resultam em `UNSUPPORTED_OPERATION`; não existe fallback silencioso.
 
 Componentes e hooks não importam adapters locais. `localCoreDataRepository` é um gateway interno adicional usado para preservar a gravação conjunta de operações, catálogo mestre e cotações sem criar um oitavo contrato público.
 
@@ -150,9 +150,13 @@ A causa técnica pode permanecer em `error.cause`, sem ser encaminhada à interf
 - normalizadores e engine existentes são reutilizados;
 - o validador usa `localStorage` em memória e não acessa dados reais.
 
-## Transição para Supabase
+## Infraestrutura Supabase
 
-Na CORE-03, adapters Supabase deverão implementar os mesmos contratos. O registry será o único ponto de seleção. A troca não deve alterar componentes nem mover regras financeiras ao banco. IDs locais serão mapeados durante a migração assistida posterior.
+`lib/repositories/supabase` contém sete adapters que implementam a forma dos contratos assíncronos. Nesta etapa, todos os métodos lançam erro explícito com código `NOT_IMPLEMENTED`; não existe SQL, tabela, sincronização ou migração.
+
+O registry é o único ponto de seleção. Nenhum consumidor seleciona `supabase`, e o validador sempre restaura `local` após testar os stubs. A implementação remota futura não deve alterar componentes nem mover regras financeiras ao banco. IDs locais serão mapeados somente durante a migração assistida posterior.
+
+Veja `docs/SUPABASE_INFRASTRUCTURE.md`.
 
 ## Limitações
 
@@ -160,6 +164,6 @@ Na CORE-03, adapters Supabase deverão implementar os mesmos contratos. O regist
 - perfil e metadados da carteira não persistem entre reloads;
 - o storage legado ainda é síncrono internamente;
 - assets master ainda usa o gateway compatível, sem contrato próprio;
-- não há concorrência multiaba, sessão, autenticação ou resolução de conflitos;
+- não há concorrência multiaba ou resolução de conflitos; autenticação existe separadamente e não participa dos contratos de dados;
 - snapshots continuam sendo disparados pelo cliente até a CORE-09.
-
+- adapters Supabase ainda não consultam ou persistem dados.

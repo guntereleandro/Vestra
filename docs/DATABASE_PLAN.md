@@ -1,6 +1,17 @@
 # Plano conceitual de banco
 
-Plano preliminar da CORE-00. Não contém SQL e não autoriza implementação.
+Plano preliminar da CORE-00, atualizado com a fronteira estrutural da CORE-03. Não contém SQL e não autoriza implementação.
+
+## Estado da infraestrutura
+
+A CORE-03 instalou os SDKs oficiais, separou clientes Browser/Server/Admin, centralizou a validação de ambiente e registrou adapters Supabase como stubs. Nenhum projeto remoto foi conectado, nenhuma migration foi criada e nenhuma tabela ou política RLS existe no repositório.
+
+O schema será introduzido incrementalmente com o domínio que o utiliza:
+
+- autenticação sem tabela de negócio na CORE-04;
+- perfil, carteiras e associação de membros na CORE-05;
+- ativos e operações na CORE-06;
+- demais entidades nas respectivas etapas do roadmap.
 
 ## Princípios
 
@@ -85,14 +96,15 @@ As políticas devem ser testadas com usuário A, usuário B, viewer, editor, own
 ## Estratégia de migração
 
 1. Concluído na CORE-02: contratos assíncronos, registry, serviços e adapter local compatível.
-2. Introduzir adapter Supabase sem alterar cálculos.
-3. Migrar autenticação/perfis e seleção de carteira.
-4. Fazer operações remotas serem a fonte de verdade, com tratamento explícito de loading, conflito e erro.
-5. Recalcular carteira pela engine existente.
-6. Migrar cotações manuais e snapshots.
-7. Importar dados locais com preview, confirmação, idempotência e relatório.
-8. Manter cópia local como fallback controlado até a validação.
-9. Desativar escrita local de cada domínio apenas após reconciliação.
+2. Concluído na CORE-03: introduzir infraestrutura e stubs Supabase sem alterar cálculos ou dados.
+3. Concluído parcialmente na CORE-04: ativar autenticação sem Profile ou dados remotos.
+4. Criar Profile, carteiras e permissões com RLS antes de selecionar persistência remota.
+5. Fazer operações remotas serem a fonte de verdade, com tratamento explícito de loading, conflito e erro.
+6. Recalcular carteira pela engine existente.
+7. Migrar cotações manuais e snapshots.
+8. Importar dados locais com preview, confirmação, idempotência e relatório.
+9. Manter cópia local como fallback controlado até a validação.
+10. Desativar escrita local de cada domínio apenas após reconciliação.
 
 Os contratos atuais de profiles, portfolios, operations, dividends, quotes, portfolioSnapshots e preferences são a fronteira da CORE-03. O adapter Supabase deverá respeitar erros, assinaturas e isolamento por `portfolioId`; o gateway interno de assets master deverá ser substituído ou formalizado antes de remover o provider local.
 
