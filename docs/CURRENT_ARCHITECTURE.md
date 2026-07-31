@@ -1,10 +1,10 @@
 # Arquitetura atual
 
-Estado atualizado na CORE-04. Este documento descreve o repositório existente; não é a arquitetura-alvo.
+Estado atualizado na CORE-05. Este documento descreve o repositório existente; não é a arquitetura-alvo.
 
 ## Visão geral
 
-Aplicação Next.js com App Router, React e JavaScript. Dados essenciais usam serviços e contratos assíncronos com adapter local. Supabase Auth é opcional e funcional quando configurado, sem alterar a persistência financeira. Cálculos determinísticos vivem em `lib/engine`; mercado passa por `lib/market` e rotas internas.
+Aplicação Next.js com App Router, React e JavaScript. Dados essenciais usam serviços e oito contratos assíncronos. O Provider Local permanece como fonte operacional da interface; Supabase Auth e os adapters remotos da CORE-06 mantêm uma cópia não destrutiva de ativos, cotações e preferências da carteira ativa. Cálculos determinísticos vivem em `lib/engine`; mercado passa por `lib/market` e rotas internas.
 
 ```text
 Páginas App Router
@@ -21,10 +21,14 @@ Páginas App Router
 
 Supabase Auth opcional:
   lib/supabase -> clients browser/server/admin
-  repositoryRegistry -> adapters Supabase stub -> NOT_IMPLEMENTED
+  profiles/portfolios -> repositories implementados
+  assets/quotes/preferences -> tabelas CORE-06 com RLS
+  operations -> tabela CORE-07; uso manual em /conta
+  dividends/snapshots -> NOT_IMPLEMENTED
+  PostgreSQL -> profiles, portfolios, portfolio_members + RLS
 ```
 
-Não existem tabelas de negócio Supabase, sincronização, jobs, filas ou observabilidade de produção.
+O schema de identidade/autorização e o primeiro domínio persistente estão aplicados no Supabase Development. A sincronização CORE-06 é cliente, autenticada, idempotente e não destrutiva; ainda não há jobs, filas ou observabilidade de produção.
 
 ## Organização das pastas
 
@@ -34,9 +38,10 @@ Não existem tabelas de negócio Supabase, sincronização, jobs, filas ou obser
 - `lib/config/`: identidade pública, ambiente público, ambiente privado server-only e flags operacionais.
 - `lib/data/`: contratos, normalização e persistência local.
 - `lib/repositories/`: contratos assíncronos, erros, registry e adapters locais.
-- `lib/repositories/supabase/`: sete adapters estruturais que respeitam os contratos e lançam `NOT_IMPLEMENTED`.
+- `lib/repositories/supabase/`: Profiles e Portfolios implementados; cinco adapters ainda lançam `NOT_IMPLEMENTED`.
 - `lib/services/`: coordenação de operações, cotações, snapshots, preferências e dados do portfólio.
-- `lib/supabase/`: configuração server-only, clientes por contexto e helpers ainda sem consumidores.
+- `lib/supabase/`: configuração server-only, clientes por contexto e helpers de Auth.
+- `supabase/`: configuração CLI, três migrations versionadas e testes pgTAP de schema/RLS.
 - `lib/auth/`: serviço de Auth, validação, redirects, erros e acesso server-only ao usuário.
 - `lib/engine/`: cálculos financeiros, diagnósticos e performance.
 - `lib/dashboard/`: experiência diária, fatos, recordes e objetivos.
@@ -108,7 +113,7 @@ O backup continua direto na camada de dados por ser transversal ao formato legad
 
 ### Repositórios
 
-Sete contratos públicos cobrem profiles, portfolios, operations, dividends, quotes, portfolioSnapshots e preferences. `repositoryRegistry.js` conhece `local` e `supabase`, mas inicia e permanece em `local` nos fluxos da aplicação. Os adapters Supabase são stubs explícitos. Os IDs locais são `local-profile` e `local-default-portfolio`. Veja `docs/REPOSITORIES.md`.
+Oito contratos públicos cobrem profiles, portfolios, assets, operations, dividends, quotes, portfolioSnapshots e preferences. O registry inicia em `local`. Profiles, portfolios, assets, operations, quotes e preferences possuem adapters remotos; dividends e portfolioSnapshots continuam como stubs. Operations remoto é usado somente pela importação/reconciliação autenticada.
 
 ### Navegação e Command Palette
 
@@ -118,12 +123,14 @@ Sete contratos públicos cobrem profiles, portfolios, operations, dividends, quo
 
 ### Operação até carteira
 
-1. Modal produz um registro.
+1. Modal produz um registro com UUID.
 2. `normalizeOperations` normaliza e recalcula `totalValue`.
 3. Estado React é persistido por `useInvestmentData`.
 4. `calculatePositions` reprocessa todo o histórico.
 5. `calculatePortfolioTotals`, dashboard, diagnósticos e performance consomem resultados derivados.
 6. Um snapshot diário pode ser atualizado.
+
+A área `/conta` compara Local e Supabase, baixa backup e importa manualmente somente UUIDs seguros. Ela não troca a origem usada pela engine.
 
 ### Cotação
 
@@ -165,5 +172,7 @@ Produção: Next, React, React DOM, Tailwind/PostCSS, `lucide-react`, `@supabase
 - `test:knowledge`: contrato, conteúdo e rotas do repositório local.
 - `test:supabase`: clientes, configuração, imports, segurança, stubs e provider ativo.
 - `test:auth`: rotas, contratos, erros, entradas, redirects, PKCE, separação client/server e ausência de migrations.
+- `test:database-schema`: migrations, schema, RLS, funções, privilégios e ausência de operações/proventos/snapshots remotos.
+- `test:database-sdk`: validação controlada dos repositories e RLS pela Data API.
 - `test:brapi`: integração real, dependente de token e rede.
 - `next build`: compilação e geração das rotas.

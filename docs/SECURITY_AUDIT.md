@@ -1,5 +1,18 @@
 # Auditoria de Segurança de Dependências
 
+## CORE-07 — Operações
+
+- `portfolio_operations` possui RLS explícito e nenhum grant para anon/public.
+- Owner/editor escrevem; viewer lê; não membros não observam linhas.
+- `created_by` deriva da sessão e identidade/carteira/autoria são imutáveis.
+- O Browser Client não recebe secret key; service role aparece somente em testes server-only e limpeza.
+- Importação e reconciliação não registram conteúdo financeiro ou credenciais.
+- Nenhuma tabela de snapshots, histórico ou proventos foi criada.
+
+## Relatório npm — 2026-07-31
+
+`npm audit` reportou três vulnerabilidades de severidade alta em dependências transitivas `postcss` e `sharp` trazidas pelo Next. A correção automática sugerida exige `--force` e propõe uma mudança incompatível para Next 9.3.3; por isso nenhuma dependência foi alterada nesta etapa. O risco permanece registrado para atualização controlada posterior.
+
 Data: 2026-07-27.
 
 Comando: `npm audit --omit=dev --json`. Nenhum `npm audit fix --force` foi executado.
@@ -35,3 +48,29 @@ A correção recomendada é uma entrega de segurança pequena antes de qualquer 
 3. todos os validadores;
 4. teste manual das rotas de autenticação e mercado;
 5. lint e build.
+## CORE-05 — Banco e autorização
+
+- RLS habilitado nas três tabelas públicas.
+- Nenhum privilégio ou policy para `anon`.
+- `authenticated` recebe apenas operações necessárias.
+- Membership e ownership derivam de `auth.uid()`, nunca de profile ou input arbitrário.
+- Helpers `SECURITY DEFINER` são mínimos, booleanos e usam `search_path = ''`.
+- RPC atômica define criador e owner pela sessão.
+- Trigger impede remoção ou rebaixamento do último owner.
+- Migrations, seed e testes não contêm usuários reais, senhas ou tokens.
+- Admin Client não participa dos repositories normais.
+
+Evidência local: 50 testes pgTAP positivos e negativos aprovados.
+
+Evidência remota em 2026-07-30:
+
+- três migrations registradas no Development;
+- dump sanitizado confirmou tabelas, constraints, funções, triggers, índices, RLS, policies e grants;
+- SDK confirmou owner/editor/viewer, isolamento, RPC, último owner e bloqueio anon;
+- bundle cliente permanece sem secret key ou Admin Client;
+- contas, carteiras e credenciais temporárias de teste foram removidas;
+- nenhum dado financeiro foi migrado.
+
+## Relatório npm de 2026-07-30
+
+`npm audit --json` reportou 3 vulnerabilidades de severidade alta: `next` como dependência direta e `postcss`/`sharp` transitivas. A sugestão automática indica downgrade major incompatível do Next.js, portanto nenhuma correção automática ou `--force` foi aplicada nesta etapa. O risco permanece registrado para atualização controlada e reteste separado.

@@ -1,0 +1,2 @@
+-- Intentionally empty.
+-- Authentication users and personal data must be created through controlled local tests.

@@ -44,3 +44,5 @@ Thumbs.db
 # Metadados locais das ferramentas de desenvolvimento
 /.agents
 /.codex
+/supabase/.temp/
+/supabase/.branches/

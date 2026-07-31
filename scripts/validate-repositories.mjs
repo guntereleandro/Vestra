@@ -47,13 +47,15 @@ const [
   { repositoryContracts, validateRepositoryContract },
   { REPOSITORY_ERROR_CODES, RepositoryError },
   { LOCAL_DEFAULT_PORTFOLIO_ID, LOCAL_PROFILE_ID },
-  { STORAGE_KEYS, clearVestraData, createBackup, restoreBackup, validateBackup },
+  { STORAGE_KEYS, clearVestraData, createBackup, readLocalData, restoreBackup, validateBackup },
+  { isOperationUuid },
 ] = await Promise.all([
   import("../lib/repositories/repositoryRegistry.js"),
   import("../lib/repositories/contracts/index.js"),
   import("../lib/repositories/repositoryErrors.js"),
   import("../lib/repositories/repositoryTypes.js"),
   import("../lib/data/storage.js"),
+  import("../lib/data/operations.js"),
 ]);
 
 const repositories = getRepositories();
@@ -92,8 +94,20 @@ const activePortfolio = await repositories.portfolios.getActive();
 assert(portfolios.length === 1 && activePortfolio.id === LOCAL_DEFAULT_PORTFOLIO_ID, "Carteira padrão local ausente.");
 await repositories.portfolios.setActive(LOCAL_DEFAULT_PORTFOLIO_ID);
 
+const assetInput = {
+  portfolioId: LOCAL_DEFAULT_PORTFOLIO_ID,
+  ticker: "TEST3",
+  name: "Ativo de teste",
+  type: "Ação",
+  source: "validation",
+};
+const assetBefore = JSON.stringify(assetInput);
+await repositories.assets.upsert(assetInput);
+assert(JSON.stringify(assetInput) === assetBefore, "Upsert de ativo mutou a entrada.");
+assert((await repositories.assets.getByTicker(LOCAL_DEFAULT_PORTFOLIO_ID, "TEST3")).name === "Ativo de teste", "CRUD de ativo falhou.");
+
 const operationInput = {
-  id: "repository-buy-1",
+  id: "10000000-0000-4000-8000-000000000001",
   ticker: "TEST3",
   assetName: "Ativo de teste",
   assetType: "Ação",
@@ -114,7 +128,7 @@ await repositories.operations.update(operationInput.id, { ...operationInput, qua
 assert((await repositories.operations.getById(operationInput.id)).quantity === 12, "Update de operação falhou.");
 
 const dividendInput = {
-  id: "repository-income-1",
+  id: "10000000-0000-4000-8000-000000000002",
   ticker: "TEST3",
   assetName: "Ativo de teste",
   assetType: "Ação",
@@ -218,4 +232,20 @@ assert((await repositories.portfolioSnapshots.listByPortfolio(LOCAL_DEFAULT_PORT
 clearVestraData();
 assert(localStorage.keys().filter((key) => allowedKeys.has(key)).length === 0, "Limpeza atual não removeu as chaves persistentes.");
 
-console.log("Repositórios validados: 7 contratos assíncronos, adapter local isolado, CRUD, backup e chaves legadas preservados.");
+localStorage.setItem(STORAGE_KEYS.operations, JSON.stringify([{
+  id: "legacy-operation",
+  ticker: "LEG3",
+  assetName: "Legado",
+  assetType: "Ação",
+  operationType: "COMPRA",
+  date: "2026-01-01",
+  quantity: 1,
+  unitPrice: 10,
+  fees: 0,
+}]));
+const migratedId = readLocalData().operations[0].id;
+assert(isOperationUuid(migratedId), "ID legado não foi migrado para UUID.");
+assert(readLocalData().operations[0].id === migratedId, "Migração de UUID não foi idempotente.");
+clearVestraData();
+
+console.log("Repositórios validados: 8 contratos assíncronos, adapter local isolado, CRUD, backup, UUID e chaves legadas preservados.");

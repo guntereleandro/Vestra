@@ -73,3 +73,6 @@ Diagnósticos, comportamento, perfil, estratégia, objetivos, performance avanç
 - `SUPABASE_INFRASTRUCTURE.md`: clientes, ambiente, providers e fronteiras de segurança.
 - `AUTHENTICATION.md`: fluxos de acesso, sessão, callback e configuração do Auth.
 - `SECURITY_AUDIT.md`: advisories, alcance e decisões sobre dependências.
+- `DATABASE_SCHEMA.md`: schema efetivamente versionado por domínio.
+- `RLS_POLICIES.md`: autorização, policies e privilégios SQL.
+- `DATABASE_MIGRATIONS.md`: fluxo local, Development e Production.

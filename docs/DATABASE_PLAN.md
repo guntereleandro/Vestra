@@ -1,10 +1,10 @@
 # Plano conceitual de banco
 
-Plano preliminar da CORE-00, atualizado com a fronteira estrutural da CORE-03. Não contém SQL e não autoriza implementação.
+Plano iniciado na CORE-00 e atualizado pela implementação incremental da CORE-05. O schema efetivo está em `supabase/migrations/` e descrito em `DATABASE_SCHEMA.md`.
 
 ## Estado da infraestrutura
 
-A CORE-03 instalou os SDKs oficiais, separou clientes Browser/Server/Admin, centralizou a validação de ambiente e registrou adapters Supabase como stubs. Nenhum projeto remoto foi conectado, nenhuma migration foi criada e nenhuma tabela ou política RLS existe no repositório.
+A CORE-05 adicionou migrations locais reproduzíveis para `profiles`, `portfolios` e `portfolio_members`, com RLS, privilégios mínimos e testes pgTAP. A aplicação no projeto Development remoto permanece pendente de autenticação da CLI.
 
 O schema será introduzido incrementalmente com o domínio que o utiliza:
 

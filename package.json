@@ -14,6 +14,11 @@
     "test:repositories": "node scripts/validate-repositories.mjs",
     "test:supabase": "node scripts/validate-supabase.mjs",
     "test:auth": "node scripts/validate-auth.mjs",
+    "test:database-schema": "node scripts/validate-database-schema.mjs",
+    "test:database": "supabase test db",
+    "test:database-sdk": "node scripts/validate-database-sdk.mjs",
+    "test:financial-regression": "node scripts/validate-financial-regression.mjs",
+    "test:operations-benchmark": "node scripts/benchmark-operations.mjs",
     "test:brapi": "node --use-system-ca scripts/validate-brapi-integration.mjs"
   },
   "dependencies": {
@@ -25,5 +30,8 @@
     "react": "latest",
     "react-dom": "latest",
     "tailwindcss": "latest"
+  },
+  "devDependencies": {
+    "supabase": "^2.110.0"
   }
 }

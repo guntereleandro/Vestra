@@ -1,12 +1,28 @@
 # Infraestrutura Supabase
 
-Status: infraestrutura criada na CORE-03; Auth ativado na CORE-04 quando variáveis públicas estão configuradas.
+## Estado CORE-06
+
+O ambiente Development contém `portfolio_assets`, `portfolio_asset_quotes`, `portfolio_preferences` e `user_portfolio_preferences`. Os adapters usam apenas o Browser Client autenticado e dependem de RLS; nenhum segredo administrativo participa do bundle cliente.
+
+O Provider Local continua selecionado no registry. `coreDomainSyncService` realiza upserts não destrutivos após a conta carregar uma carteira ativa. Operações, proventos e snapshots permanecem fora do Supabase.
+
+Status: infraestrutura criada na CORE-03; Auth ativado na CORE-04; identidade na CORE-05; primeiro domínio persistente na CORE-06.
+
+## Estado CORE-06
+
+O ambiente Development contém `portfolio_assets`, `portfolio_asset_quotes`, `portfolio_preferences` e `user_portfolio_preferences`. Os adapters usam apenas o Browser Client autenticado e dependem de RLS; nenhum segredo administrativo participa do bundle cliente.
+
+O Provider Local continua selecionado no registry. `coreDomainSyncService` realiza upserts não destrutivos após a conta carregar uma carteira ativa. Operações, proventos e snapshots permanecem fora do Supabase.
 
 ## Escopo
 
 A CORE-03 introduziu os SDKs oficiais, clientes por contexto, configuração server-only, helpers, adapters stub e seleção multi-provider. A CORE-04 passou a usar Browser/Server Client para Supabase Auth e o Proxy para renovação de cookies. Não existem tabelas, SQL, migrations, policies de negócio, sincronização ou migração de dados.
 
-O provider ativo continua sendo `local`.
+O provider financeiro ativo continua sendo `local`. A página `/conta` acessa diretamente os repositories remotos de Profiles e Portfolios sem selecionar Supabase globalmente.
+
+## Schema CORE-05
+
+`supabase/` contém configuração local, migration e testes pgTAP. `profiles`, `portfolios` e `portfolio_members` possuem RLS e privilégios mínimos. A criação de carteira usa RPC atômica; nenhuma tabela financeira foi criada. Consulte `DATABASE_SCHEMA.md`, `RLS_POLICIES.md` e `DATABASE_MIGRATIONS.md`.
 
 ## Fluxo atual
 
@@ -25,8 +41,8 @@ Autenticação opcional
     -> Admin Client (NEXT_PUBLIC_SUPABASE_URL + SUPABASE_SECRET_KEY)
   repositoryRegistry
     -> provider supabase (registrado)
-      -> 7 adapters stub
-        -> erro NOT_IMPLEMENTED
+      -> 6 adapters funcionais
+      -> 2 adapters com erro NOT_IMPLEMENTED
 ```
 
 ## Organização
@@ -114,7 +130,7 @@ O Admin Client é reservado a operações confiáveis no servidor. Nunca deve se
 
 O registry reconhece `local` e `supabase`. O valor inicial permanece `local`; nenhum arquivo de aplicação seleciona `supabase`.
 
-Os sete adapters Supabase implementam formalmente os métodos dos contratos assíncronos, mas cada método lança `SupabaseRepositoryNotImplementedError` com código `NOT_IMPLEMENTED`. Não há consulta SQL, acesso remoto ou mutação local.
+Os oito adapters Supabase implementam os contratos assíncronos. Profiles, portfolios, assets, operations, quotes e preferences consultam o schema remoto sob RLS. Dividends e portfolioSnapshots lançam `SupabaseRepositoryNotImplementedError` com código `NOT_IMPLEMENTED`.
 
 Selecionar um provider diferente continua sendo uma ação explícita. Não há fallback silencioso entre gravações locais e remotas.
 
@@ -150,8 +166,8 @@ Ele protege somente `/conta`, redireciona pessoas autenticadas para fora de `/en
 - comportamento seguro quando variáveis estão ausentes;
 - leitura centralizada do ambiente;
 - ausência de imports privados em módulos Client;
-- registro e contratos dos sete adapters;
-- erro `NOT_IMPLEMENTED`;
+- registro e contratos dos oito adapters;
+- erro `NOT_IMPLEMENTED` apenas nos dois domínios adiados;
 - ausência de logging na infraestrutura;
 - Proxy mínimo;
 - Provider Local ativo antes e depois do teste.

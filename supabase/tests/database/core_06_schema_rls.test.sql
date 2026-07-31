@@ -1,0 +1,30 @@
+begin;
+select plan(24);
+
+select has_table('public', 'portfolio_assets', 'portfolio_assets exists');
+select has_table('public', 'portfolio_asset_quotes', 'portfolio_asset_quotes exists');
+select has_table('public', 'portfolio_preferences', 'portfolio_preferences exists');
+select has_table('public', 'user_portfolio_preferences', 'user_portfolio_preferences exists');
+select col_is_pk('public', 'user_portfolio_preferences', 'user_id', 'active portfolio is user scoped');
+select col_is_pk('public', 'portfolio_preferences', 'portfolio_id', 'preferences are portfolio scoped');
+select has_column('public', 'portfolio_assets', 'source_updated_at', 'asset source timestamp exists');
+select has_column('public', 'portfolio_asset_quotes', 'manual_override', 'manual override is persisted');
+select policies_are('public', 'portfolio_assets', array['portfolio_assets_delete_editor', 'portfolio_assets_insert_editor', 'portfolio_assets_select_member', 'portfolio_assets_update_editor'], 'portfolio_assets policies are complete');
+select policies_are('public', 'portfolio_asset_quotes', array['portfolio_asset_quotes_delete_editor', 'portfolio_asset_quotes_insert_editor', 'portfolio_asset_quotes_select_member', 'portfolio_asset_quotes_update_editor'], 'portfolio_asset_quotes policies are complete');
+select policies_are('public', 'portfolio_preferences', array['portfolio_preferences_delete_editor', 'portfolio_preferences_insert_editor', 'portfolio_preferences_select_member', 'portfolio_preferences_update_editor'], 'portfolio_preferences policies are complete');
+select policies_are('public', 'user_portfolio_preferences', array['user_portfolio_preferences_delete_own', 'user_portfolio_preferences_insert_own', 'user_portfolio_preferences_select_own', 'user_portfolio_preferences_update_own'], 'user_portfolio_preferences policies are complete');
+select is((select relrowsecurity from pg_class where oid = 'public.portfolio_assets'::regclass), true, 'portfolio_assets RLS enabled');
+select is((select relrowsecurity from pg_class where oid = 'public.portfolio_asset_quotes'::regclass), true, 'portfolio_asset_quotes RLS enabled');
+select is((select relrowsecurity from pg_class where oid = 'public.portfolio_preferences'::regclass), true, 'portfolio_preferences RLS enabled');
+select is((select relrowsecurity from pg_class where oid = 'public.user_portfolio_preferences'::regclass), true, 'user_portfolio_preferences RLS enabled');
+select has_function('public', 'can_edit_portfolio', array['uuid'], 'editor helper exists');
+select function_privs_are('public', 'can_edit_portfolio', array['uuid'], 'authenticated', array['EXECUTE'], 'authenticated can call editor helper');
+select has_trigger('public', 'portfolio_assets', 'portfolio_assets_set_updated_at', 'assets timestamp trigger exists');
+select has_trigger('public', 'portfolio_asset_quotes', 'portfolio_asset_quotes_set_updated_at', 'quotes timestamp trigger exists');
+select has_trigger('public', 'portfolio_preferences', 'portfolio_preferences_set_updated_at', 'preferences timestamp trigger exists');
+select has_trigger('public', 'user_portfolio_preferences', 'user_portfolio_preferences_set_updated_at', 'active portfolio timestamp trigger exists');
+select fk_ok('public', 'portfolio_preferences', 'portfolio_id', 'public', 'portfolios', 'id', 'preferences portfolio foreign key exists');
+select fk_ok('public', 'user_portfolio_preferences', 'active_portfolio_id', 'public', 'portfolios', 'id', 'active portfolio foreign key exists');
+
+select * from finish();
+rollback;

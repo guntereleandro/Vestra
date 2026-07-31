@@ -2,7 +2,9 @@
 
 Respostas sobre dados locais, operações, carteira, mercado, objetivos, diagnósticos, performance, perfil, estratégia e backup.
 
-Também cobre conta e acesso: criar uma conta não envia a carteira, e sair não apaga operações ou preferências locais.
+Também cobre conta e acesso: criar uma conta não envia operações; a importação é manual, e sair não apaga dados locais.
+
+A carteira exibida em Conta é o espaço remoto de autorização e o destino escolhido para importação. O Provider Local permanece disponível.
 
 Os artigos podem ser abertos pelos cards, pela pesquisa, pela ajuda contextual ou pela Command Palette. Cada resultado leva à URL individual correspondente.
 

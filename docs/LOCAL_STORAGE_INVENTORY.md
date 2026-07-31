@@ -6,7 +6,7 @@ Estado da CORE-00. Todas as chaves pertencem hoje ao navegador, sem `user_id` ou
 
 | Chave | Responsável e formato | Domínio | Leitores | Escritores/migração | Backup | Destino provável |
 |---|---|---|---|---|---|---|
-| `vestra:operations:v1` | `lib/data/storage.js`; array de `{id,ticker,assetName,assetType,operationType,date,quantity,unitPrice,fees,totalValue,notes}` | operações/proventos | `readLocalData`, hooks e Command Palette indiretamente | `writeLocalData`, restore; criada de `legacyAssets` se ausente | Sim | `operations`, com `portfolio_id`, `user_id` autor e timestamps |
+| `vestra:operations:v1` | `lib/data/storage.js`; array de `{id,ticker,assetName,assetType,operationType,date,quantity,unitPrice,fees,totalValue,notes}`; `id` é UUID | operações/proventos | `readLocalData`, hooks e Command Palette indiretamente | `writeLocalData`, restore; registros sem UUID migram uma vez na leitura | Sim | `portfolio_operations`, com `portfolio_id`, autor e timestamps |
 | `vestra:assetsMaster:v1` | `storage.js` + `assetsMaster.js`; array de metadados normalizados por ticker | catálogo/customizações | `readLocalData`, busca local | `writeLocalData`, merge de seeds/operações/cotações, restore | Apenas customizações | catálogo público global + `portfolio_asset_metadata` apenas para overrides |
 | `vestra:assetQuotes:v1` | `storage.js` + `quotes.js`; array com preços manual/automático, override, origem e datas | cotações | `readLocalData`, carteira/configurações | `writeLocalData`, restore, migração de `legacyQuotes` | Sim | tabela de overrides manuais por carteira; cotação pública em tabela/cache separado |
 | `vestra:portfolioHistory:v1` | `portfolioHistory.js`; array diário `{id,date,timestamp,totalInvested,currentValue,profitLoss,dividends,positionsCount}` | histórico/performance | storage, dashboard, performance | `upsertPortfolioSnapshot`, restore | Sim | `portfolio_snapshots` por carteira e data |
@@ -54,4 +54,3 @@ O backup declara schema 5, mas omite metas, marcos, jornada e última visita. Is
 - Comparar contagens e totais antes/depois.
 - Manter exportação JSON de segurança.
 - Registrar erros por item sem transformar valores inválidos em zero silenciosamente.
-

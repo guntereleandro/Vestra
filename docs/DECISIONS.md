@@ -1,5 +1,49 @@
 # Decisoes Arquiteturais
 
+## 2026-07-31 — Operações remotas exigem consentimento
+
+Operações usam UUID estável e podem ser importadas manualmente para a carteira ativa após prévia e backup. Somente registros existentes apenas no Local são enviados. Mesmo UUID divergente nunca é sobrescrito automaticamente. O Provider Local continua alimentando a engine.
+
+O banco persiste somente fatos de entrada; `income_amount` existe apenas para proventos. Totais de compra/venda, custo, preço médio, posições e resultados permanecem derivados.
+
+---
+
+## 2026-07-30 — Manutenção server-only mínima e cascata segura
+
+Decisão:
+
+Com a exposição automática de tabelas desabilitada, `service_role` recebe somente leitura das tabelas CORE-05 e exclusão de portfolios para auditoria sanitizada e limpeza controlada. A proteção do último owner permite cascata apenas quando a carteira pai já está sendo removida.
+
+Motivo:
+
+Concluir testes remotos sem deixar dados artificiais, mantendo a secret key fora dos fluxos normais e preservando a integridade contra remoções diretas de membership.
+
+---
+
+## 2026-07-30 — Profile explícito após autenticação
+
+Decisão:
+
+Profiles são criados por repository após login, com upsert idempotente. Usuários anteriores recebem backfill de ID pela migration. Não existe trigger em `auth.users`.
+
+Motivo:
+
+Evitar que falhas do schema público bloqueiem cadastro e manter Auth separado do perfil de negócio.
+
+---
+
+## 2026-07-30 — Enum de papel e criação atômica de carteira
+
+Decisão:
+
+Papéis usam enum PostgreSQL `owner/editor/viewer`. Carteiras somente são criadas pela RPC `create_portfolio_with_owner`, que deriva a identidade de `auth.uid()` e cria o primeiro owner na mesma transação.
+
+Motivo:
+
+Impedir valores inválidos e carteiras órfãs, sem usar secret key em fluxos comuns.
+
+---
+
 ## 2026-07-27 — Auth não altera o provider de dados
 
 Decisão:
@@ -49,6 +93,12 @@ Fluxos essenciais consomem serviços e sete contratos assíncronos resolvidos po
 Motivo:
 
 Desacoplar a interface do mecanismo de armazenamento, preservar dados e cálculos atuais e permitir um adapter Supabase posterior sem reescrever componentes.
+
+## 2026-07-31 — Sincronização CORE-06 unidirecional e não destrutiva
+
+O Provider Local permanece como fonte operacional. Ao acessar `/conta` com sessão e carteira ativa, assets master, quotes e preferences são enviados por upsert para o Supabase. A sincronização não remove linhas remotas, não altera localStorage e não move cálculos para o banco. Carteira ativa passa a ser persistida por usuário.
+
+Essa direção reduz o risco de regressão antes da migração de operações. Pull, resolução de conflitos e limpeza remota ficam explícitos como trabalho posterior.
 
 ---
 

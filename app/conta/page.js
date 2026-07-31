@@ -1,6 +1,7 @@
 import { redirect } from "next/navigation";
 import { CalendarDays, CheckCircle2, Mail } from "lucide-react";
 import SignOutButton from "@/components/auth/SignOutButton";
+import AccountCorePanel from "@/components/auth/AccountCorePanel";
 import { getServerAuthUser } from "@/lib/auth/serverAuthService";
 
 export const metadata = { title: "Conta" };
@@ -26,7 +27,7 @@ export default async function AccountPage() {
     <div className="mx-auto max-w-3xl">
       <p className="eyebrow">Conta</p>
       <h1 className="font-display mt-2 text-4xl text-white">Seu acesso</h1>
-      <p className="mt-3 max-w-2xl text-sm leading-relaxed text-[#898e89]">A conta autentica seu acesso. Sua carteira, operações e preferências continuam armazenadas somente neste navegador durante esta fase do Core.</p>
+      <p className="mt-3 max-w-2xl text-sm leading-relaxed text-[#898e89]">A conta autentica seu acesso. O Provider Local continua ativo, e você decide quando importar operações para a carteira remota.</p>
       <section className="card mt-8 rounded-3xl p-6 sm:p-8">
         <div className="grid gap-5 sm:grid-cols-2">
           <div className="rounded-2xl border border-white/[.06] bg-white/[.018] p-4"><Mail size={17} className="text-[#d9b86c]" /><p className="mt-4 text-[10px] uppercase tracking-[.14em] text-[#687069]">E-mail</p><p className="mt-1 break-all text-sm text-white">{user.email}</p></div>
@@ -35,7 +36,10 @@ export default async function AccountPage() {
         </div>
         <div className="mt-7 border-t border-white/[.06] pt-6"><SignOutButton /></div>
       </section>
+      <AccountCorePanel user={{
+        id: user.id,
+        user_metadata: { display_name: user.user_metadata?.display_name || "" },
+      }} />
     </div>
   </div>;
 }
-

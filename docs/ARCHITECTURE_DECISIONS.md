@@ -1,5 +1,54 @@
 # Decisões de Arquitetura do Vestra Core
 
+## ADR-011 — Sincronização inicial não destrutiva
+
+### Contexto
+
+Ativos, cotações e preferências precisam chegar ao Supabase sem trocar de uma vez a fonte de dados da interface nem arriscar operações ainda locais.
+
+### Decisão
+
+Manter o Provider Local como fonte operacional e sincronizar Local → Supabase por upsert quando houver usuário autenticado e carteira remota ativa. A sincronização não executa exclusões remotas. Carteira ativa é persistida por usuário; dados de domínio são isolados por carteira e RLS.
+
+### Consequências
+
+- dados locais e chaves existentes permanecem compatíveis;
+- a cópia remota pode conter linhas antigas até existir reconciliação assistida;
+- conflitos bidirecionais não são resolvidos nesta etapa;
+- a engine financeira continua fora dos repositories.
+
+### Alternativas consideradas
+
+- trocar todo o registry para Supabase: rejeitada porque operações e snapshots ainda são locais;
+- sincronização bidirecional automática: adiada por exigir política de conflitos e reconciliação;
+- substituir remotamente o conjunto inteiro com exclusões: rejeitada por risco de perda.
+
+## ADR-012 — Operações remotas com importação manual
+
+### Contexto
+
+Operações são a fonte da verdade e sua associação automática a uma conta ou carteira poderia enviar dados para o destino errado ou sobrescrever divergências.
+
+### Decisão
+
+Persistir operações por carteira em `portfolio_operations`, mantendo o Provider Local global. A importação exige ação do usuário, backup prévio e reconciliação por UUID. Somente registros existentes apenas localmente são enviados; conflitos e registros somente remotos permanecem intactos.
+
+O banco armazena fatos de entrada. Compra e venda não armazenam total derivado; proventos armazenam `income_amount`. Ticker e metadados históricos são mantidos no lançamento, sem FK obrigatória ao catálogo mutável.
+
+### Consequências
+
+- importações são idempotentes e retomáveis, mas não atômicas entre lotes;
+- não há pull, merge automático ou mudança global de provider;
+- UUID, carteira e autor são imutáveis;
+- valores derivados continuam na engine.
+
+### Alternativas consideradas
+
+- migração automática após login: rejeitada por ausência de consentimento;
+- FK obrigatória para `portfolio_assets`: rejeitada para não impedir histórico quando o catálogo mudar;
+- persistir preço médio e posição: rejeitada por duplicar a fonte da verdade;
+- resolver conflitos pelo registro mais recente: rejeitada por poder apagar uma correção legítima.
+
 Status: fonte oficial das decisões arquitetônicas permanentes do Vestra Core.
 
 Este documento registra decisões que devem orientar novas entregas e revisões. O histórico cronológico anterior permanece em `docs/DECISIONS.md`. Mudanças relevantes devem criar uma nova ADR ou declarar explicitamente qual ADR foi substituída; decisões antigas não devem ser apagadas.
@@ -285,3 +334,32 @@ O Proxy usa `getClaims()` para validar e renovar a identidade; páginas protegid
 - Confiar apenas na existência do cookie: rejeitada por não validar identidade.
 - Usar somente `getSession()` no servidor: rejeitada por confiar em dados lidos do storage.
 - Proteger globalmente todas as rotas: rejeitada porque os dados ainda permanecem locais.
+## ADR-011 — Criação explícita e idempotente de Profile
+
+**Contexto:** Profiles precisam existir para usuários atuais e futuros, mas triggers em `auth.users` podem bloquear cadastro quando falham.
+
+**Decisão:** Criar profile pelo repository após login e executar backfill idempotente de IDs na migration.
+
+**Consequências:** Auth permanece independente; o aplicativo deve garantir o profile antes de usar dados de negócio.
+
+**Alternativas consideradas:** trigger em `auth.users` e criação administrativa manual. O trigger foi rejeitado pelo acoplamento; o processo manual não garante consistência.
+
+## ADR-012 — Carteira criada por RPC atômica
+
+**Contexto:** INSERT direto poderia produzir carteira sem owner e aceitar identidade manipulada.
+
+**Decisão:** Revogar INSERT direto e expor `create_portfolio_with_owner`, `SECURITY DEFINER`, `search_path = ''`, identidade derivada de `auth.uid()`.
+
+**Consequências:** Toda carteira nasce válida; mudanças no contrato exigem migration coordenada com o repository.
+
+**Alternativas consideradas:** duas chamadas do cliente e trigger após INSERT. Duas chamadas não são atômicas; trigger esconderia a regra de autorização.
+
+## ADR-013 — Papel como enum PostgreSQL
+
+**Contexto:** O conjunto `owner/editor/viewer` é pequeno e participa de policies e integridade.
+
+**Decisão:** Usar `public.portfolio_role`.
+
+**Consequências:** valores inválidos são impossíveis; novos papéis exigem migration explícita.
+
+**Alternativas consideradas:** texto com CHECK. Seria flexível, mas repetiria o contrato e reduziria clareza nas funções.

@@ -1,6 +1,6 @@
 # Repositórios assíncronos
 
-Status: provider local implementado na CORE-02; infraestrutura Supabase registrada como stub na CORE-03.
+Status: Provider Local implementado na CORE-02; profiles/portfolios remotos na CORE-05; assets/quotes/preferences remotos na CORE-06.
 
 ## Objetivo
 
@@ -16,13 +16,13 @@ Componentes e hooks
               -> localStorage
 ```
 
-Todos os métodos públicos dos sete contratos retornam `Promise`, inclusive no provider local.
+Todos os métodos públicos dos oito contratos retornam `Promise`, inclusive no provider local.
 
 ## Registry
 
 `lib/repositories/repositoryRegistry.js` é o ponto único de resolução. Ele conhece os providers `local` e `supabase`, mas o provider inicial e único consumido pela aplicação continua sendo `local`. Providers desconhecidos resultam em `UNSUPPORTED_OPERATION`; não existe fallback silencioso.
 
-Componentes e hooks não importam adapters locais. `localCoreDataRepository` é um gateway interno adicional usado para preservar a gravação conjunta de operações, catálogo mestre e cotações sem criar um oitavo contrato público.
+Componentes e hooks não importam adapters locais. `localCoreDataRepository` continua como gateway compatível para a gravação conjunta legada. A CORE-06 adicionou `AssetsRepository` como oitavo contrato público sem alterar as chaves existentes.
 
 ## Identidade local
 
@@ -32,6 +32,16 @@ Componentes e hooks não importam adapters locais. `localCoreDataRepository` é 
 Os IDs são determinísticos e não são gravados em novas chaves. Perfis e metadados da carteira vivem somente em memória nesta etapa. A futura migração deverá mapeá-los para IDs remotos.
 
 ## Contratos
+
+### AssetsRepository
+
+- `listByPortfolio(portfolioId)`
+- `getByTicker(portfolioId, ticker)`
+- `upsert(input)`
+- `remove(portfolioId, ticker)`
+- `replaceAllByPortfolio(portfolioId, assets)`
+
+O adapter local preserva `vestra:assetsMaster:v1`; o remoto usa `portfolio_assets`.
 
 ### ProfilesRepository
 
@@ -152,7 +162,7 @@ A causa técnica pode permanecer em `error.cause`, sem ser encaminhada à interf
 
 ## Infraestrutura Supabase
 
-`lib/repositories/supabase` contém sete adapters que implementam a forma dos contratos assíncronos. Nesta etapa, todos os métodos lançam erro explícito com código `NOT_IMPLEMENTED`; não existe SQL, tabela, sincronização ou migração.
+`lib/repositories/supabase` contém oito adapters. Profiles, portfolios, assets, operations, quotes e preferences são funcionais. Dividends e portfolioSnapshots lançam `NOT_IMPLEMENTED`.
 
 O registry é o único ponto de seleção. Nenhum consumidor seleciona `supabase`, e o validador sempre restaura `local` após testar os stubs. A implementação remota futura não deve alterar componentes nem mover regras financeiras ao banco. IDs locais serão mapeados somente durante a migração assistida posterior.
 
@@ -163,7 +173,12 @@ Veja `docs/SUPABASE_INFRASTRUCTURE.md`.
 - somente a carteira padrão é persistida localmente;
 - perfil e metadados da carteira não persistem entre reloads;
 - o storage legado ainda é síncrono internamente;
-- assets master ainda usa o gateway compatível, sem contrato próprio;
+- assets master possui contrato próprio, mas o gateway compatível ainda é usado pelo fluxo legado;
 - não há concorrência multiaba ou resolução de conflitos; autenticação existe separadamente e não participa dos contratos de dados;
 - snapshots continuam sendo disparados pelo cliente até a CORE-09.
-- adapters Supabase ainda não consultam ou persistem dados.
+- a sincronização CORE-06 é unidirecional Local → Supabase e não remove linhas remotas;
+## Implementação Supabase na CORE-05
+
+`SupabaseProfilesRepository` implementa `getCurrent` e `upsert`, sempre derivando o ID do Auth User. `SupabasePortfoliosRepository` implementa listagem, carteira ativa persistente por usuário, criação pela RPC `create_portfolio_with_owner` e atualização limitada por RLS.
+
+Assets, Quotes, Preferences e Operations persistem por carteira e reutilizam os normalizadores existentes. Operations faz CRUD e upsert idempotente em lotes de 500, sem exclusão implícita. Dividends e PortfolioSnapshots continuam como stubs. O registry permanece em `local`.

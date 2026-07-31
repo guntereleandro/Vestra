@@ -7,3 +7,11 @@ Recuperação funcional: pesquisa de ativos combinada, campos reais dos módulos
 Correção crítica de Mercado: rotas internas passaram a confiar nos certificados do sistema, aceitar timestamps ISO e devolver a cotação básica junto ao ativo.
 
 CORE-04: autenticação por e-mail e senha, confirmação, recuperação, callback PKCE, cookies SSR e rota Conta protegida. O Provider Local e todos os dados financeiros foram preservados.
+CORE-05: schema versionado de profiles, carteiras e membros, RLS, criação atômica de owner e integração mínima na Conta. Dados financeiros continuam locais.
+# Infraestrutura CORE-06 — 31 de julho de 2026
+
+O catálogo de ativos, as cotações e as preferências da carteira ativa agora possuem persistência remota protegida quando uma conta está conectada. O uso diário continua compatível com os dados locais existentes; operações, proventos, histórico e dashboard não foram migrados nesta etapa.
+
+# Operações persistentes CORE-07 — 31 de julho de 2026
+
+Operações agora podem ser comparadas e importadas manualmente para o Supabase. A etapa gera backup, usa UUID estável, não remove dados, não sobrescreve conflitos e mantém o Provider Local como origem do uso diário.

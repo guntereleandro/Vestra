@@ -7,3 +7,4 @@ No Mercado, a pesquisa combina a listagem disponível da BRAPI com o catálogo l
 Artigos oficiais: Dashboard, Carteira, Operações, Mercado, Objetivos, Diagnósticos, Performance, Perfil, Estratégia, Backup e Conta e acesso. Os metadados canônicos estão em `knowledge/metadata.json`.
 
 Conta e acesso explica cadastro, confirmação de e-mail, login, logout e recuperação de senha. A autenticação não sincroniza nem remove os dados financeiros locais nesta fase.
+CORE-07 adiciona à Conta uma comparação entre operações locais e remotas. A importação exige confirmação, baixa backup antes da escrita, não remove dados e não sobrescreve conflitos.

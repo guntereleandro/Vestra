@@ -99,6 +99,16 @@ O Proxy preserva o destino interno ao enviar uma pessoa não autenticada de `/co
 
 O cadastro usa `signUp` com `emailRedirectTo` apontando para `/auth/callback`. A interface sempre orienta a verificar o e-mail e não expõe detalhes internos do Auth.
 
+## Profile após autenticação
+
+Após login válido, o aplicativo garante de forma explícita e idempotente o `public.profiles` do Auth User. Não existe trigger em `auth.users`; assim, uma falha de dados de negócio não bloqueia o cadastro no Supabase Auth. A migration também executa backfill somente dos IDs de usuários existentes.
+
+## Pendências conhecidas da CORE-04
+
+- recuperação de senha temporariamente sujeita ao rate limit do provider de e-mail;
+- reteste ponta a ponta remoto pendente após aplicação da migration no Development;
+- mensagens de erro e recuperação ainda podem ganhar maior especificidade de UX.
+
 O callback aceita:
 
 - `code`, trocado uma única vez por `exchangeCodeForSession`;

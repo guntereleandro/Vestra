@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
-  "updatedAt": "2026-07-27",
-  "lastFunctionalReview": "2026-07-27",
+  "updatedAt": "2026-07-31",
+  "lastFunctionalReview": "2026-07-31",
   "appVersion": "0.8.2",
   "requiredFields": ["id", "slug", "category", "title", "description", "tags", "version", "updatedAt", "content", "relatedIds", "status", "visibility", "author", "revision"],
   "articles": [
@@ -15,7 +15,7 @@
     { "id": "tutorial-perfil", "slug": "perfil", "category": "tutorials", "tags": ["perfil", "risco", "tolerância"], "updatedAt": "2026-07-14", "version": "0.8.0" },
     { "id": "tutorial-estrategia", "slug": "estrategia", "category": "tutorials", "tags": ["estratégia", "alocação", "limites"], "updatedAt": "2026-07-14", "version": "0.8.0" },
     { "id": "tutorial-backup", "slug": "backup", "category": "tutorials", "tags": ["backup", "importação", "dados locais"], "updatedAt": "2026-07-14", "version": "0.8.0" },
-    { "id": "tutorial-conta", "slug": "conta-e-acesso", "category": "tutorials", "tags": ["conta", "login", "senha", "dados locais"], "updatedAt": "2026-07-27", "version": "0.8.2" },
+    { "id": "tutorial-conta", "slug": "conta-e-acesso", "category": "tutorials", "tags": ["conta", "login", "senha", "carteiras", "dados locais"], "updatedAt": "2026-07-31", "version": "0.8.2" },
     { "id": "concept-pl", "slug": "pl", "category": "concepts", "tags": ["P/L", "indicador", "lucro"], "updatedAt": "2026-07-14", "version": "0.8.0" },
     { "id": "concept-pvp", "slug": "pvp", "category": "concepts", "tags": ["P/VP", "patrimônio", "indicador"], "updatedAt": "2026-07-14", "version": "0.8.0" },
     { "id": "concept-roe", "slug": "roe", "category": "concepts", "tags": ["ROE", "retorno", "indicador"], "updatedAt": "2026-07-14", "version": "0.8.0" },
@@ -25,9 +25,10 @@
     { "id": "concept-diversificacao", "slug": "diversificacao", "category": "concepts", "tags": ["diversificação", "concentração"], "updatedAt": "2026-07-14", "version": "0.8.0" },
     { "id": "concept-preco-medio", "slug": "preco-medio", "category": "concepts", "tags": ["preço médio", "custo"], "updatedAt": "2026-07-14", "version": "0.8.0" },
     { "id": "concept-rentabilidade", "slug": "rentabilidade", "category": "concepts", "tags": ["rentabilidade", "aportes", "performance"], "updatedAt": "2026-07-14", "version": "0.8.0" },
-    { "id": "faq-areas", "slug": "areas-atuais", "category": "faq", "tags": ["dúvidas", "funcionalidades", "páginas"], "updatedAt": "2026-07-14", "version": "0.8.0" },
-    { "id": "release-history", "slug": "versoes-0-1-a-0-8", "category": "release-notes", "tags": ["versões", "lançamentos", "histórico"], "updatedAt": "2026-07-14", "version": "0.8.0" },
-    { "id": "glossary-financial", "slug": "glossario-financeiro", "category": "glossary", "tags": ["glossário", "termos financeiros"], "updatedAt": "2026-07-14", "version": "0.8.0" },
-    { "id": "changelog-product", "slug": "historico-produto", "category": "changelog", "tags": ["changelog", "mudanças"], "updatedAt": "2026-07-14", "version": "0.8.0" }
+    { "id": "faq-areas", "slug": "areas-atuais", "category": "faq", "tags": ["dúvidas", "funcionalidades", "páginas"], "updatedAt": "2026-07-31", "version": "0.8.2" },
+    { "id": "release-history", "slug": "versoes-0-1-a-0-8", "category": "release-notes", "tags": ["versões", "lançamentos", "histórico"], "updatedAt": "2026-07-31", "version": "0.8.2" },
+    { "id": "glossary-financial", "slug": "glossario-financeiro", "category": "glossary", "tags": ["glossário", "termos financeiros"], "updatedAt": "2026-07-31", "version": "0.8.2" },
+    { "id": "glossary-operations-sync", "slug": "operacoes-e-sincronizacao", "category": "glossary", "tags": ["operações", "sincronização", "UUID"], "updatedAt": "2026-07-31", "version": "0.8.2" },
+    { "id": "changelog-product", "slug": "historico-produto", "category": "changelog", "tags": ["changelog", "mudanças"], "updatedAt": "2026-07-31", "version": "0.8.2" }
   ]
 }

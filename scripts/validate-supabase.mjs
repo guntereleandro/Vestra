@@ -129,15 +129,53 @@ for (const name of Object.keys(repositoryContracts)) {
   const validation = validateRepositoryContract(name, supabaseRepositories[name]);
   assert(validation.valid, `${name}: adapter Supabase não respeita o contrato.`);
 }
-try {
-  await supabaseRepositories.profiles.getCurrent();
-  throw new Error("Stub Supabase não lançou erro explícito.");
-} catch (error) {
-  assert(error.code === SUPABASE_NOT_IMPLEMENTED, "Stub Supabase não retornou NOT_IMPLEMENTED.");
-} finally {
-  setRepositoryProvider(REPOSITORY_PROVIDER.LOCAL);
+for (const name of [
+  "dividends",
+  "portfolioSnapshots",
+]) {
+  const method = repositoryContracts[name][0];
+  try {
+    await supabaseRepositories[name][method]();
+    throw new Error(`${name}: stub Supabase não lançou erro explícito.`);
+  } catch (error) {
+    assert(error.code === SUPABASE_NOT_IMPLEMENTED, `${name}: stub não retornou NOT_IMPLEMENTED.`);
+  }
 }
+setRepositoryProvider(REPOSITORY_PROVIDER.LOCAL);
 assert(getRepositoryProvider() === REPOSITORY_PROVIDER.LOCAL, "Provider Local não foi restaurado.");
+
+const profilesRepositorySource = read("lib/repositories/supabase/supabaseProfilesRepository.js");
+const portfoliosRepositorySource = read("lib/repositories/supabase/supabasePortfoliosRepository.js");
+const assetsRepositorySource = read("lib/repositories/supabase/supabaseAssetsRepository.js");
+const quotesRepositorySource = read("lib/repositories/supabase/supabaseQuotesRepository.js");
+const preferencesRepositorySource = read("lib/repositories/supabase/supabasePreferencesRepository.js");
+const operationsRepositorySource = read("lib/repositories/supabase/supabaseOperationsRepository.js");
+assert(
+  profilesRepositorySource.includes('.from("profiles")')
+  && profilesRepositorySource.includes(".upsert("),
+  "SupabaseProfilesRepository não foi implementado.",
+);
+assert(
+  portfoliosRepositorySource.includes('.from("portfolios")')
+  && portfoliosRepositorySource.includes('.rpc("create_portfolio_with_owner"'),
+  "SupabasePortfoliosRepository não foi implementado com a RPC atômica.",
+);
+assert(
+  assetsRepositorySource.includes('.from("portfolio_assets")')
+  && quotesRepositorySource.includes('.from("portfolio_asset_quotes")')
+  && preferencesRepositorySource.includes('.from("portfolio_preferences")')
+  && operationsRepositorySource.includes('.from("portfolio_operations")'),
+  "Adapters Supabase da CORE-06 não foram implementados.",
+);
+assert(
+  !profilesRepositorySource.includes("adminClient")
+  && !portfoliosRepositorySource.includes("adminClient")
+  && !assetsRepositorySource.includes("adminClient")
+  && !quotesRepositorySource.includes("adminClient")
+  && !preferencesRepositorySource.includes("adminClient")
+  && !operationsRepositorySource.includes("adminClient"),
+  "Repositories normais não podem usar Admin Client.",
+);
 
 const browserSource = read("lib/supabase/client/browserClient.js");
 assert(!browserSource.includes("process.env"), "Browser Client lê ambiente diretamente.");
@@ -196,5 +234,5 @@ assert(getRepositoryProvider() === REPOSITORY_PROVIDER.LOCAL, "Provider final de
 
 console.log(
   "Supabase validado: clientes browser/server/admin, configuração opcional, separação de segredos, "
-  + "7 adapters stub, registry multi-provider e Provider Local ativo.",
+  + "6 adapters implementados, 2 stubs, registry multi-provider e Provider Local ativo.",
 );

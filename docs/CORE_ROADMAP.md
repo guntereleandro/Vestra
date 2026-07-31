@@ -58,21 +58,27 @@ Entrega: schema de Profile, carteiras e membros com RLS; adaptação de Profiles
 
 Aceite: isolamento comprovado entre usuários; viewer não escreve; troca de carteira não mistura estado.
 
-## CORE-06 — Migração de operações
+Status: concluída em 2026-07-30. Três migrations estão aplicadas no Development; 50 testes pgTAP, validação do dump remoto, matriz SDK de RLS, backfill e fluxo real de `/conta` foram aprovados. Provider Local e todos os dados financeiros permaneceram inalterados.
+
+## CORE-06 — Domínio persistente (parte 1)
 
 Dependência: CORE-05.
 
-Entrega: schema mínimo de ativos e operações com RLS, CRUD remoto, validação de domínio, auditoria mínima e compatibilidade com a engine.
+Entrega: assets master, asset quotes, carteira ativa e preferências por carteira, com adapters Supabase, RLS e sincronização Local → Supabase não destrutiva.
 
-Aceite: criar/editar/excluir é consistente; falhas não somem da UI; regressão de preço médio, saldo e proventos coberta; sem apagar dados locais.
+Aceite: Provider Local preservado; nenhuma chave renomeada; engine intacta; RLS e isolamento aprovados local e remotamente.
 
-## CORE-07 — Carteira consolidada
+Status: concluída em 2026-07-31. A ordem foi dividida para manter a entrega pequena: operações foram movidas para a CORE-07.
+
+## CORE-07 — Operações persistentes
 
 Dependência: CORE-06.
 
-Entrega: posições derivadas de operações remotas, metadados e cotações; estados vazios/erro/sincronização.
+Entrega: tabela e adapter de operações, migração idempotente, reconciliação com dados locais e preservação integral da engine.
 
-Aceite: totais reconciliados contra fixtures; múltiplas carteiras isoladas; fallback de cotação explícito.
+Aceite: CRUD remoto consistente; zero dupla contagem; preço médio, saldo e proventos reconciliados; rollback e retomada seguros.
+
+Status: concluída em 2026-07-31. Importação manual com backup, reconciliação conservadora, UUIDs estáveis, RLS, regressão comum aos providers e benchmarks aprovados.
 
 ## CORE-08 — Proventos
 

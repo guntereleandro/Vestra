@@ -55,19 +55,33 @@ As fontes oficiais de governança são:
 
 `lib/repositories` define contratos para perfil, carteiras, operacoes, proventos, cotacoes, snapshots e preferencias. Todos os metodos publicos retornam `Promise`.
 
-`lib/services` e a entrada dos hooks e componentes. O provider de dados continua usando as mesmas chaves do `localStorage`; Supabase Auth não altera a persistência financeira. Consulte `docs/REPOSITORIES.md`.
+`lib/services` é a entrada dos hooks e componentes. O Provider Local continua ativo e usando as mesmas chaves do `localStorage`. Quando existe sessão e carteira remota ativa, a CORE-06 sincroniza de forma não destrutiva o catálogo de ativos, cotações e preferências para o Supabase. Consulte `docs/REPOSITORIES.md`.
 
 ## Infraestrutura Supabase
 
 A CORE-03 instalou somente os SDKs oficiais `@supabase/supabase-js` e `@supabase/ssr` e preparou clientes separados para navegador, servidor e administração. A configuração privada passa por `envConfig`, e a secret key administrativa é server-only.
 
-O provider Supabase está registrado apenas com sete adapters stub que retornam `NOT_IMPLEMENTED`. O provider Local continua ativo; não existem tabelas, SQL, sincronização ou migração de dados. Consulte `docs/SUPABASE_INFRASTRUCTURE.md`.
+O provider Supabase possui adapters funcionais para profiles, portfolios, assets, operations, quotes e preferences. Operações podem ser importadas manualmente e reconciliadas em `/conta`; o Provider Local continua ativo. Proventos derivados e snapshots permanecem locais. Consulte `docs/OPERATIONS_MIGRATION.md`.
 
 ## Autenticação
 
 A CORE-04 implementa cadastro, confirmação de e-mail, login, logout, sessão SSR, recuperação e atualização de senha com Supabase Auth. `/conta` é a única rota protegida; as áreas financeiras permanecem acessíveis e locais.
 
 Auth User não é Profile de negócio. Criar uma conta não envia, associa ou remove operações, carteira, preferências ou snapshots. Consulte `docs/AUTHENTICATION.md`.
+
+## Banco local e migrations
+
+A CORE-05 versiona `profiles`, `portfolios` e `portfolio_members` em `supabase/migrations`, com RLS, privilégios mínimos e testes pgTAP. O Provider Local continua sendo a fonte financeira.
+
+```text
+npx supabase start
+npx supabase db reset --local
+npx supabase test db
+npm run test:database-schema
+npm run test:database-sdk
+```
+
+Consulte `docs/DATABASE_SCHEMA.md`, `docs/RLS_POLICIES.md` e `docs/DATABASE_MIGRATIONS.md`.
 
 ## Camada de mercado
 

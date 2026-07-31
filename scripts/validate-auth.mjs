@@ -186,7 +186,13 @@ function collectSql(directory) {
   }
 }
 collectSql(path.join(root, "supabase"));
-assert(sqlFiles.length === 0, "CORE-04 não pode criar migrations ou tabelas de negócio.");
+const sqlSource = sqlFiles.map((file) => fs.readFileSync(file, "utf8")).join("\n").toLowerCase();
+for (const forbiddenTable of ["dividends", "portfolio_snapshots"]) {
+  assert(
+    !new RegExp(`create\\s+table\\s+(?:public\\.)?${forbiddenTable}\\b`).test(sqlSource),
+    `CORE-05 não pode criar tabela financeira: ${forbiddenTable}.`,
+  );
+}
 assert(getRepositoryProvider() === "local", "Provider Local deixou de ser o provider ativo.");
 
 if (process.argv.includes("--connectivity")) {
@@ -204,5 +210,5 @@ if (process.argv.includes("--connectivity")) {
 
 console.log(
   "Auth validado: 7 rotas, contratos, erros, entradas, redirects, PKCE, separação client/server, "
-  + "Provider Local e ausência de migrations.",
+  + "Provider Local e ausência de proventos/snapshots remotos.",
 );
