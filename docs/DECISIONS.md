@@ -1,5 +1,15 @@
 # Decisoes Arquiteturais
 
+## 2026-08-01 - Site publico separado da aplicacao
+
+`/` passa a ser Landing, `/dashboard` passa a ser a entrada patrimonial e o proxy protege todas as rotas internas. Mercado e rotas tecnicas de Auth permanecem publicos. Usuario autenticado sem membership recebe onboarding minimo antes do destino solicitado.
+
+Motivo: separar comunicacao do produto e dados patrimoniais, manter um unico mecanismo de autenticacao e evitar acesso acidental a informacoes locais por visitantes.
+
+Consequencia: links internos de Dashboard usam `/dashboard`; URLs patrimoniais anteriores continuam iguais e redirecionam ao login com retorno exato.
+
+---
+
 ## 2026-08-01 - Fonte operacional explicita por carteira
 
 `LOCAL` permanece o default e `SUPABASE` somente alimenta a engine depois de escolha confirmada, validacao de identidade/membership e carga completa. O resolver retorna uma unica origem, sem lista hibrida, dual write ou fallback silencioso. Falha remota preserva a preferencia e permite fallback Local apenas em memoria.

@@ -2,6 +2,10 @@
 
 Status: implementada na CORE-04; requer um projeto Supabase configurado para validação ponta a ponta.
 
+## CORE-09 - rotas e primeiro acesso
+
+Landing e Mercado sao publicos. Patrimonio exige claims validas no proxy e preserva o destino em `next`. Login garante Profile; usuario sem membership segue para `/onboarding`; usuario com carteira entra em `/dashboard`. Entrar/Cadastrar redirecionam autenticados, e logout retorna a Landing.
+
 ## Escopo
 
 A autenticação usa e-mail e senha do Supabase Auth, cookies SSR e fluxo PKCE. Ela identifica a pessoa, mas não sincroniza nem associa os dados financeiros locais.

@@ -90,21 +90,23 @@ Aceite: Local default; escolha remota explicita; nenhum modo hibrido ou dual wri
 
 Status: concluida e validada remotamente em 2026-08-01. A ativacao operacional remota foi antecipada porque proventos dependem do consumo das operacoes persistidas. Migration, matriz SDK, RLS, CRUD e jornada visual foram aprovados; nenhuma tabela financeira nova foi criada.
 
-## CORE-09 — Proventos operacionais
+## CORE-09 — Landing, area privada e onboarding
 
 Dependência: CORE-08.
+
+Entrega: Landing publica, Mercado publico, area patrimonial protegida, retorno exato apos login, onboarding minimo, SEO e layouts separados.
+
+Aceite: visitante nao acessa patrimonio; usuario sem carteira conclui primeiro acesso; usuario existente entra no Dashboard; logout retorna a Landing.
+
+Status: concluida em 2026-08-01. Esta etapa foi priorizada antes de proventos para estabelecer a fronteira de seguranca e a jornada de entrada do produto; nenhuma regra financeira ou tabela foi alterada.
+
+## CORE-10 — Proventos operacionais
+
+Dependência: CORE-09.
 
 Entrega: fluxo de proventos derivado das operacoes da fonte selecionada, com filtros, totais e CRUD consistente.
 
 Aceite: nenhuma dupla contagem; Local e Supabase produzem os mesmos resultados; viewer permanece somente leitura.
-
-## CORE-10 — Migração assistida dos dados locais
-
-Dependência: CORE-09.
-
-Entrega: detecção, preview, escolha de carteira, validação, importação idempotente, reconciliação e export de segurança.
-
-Aceite: contagens/totais antes e depois; retry seguro; relatório por erro; dados locais mantidos até confirmação explícita.
 
 ## CORE-11 — Estabilização e testes de uso diário
 

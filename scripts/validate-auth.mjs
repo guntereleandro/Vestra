@@ -94,7 +94,7 @@ const unsafeRedirects = [
   "javascript:alert(1)",
 ];
 for (const value of unsafeRedirects) {
-  assert(authRedirects.getSafeRedirectPath(value) === "/conta", `Open redirect aceito: ${value}.`);
+  assert(authRedirects.getSafeRedirectPath(value) === "/dashboard", `Open redirect aceito: ${value}.`);
 }
 assert(
   authRedirects.getSafeRedirectPath("/conta?tab=seguranca") === "/conta?tab=seguranca",
@@ -152,12 +152,12 @@ assert(!authServiceSource.includes("clearVestraData"), "Logout não pode limpar 
 assert(!authServiceSource.includes("SUPABASE_SERVICE_ROLE_KEY"), "authService referencia SERVICE_ROLE.");
 
 const proxySource = read("proxy.js");
-assert(proxySource.includes('"/conta"'), "Proxy não declara proteção de /conta.");
+assert(proxySource.includes("!isPublicRoute(pathname) && !authenticated"), "Proxy nao protege globalmente a area privada.");
 assert(proxySource.includes('"/entrar"') && proxySource.includes('"/cadastrar"'), "Rotas públicas de autenticação ausentes no Proxy.");
 assert(proxySource.includes("auth.getClaims()"), "Proxy não verifica claims para renovar/validar identidade.");
 assert(!proxySource.includes("serviceRole") && !proxySource.includes("SERVICE_ROLE"), "Proxy referencia service role.");
 for (const publicRoute of ["/recuperar-senha", "/atualizar-senha", "/confirmar-email", "/auth/callback"]) {
-  assert(!proxySource.includes(`isAccountRoute("${publicRoute}")`), `${publicRoute} foi marcada como protegida.`);
+  assert(proxySource.includes(`"${publicRoute}"`), `${publicRoute} nao foi declarada publica.`);
 }
 
 const callbackSource = read("app/auth/callback/route.js");

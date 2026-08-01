@@ -10,3 +10,5 @@ Conta e acesso explica cadastro, confirmação de e-mail, login, logout e recupe
 CORE-07 adiciona à Conta uma comparação entre operações locais e remotas. A importação exige confirmação, baixa backup antes da escrita, não remove dados e não sobrescreve conflitos.
 
 Na CORE-08, Conta permite escolher explicitamente Local ou Supabase. A escolha remota exige confirmacao, mostra carteira, contagens, conflitos e permissao. Viewer usa somente leitura; sair limpa o cache remoto sem apagar dados locais.
+
+Na CORE-09, a Landing e o Mercado formam a area publica. A area patrimonial exige login, preserva a pagina desejada e conduz o primeiro acesso por um onboarding curto para criar a primeira carteira.

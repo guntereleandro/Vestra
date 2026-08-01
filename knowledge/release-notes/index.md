@@ -21,3 +21,7 @@ Operações agora podem ser comparadas e importadas manualmente para o Supabase.
 Local continua sendo o padrao. O usuario pode ativar Supabase explicitamente, usar CRUD conforme o papel, trocar carteira sem reaproveitar cache e comparar resultados financeiros. A engine permanece independente da origem.
 
 A infraestrutura foi aplicada e validada no Development com testes reais de persistencia, papeis, isolamento, CRUD, recarga, retorno Local e logout.
+
+# Site e primeiro acesso CORE-09 — 1 de agosto de 2026
+
+O produto agora possui Landing, Mercado publico, area patrimonial protegida, retorno ao destino apos login e onboarding minimo. Logout retorna ao site publico; engine e dados financeiros nao foram alterados.

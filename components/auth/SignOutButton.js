@@ -12,7 +12,7 @@ export default function SignOutButton() {
     setState({ submitting: true, error: "" });
     try {
       await signOut();
-      router.replace("/entrar");
+      router.replace("/");
       router.refresh();
     } catch (error) {
       setState({ submitting: false, error: normalizeAuthResult(error).message });
@@ -23,4 +23,3 @@ export default function SignOutButton() {
     {state.error ? <p role="alert" className="mt-3 text-xs text-rose-300">{state.error}</p> : null}
   </div>;
 }
-

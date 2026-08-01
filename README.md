@@ -2,6 +2,8 @@
 
 > A fonte operacional pode ser Local ou Supabase, sempre escolhida explicitamente e resolvida antes da engine. Consulte [Selecao da fonte](docs/DATA_SOURCE_SELECTION.md) e [Operacoes remotas](docs/REMOTE_OPERATIONS_USAGE.md).
 
+O produto separa [site publico e aplicacao privada](docs/PUBLIC_PRIVATE_ARCHITECTURE.md). Visitantes acessam a Landing e o Mercado; gerenciamento patrimonial exige login. O [onboarding](docs/ONBOARDING.md) cria somente Profile e primeira carteira.
+
 Versao 0.8.2
 
 Gerenciador pessoal de investimentos para investidores brasileiros, com interface escura, responsiva e foco em acompanhamento patrimonial.

@@ -12,4 +12,6 @@ Nesta versão, o conteúdo vem do repositório local. A arquitetura está prepar
 
 A fonte financeira pode ser Local ou Supabase? Sim. Local e o padrao; Supabase precisa ser escolhido em Conta. As listas nunca sao combinadas e uma falha remota nao e mostrada como carteira vazia.
 
+O que um visitante pode acessar? A Landing, o Mercado e as rotas necessarias para autenticar. Dashboard, Carteira, Operacoes, Objetivos, Configuracoes, Conta e Conhecimento exigem login. Novo usuario sem carteira recebe somente nome, moeda e fuso da primeira carteira.
+
 Indicadores fundamentalistas ausentes podem estar bloqueados pelo plano atual da BRAPI. O Vestra não converte ausência em zero e mantém a cotação básica quando disponível.

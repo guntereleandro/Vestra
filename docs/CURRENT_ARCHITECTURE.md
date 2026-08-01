@@ -1,5 +1,9 @@
 # Arquitetura atual
 
+## Site, aplicacao e onboarding (CORE-09)
+
+`/` e a Landing publica; `/dashboard` e a entrada autenticada. `AppShell` separa navegacao publica e privada, enquanto `proxy.js` protege todo o patrimonio, preserva `next` e encaminha usuario sem membership ao onboarding. Mercado e Auth permanecem publicos. Detalhes em `PUBLIC_PRIVATE_ARCHITECTURE.md` e `ONBOARDING.md`.
+
 ## Fonte operacional (CORE-08)
 
 Servicos consultam `dataSourceResolver`, que valida sessao, carteira, membership e `portfolio_preferences.data_source`, retornando somente adapters Local ou Supabase. A engine continua pura e recebe arrays normalizados. Cache remoto e apenas de memoria, isolado por carteira e invalidado em CRUD, logout e troca de carteira.

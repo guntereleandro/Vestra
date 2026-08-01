@@ -6,7 +6,7 @@ import { useState } from "react";
 import AuthMessage from "./AuthMessage";
 import { normalizeAuthResult, resolvePostAuthRedirect, signInWithPassword } from "@/lib/auth/authService";
 
-export default function LoginForm({ next = "/conta" }) {
+export default function LoginForm({ next = "/dashboard" }) {
   const router = useRouter();
   const [form, setForm] = useState({ email: "", password: "" });
   const [state, setState] = useState({ submitting: false, error: "" });

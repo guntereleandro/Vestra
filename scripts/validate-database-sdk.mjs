@@ -71,10 +71,12 @@ try {
   assert((await profilesA.getCurrent())?.displayName === "SDK A", "Profile SDK nao foi lido.");
 
   const portfoliosA = createSupabasePortfoliosRepository(clientA);
-  const created = await portfoliosA.create({ name: "SDK Portfolio" });
+  assert((await portfoliosA.list()).length === 0, "Novo usuario nao iniciou sem carteira para onboarding.");
+  const created = await portfoliosA.create({ name: "SDK Portfolio", baseCurrency: "USD", timezone: "America/Manaus" });
   portfolioId = created.id;
   portfolioIds.push(portfolioId);
   assert(created.role === "owner", "RPC nao retornou owner.");
+  assert(created.baseCurrency === "USD" && created.timezone === "America/Manaus", "Onboarding nao persistiu moeda e fuso.");
   assert((await portfoliosA.list()).some((item) => item.id === portfolioId), "Owner nao listou carteira.");
   assert(
     (await portfoliosA.update(portfolioId, { description: "Owner update" })).description

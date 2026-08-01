@@ -20,6 +20,7 @@
     "test:financial-regression": "node scripts/validate-financial-regression.mjs",
     "test:operations-benchmark": "node scripts/benchmark-operations.mjs",
     "test:data-source": "node scripts/validate-data-source.mjs",
+    "test:public-private": "node scripts/validate-public-private.mjs",
     "test:brapi": "node --use-system-ca scripts/validate-brapi-integration.mjs"
   },
   "dependencies": {

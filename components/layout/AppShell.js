@@ -7,9 +7,10 @@ import { useEffect, useState } from "react";
 import CommandPalette from "@/components/command/CommandPalette";
 import { getContextualHelpHref } from "@/lib/knowledge/knowledgeService";
 import { brandConfig } from "@/lib/config/brandConfig";
+import PublicShell from "@/components/layout/PublicShell";
 
 const navigation = [
-  { href: "/", label: "Dashboard", icon: LayoutDashboard },
+  { href: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
   { href: "/carteira", label: "Carteira", icon: WalletCards },
   { href: "/operacoes", label: "Operações", icon: ClipboardList },
   { href: "/proventos", label: "Proventos", icon: Coins },
@@ -25,7 +26,7 @@ const navigation = [
 ];
 
 function Brand() {
-  return <Link href="/" className="flex items-center gap-3 text-[#d7d9d5] transition hover:text-white">
+  return <Link href="/dashboard" className="flex items-center gap-3 text-[#d7d9d5] transition hover:text-white">
     <span className="grid h-9 w-9 place-items-center rounded-xl border border-[#d9b86c]/20 bg-[#d9b86c]/10 text-[#d9b86c]"><Landmark size={18} strokeWidth={2} /></span>
     <div>
       <p className="font-display text-lg leading-none">{brandConfig.appName}</p>
@@ -39,7 +40,9 @@ export default function AppShell({ children }) {
   const [menuOpen, setMenuOpen] = useState(false);
   useEffect(() => setMenuOpen(false), [pathname]);
   useEffect(() => { document.body.style.overflow = menuOpen ? "hidden" : ""; return () => { document.body.style.overflow = ""; }; }, [menuOpen]);
-  const isActive = (href) => href === "/" ? pathname === "/" : pathname.startsWith(href);
+  const publicRoute = pathname === "/" || pathname.startsWith("/mercado") || ["/entrar", "/cadastrar", "/recuperar-senha", "/atualizar-senha", "/confirmar-email"].some((route) => pathname.startsWith(route));
+  if (publicRoute) return <PublicShell>{children}</PublicShell>;
+  const isActive = (href) => pathname.startsWith(href);
   const helpHref = getContextualHelpHref(pathname);
 
   return <div className="min-h-screen lg:grid lg:grid-cols-[16rem_minmax(0,1fr)]">

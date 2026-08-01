@@ -3,7 +3,7 @@ import AuthShell from "@/components/auth/AuthShell";
 import LoginForm from "@/components/auth/LoginForm";
 import { getSafeRedirectPath } from "@/lib/auth/authRedirects";
 
-export const metadata = { title: "Entrar" };
+export const metadata = { title: "Entrar", description: "Acesse sua conta com seguranca.", alternates: { canonical: "/entrar" }, robots: { index: false, follow: false }, openGraph: { title: "Entrar", description: "Acesse sua conta com seguranca.", url: "/entrar" }, twitter: { card: "summary", title: "Entrar", description: "Acesse sua conta com seguranca." } };
 
 export default async function LoginPage({ searchParams }) {
   const params = await searchParams;
