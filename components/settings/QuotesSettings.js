@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { Edit3, RefreshCw } from "lucide-react";
 import QuoteModal from "@/components/quotes/QuoteModal";
+import DataSourceBadge from "@/components/data/DataSourceBadge";
 import DataManagement from "@/components/settings/DataManagement";
 import MarketDataCenter from "@/components/settings/MarketDataCenter";
 import useInvestmentData from "@/hooks/useInvestmentData";
@@ -12,7 +13,7 @@ import DiagnosticPreferencesForm from "@/components/diagnostics/preferences/Diag
 import RiskProfileForm from "@/components/diagnostics/risk/RiskProfileForm";
 
 export default function QuotesSettings() {
-  const { positions, assetsMaster, setAssetsMaster, assetQuotes, setAssetQuotes, loaded, storageError } = useInvestmentData();
+  const { positions, assetsMaster, setAssetsMaster, assetQuotes, setAssetQuotes, loaded, storageError, dataSource, sourceError, useLocalSource } = useInvestmentData();
   const [editing, setEditing] = useState(null);
   const save = (quote) => {
     const { sector, notes, ...dynamicQuote } = quote;
@@ -23,7 +24,7 @@ export default function QuotesSettings() {
   const clearQuote = (ticker) => { setAssetQuotes((current) => removeManualQuote(current, ticker)); setEditing(null); };
   const preferAutomatic = (ticker) => { setAssetQuotes((current) => useAutomaticQuote(current, ticker)); setEditing(null); };
 
-  return <div className="page-container">
+  return <div className="page-container"><DataSourceBadge dataSource={dataSource} sourceError={sourceError} onUseLocal={useLocalSource} />
     <header><p className="eyebrow">Preferencias</p><h1 className="font-display mt-2 text-3xl sm:text-4xl">Configuracoes</h1><p className="mt-3 max-w-2xl text-sm text-[#777d78]">Gerencie cotacoes, backups e os dados locais da aplicacao.</p></header>
     <section className="card mt-8 overflow-hidden rounded-2xl">
       <div className="border-b border-white/[.06] p-5 sm:p-6"><h2 className="font-display text-xl">Dados e cotacoes</h2><p className="mt-1 text-xs text-[#777d78]">Atualizacao manual, sem conexao com APIs externas.</p></div>

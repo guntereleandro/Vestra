@@ -10,4 +10,6 @@ Os artigos podem ser abertos pelos cards, pela pesquisa, pela ajuda contextual o
 
 Nesta versão, o conteúdo vem do repositório local. A arquitetura está preparada para provider remoto, mas nenhuma chamada externa ou painel administrativo foi habilitado.
 
+A fonte financeira pode ser Local ou Supabase? Sim. Local e o padrao; Supabase precisa ser escolhido em Conta. As listas nunca sao combinadas e uma falha remota nao e mostrada como carteira vazia.
+
 Indicadores fundamentalistas ausentes podem estar bloqueados pelo plano atual da BRAPI. O Vestra não converte ausência em zero e mantém a cotação básica quando disponível.

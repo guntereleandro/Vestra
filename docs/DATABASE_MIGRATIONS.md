@@ -1,5 +1,9 @@
 # Migrations de banco
 
+## CORE-08.1 - Development
+
+`20260801000100_core_08_data_source_preference.sql` foi aplicada em 2026-08-01 ao projeto Development. O push oficial usou o pooler de Sao Paulo com TLS obrigatorio. O aviso de cache `pg-delta` ocorreu depois da aplicacao por o Docker Desktop estar desligado; o dry run final confirmou zero migrations pendentes.
+
 ## Fonte da verdade
 
 `supabase/migrations/` é a única fonte versionada do schema. Alterações feitas no Dashboard ou SQL Editor devem ser reproduzidas imediatamente em migration e validadas localmente.

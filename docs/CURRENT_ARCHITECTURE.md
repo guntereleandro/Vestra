@@ -1,5 +1,9 @@
 # Arquitetura atual
 
+## Fonte operacional (CORE-08)
+
+Servicos consultam `dataSourceResolver`, que valida sessao, carteira, membership e `portfolio_preferences.data_source`, retornando somente adapters Local ou Supabase. A engine continua pura e recebe arrays normalizados. Cache remoto e apenas de memoria, isolado por carteira e invalidado em CRUD, logout e troca de carteira.
+
 Estado atualizado na CORE-05. Este documento descreve o repositório existente; não é a arquitetura-alvo.
 
 ## Visão geral

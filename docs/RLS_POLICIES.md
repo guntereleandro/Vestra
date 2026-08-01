@@ -2,6 +2,10 @@
 
 Todas as tabelas públicas da etapa possuem Row Level Security explícito. Não existem policies para `anon`.
 
+## CORE-08 - fonte operacional
+
+`data_source` reutiliza as policies de `portfolio_preferences`: membros leem; owner/editor escrevem; viewer nao altera. RLS continua sendo a autoridade final.
+
 ## Defesa em profundidade
 
 RLS e privilégios SQL são aplicados juntos:

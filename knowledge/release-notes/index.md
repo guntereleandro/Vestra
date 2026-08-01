@@ -15,3 +15,9 @@ O catálogo de ativos, as cotações e as preferências da carteira ativa agora 
 # Operações persistentes CORE-07 — 31 de julho de 2026
 
 Operações agora podem ser comparadas e importadas manualmente para o Supabase. A etapa gera backup, usa UUID estável, não remove dados, não sobrescreve conflitos e mantém o Provider Local como origem do uso diário.
+
+# Fonte operacional CORE-08 — 1 de agosto de 2026
+
+Local continua sendo o padrao. O usuario pode ativar Supabase explicitamente, usar CRUD conforme o papel, trocar carteira sem reaproveitar cache e comparar resultados financeiros. A engine permanece independente da origem.
+
+A infraestrutura foi aplicada e validada no Development com testes reais de persistencia, papeis, isolamento, CRUD, recarga, retorno Local e logout.

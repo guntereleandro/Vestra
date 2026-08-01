@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { ArrowLeft, BriefcaseBusiness, ClipboardList, Coins, FileQuestion } from "lucide-react";
 import AssetLogo from "@/components/assets/AssetLogo";
+import DataSourceBadge from "@/components/data/DataSourceBadge";
 import QuoteInfo from "@/components/quotes/QuoteInfo";
 import useInvestmentData from "@/hooks/useInvestmentData";
 import { isIncomeOperation } from "@/lib/data/operations";
@@ -12,7 +13,7 @@ const dateFormatter = new Intl.DateTimeFormat("pt-BR", { timeZone: "UTC" });
 
 export default function AssetDetailsPage({ ticker }) {
   const normalizedTicker = String(ticker || "").toUpperCase();
-  const { operations, positions, assetsMaster, assetQuotes, loaded } = useInvestmentData();
+  const { operations, positions, assetsMaster, assetQuotes, loaded, dataSource, sourceError, useLocalSource } = useInvestmentData();
   const position = positions.find((item) => item.ticker === normalizedTicker);
   const asset = assetsMaster.find((item) => item.ticker === normalizedTicker);
   const quote = assetQuotes.find((item) => item.ticker === normalizedTicker);
@@ -34,14 +35,14 @@ export default function AssetDetailsPage({ ticker }) {
   const base = position || { ticker: normalizedTicker, name: asset?.name || normalizedTicker, shortName: asset?.shortName || normalizedTicker, type: asset?.type || "", sector: asset?.sector || "", segment: asset?.segment || "", quantity: 0, averagePrice: 0, invested: 0, currentPrice: quote?.currentQuote || 0, currentValue: 0, profit: 0, profitability: 0, dividends: 0, quoteUpdatedAt: quote?.updatedAt || "", quoteOrigin: quote?.origin || "", logoPath: asset?.logoPath || "", exchange: asset?.exchange || "", source: asset?.source || "local" };
   const gain = base.profit >= 0;
 
-  return <div className="page-container">
+  return <div className="page-container"><DataSourceBadge dataSource={dataSource} sourceError={sourceError} onUseLocal={useLocalSource} />
     <Link href="/carteira" className="inline-flex items-center gap-2 text-xs font-bold text-[#d9b86c]"><ArrowLeft size={15} />Voltar para Carteira</Link>
     <header className="mt-6 flex flex-col justify-between gap-5 sm:flex-row sm:items-end">
       <div className="flex items-center gap-4">
         <AssetLogo ticker={base.ticker} name={base.name} logoPath={base.logoPath || asset?.logoPath} size="lg" />
         <div><p className="eyebrow">Detalhes do ativo</p><h1 className="font-display mt-2 text-4xl">{base.ticker}</h1><p className="mt-2 text-sm text-[#777d78]">{base.name} {base.type ? `· ${base.type}` : ""}{base.exchange ? ` · ${base.exchange}` : ""}</p></div>
       </div>
-      <Link href="/operacoes" className="gold-button text-center">Registrar operacao</Link>
+      {dataSource.canWrite && !sourceError && <Link href="/operacoes" className="gold-button text-center">Registrar operacao</Link>}
     </header>
 
     <section className="mt-8 grid gap-3 sm:grid-cols-2 xl:grid-cols-4">

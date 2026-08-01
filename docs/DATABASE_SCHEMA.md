@@ -2,6 +2,10 @@
 
 Status: aplicado e validado no Supabase Development em 2026-07-31. As três migrations da CORE-05 e a migration da CORE-06 estão registradas remotamente.
 
+## CORE-08 - preferencia da fonte
+
+`portfolio_preferences.data_source` aceita somente `LOCAL` ou `SUPABASE`, possui default `LOCAL` e nao cria tabela financeira. A preferencia pertence a carteira.
+
 ## Escopo
 
 A CORE-05 introduz somente identidade de negócio e autorização:

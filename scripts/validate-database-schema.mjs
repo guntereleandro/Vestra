@@ -63,8 +63,13 @@ for (const column of [
   "accepted_at",
   "created_at",
   "updated_at",
+  "data_source",
 ]) {
   assert(new RegExp(`\\b${column}\\b`).test(sql), `Coluna esperada ausente: ${column}.`);
+}
+
+for (const source of ["LOCAL", "SUPABASE"]) {
+  assert(new RegExp(`['\"]${source.toLowerCase()}['\"]`, "i").test(sql), `Fonte ausente: ${source}.`);
 }
 
 for (const role of ["owner", "editor", "viewer"]) {

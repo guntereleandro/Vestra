@@ -16,6 +16,7 @@ import PortfolioSummary from "@/components/dashboard/PortfolioSummary";
 import RecentOperations from "@/components/dashboard/RecentOperations";
 import VisitSummaryCard from "@/components/dashboard/VisitSummaryCard";
 import useInvestmentData from "@/hooks/useInvestmentData";
+import DataSourceBadge from "@/components/data/DataSourceBadge";
 import { readGoalMilestones, readGoals, writeGoalMilestones } from "@/lib/data/goals";
 import { createDashboardVisitSnapshot, readLastDashboardVisit, writeLastDashboardVisit } from "@/lib/data/lastDashboardVisit";
 import { mergeJourneyRecords, readJourneyRecords, writeJourneyRecords } from "@/lib/data/journeyRecords";
@@ -45,7 +46,7 @@ function latestHistoryInfo(history, currentValue) {
 }
 
 export default function Dashboard() {
-  const { operations, positions, totals, portfolioHistory, loaded, storageError } = useInvestmentData();
+  const { operations, positions, totals, portfolioHistory, loaded, storageError, dataSource, sourceError, useLocalSource } = useInvestmentData();
   const [journeyRecords, setJourneyRecords] = useState({});
   const [goals, setGoals] = useState([]);
   const [goalMilestones, setGoalMilestones] = useState([]);
@@ -106,7 +107,7 @@ export default function Dashboard() {
     { label: "Dividendos", value: currency.format(totals.dividends) },
   ];
 
-  return <div className="page-container">
+  return <div className="page-container"><DataSourceBadge dataSource={dataSource} sourceError={sourceError} onUseLocal={useLocalSource} />
     <section className="fade-in card relative overflow-hidden rounded-[2rem] p-6 transition duration-500 hover:border-[#d9b86c]/20 sm:p-8 lg:p-11">
       <div className="absolute inset-x-8 top-0 h-px bg-gradient-to-r from-transparent via-[#d9b86c]/70 to-transparent" />
       <div className="absolute right-0 top-0 h-56 w-56 rounded-full bg-[#d9b86c]/[.045] blur-3xl" />

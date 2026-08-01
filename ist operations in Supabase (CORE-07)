@@ -1,0 +1,84 @@
+[33mcommit b93f9786e7ec21233f601b6c473b13be4cb1d965[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mmain[m[33m, [m[1;31morigin/main[m[33m)[m
+Author: Gunter <guntereleandro13@gmail.com>
+Date:   Fri Jul 31 01:56:03 2026 -0300
+
+    feat(core): persist operations in Supabase (CORE-07)
+
+ .gitignore                                         |   2 [32m+[m
+ README.md                                          |  18 [32m+[m[31m-[m
+ app/conta/page.js                                  |   8 [32m+[m[31m-[m
+ components/auth/AccountCorePanel.js                |  96 [32m+++++[m
+ components/auth/OperationsMigrationPanel.js        |  93 [32m+++++[m
+ components/operations/OperationModal.js            |   4 [32m+[m[31m-[m
+ docs/ARCHITECTURE_DECISIONS.md                     |  78 [32m++++[m
+ docs/AUTHENTICATION.md                             |  10 [32m+[m
+ docs/CORE.md                                       |   3 [32m+[m
+ docs/CORE_ROADMAP.md                               |  18 [32m+[m[31m-[m
+ docs/CURRENT_ARCHITECTURE.md                       |  25 [32m+[m[31m-[m
+ docs/DATABASE_MIGRATIONS.md                        |  77 [32m++++[m
+ docs/DATABASE_PLAN.md                              |   4 [32m+[m[31m-[m
+ docs/DATABASE_SCHEMA.md                            |  98 [32m+++++[m
+ docs/DECISIONS.md                                  |  50 [32m+++[m
+ docs/FINANCIAL_REGRESSION_TESTS.md                 |  19 [32m+[m
+ docs/LOCAL_STORAGE_INVENTORY.md                    |   3 [32m+[m[31m-[m
+ docs/OPERATIONS_CONTRACT.md                        |  53 [32m+++[m
+ docs/OPERATIONS_MIGRATION.md                       |  31 [32m++[m
+ docs/OPERATIONS_PERSISTENCE.md                     |  23 [32m++[m
+ docs/REPOSITORIES.md                               |  27 [32m+[m[31m-[m
+ docs/RLS_POLICIES.md                               |  84 [32m+++++[m
+ docs/SECURITY_AUDIT.md                             |  39 [32m++[m
+ docs/SUPABASE_INFRASTRUCTURE.md                    |  30 [32m+[m[31m-[m
+ knowledge/faq/index.md                             |   4 [32m+[m[31m-[m
+ knowledge/glossary/index.md                        |   6 [32m+[m
+ knowledge/metadata.json                            |  15 [32m+[m[31m-[m
+ knowledge/release-notes/index.md                   |   8 [32m+[m
+ knowledge/tutorials/index.md                       |   1 [32m+[m
+ lib/auth/authService.js                            |   3 [32m+[m[31m-[m
+ lib/data/operations.js                             |  23 [32m+[m[31m-[m
+ lib/data/storage.js                                |  10 [32m+[m[31m-[m
+ lib/engine/portfolio.js                            |   4 [32m+[m[31m-[m
+ lib/engine/totals.js                               |   2 [32m+[m[31m-[m
+ lib/knowledge/catalog.js                           |  15 [32m+[m[31m-[m
+ lib/repositories/contracts/assetsRepository.js     |   7 [32m+[m
+ lib/repositories/contracts/index.js                |   3 [32m+[m[31m-[m
+ lib/repositories/local/localAssetsRepository.js    |  62 [32m+++[m
+ .../local/localOperationsRepository.js             |   5 [32m+[m[31m-[m
+ lib/repositories/repositoryRegistry.js             |   2 [32m+[m
+ lib/repositories/supabase/index.js                 |   3 [32m+[m[31m-[m
+ .../supabase/supabaseAssetsRepository.js           | 125 [32m++++++[m
+ .../supabase/supabaseOperationsRepository.js       | 143 [32m++++++[m[31m-[m
+ .../supabase/supabasePortfoliosRepository.js       | 148 [32m+++++++[m[31m-[m
+ .../supabase/supabasePreferencesRepository.js      | 119 [32m+++++[m[31m-[m
+ .../supabase/supabaseProfilesRepository.js         |  71 [32m+++[m[31m-[m
+ .../supabase/supabaseQuotesRepository.js           | 101 [32m++++[m[31m-[m
+ .../supabase/supabaseRepositoryUtils.js            |  28 [32m++[m
+ lib/services/accountCoreService.js                 |  28 [32m++[m
+ lib/services/coreDomainSyncService.js              |  29 [32m++[m
+ lib/services/operationsMigrationService.js         | 142 [32m+++++++[m
+ package-lock.json                                  | 224 [32m+++++++++++[m
+ package.json                                       |   8 [32m+[m
+ scripts/benchmark-operations.mjs                   |  51 [32m+++[m
+ scripts/cleanup-database-sdk-users.mjs             |  37 [32m++[m
+ scripts/create-interface-test-user.mjs             |  28 [32m++[m
+ scripts/financial-regression-fixtures.mjs          |  83 [32m++++[m
+ scripts/validate-auth.mjs                          |  10 [32m+[m[31m-[m
+ scripts/validate-database-backfill.mjs             |  33 [32m++[m
+ scripts/validate-database-schema.mjs               | 197 [32m++++++++++[m
+ scripts/validate-database-sdk.mjs                  | 278 [32m++++++++++++++[m
+ scripts/validate-financial-regression.mjs          |  34 [32m++[m
+ scripts/validate-remote-database-schema.mjs        | 108 [32m++++++[m
+ scripts/validate-repositories.mjs                  |  38 [32m+[m[31m-[m
+ scripts/validate-supabase.mjs                      |  54 [32m++[m[31m-[m
+ supabase/.gitignore                                |   8 [32m+[m
+ supabase/config.toml                               | 417 [32m+++++++++++++++++++++[m
+ .../20260730000100_core_05_identity_portfolios.sql | 358 [32m++++++++++++++++++[m
+ ...0730000200_core_05_service_role_maintenance.sql |   6 [32m+[m
+ ...60730000300_core_05_allow_portfolio_cascade.sql |  49 [32m+++[m
+ .../20260731000100_core_06_persistent_domain.sql   | 225 [32m+++++++++++[m
+ ...20260731000200_core_07_portfolio_operations.sql | 117 [32m++++++[m
+ supabase/seed.sql                                  |   2 [32m+[m
+ supabase/tests/database/core_05_rls.test.sql       | 239 [32m++++++++++++[m
+ supabase/tests/database/core_05_schema.test.sql    |  61 [32m+++[m
+ .../tests/database/core_06_schema_rls.test.sql     |  30 [32m++[m
+ .../tests/database/core_07_operations_rls.test.sql | 205 [32m++++++++++[m
+ 77 files changed, 4793 insertions(+), 107 deletions(-)

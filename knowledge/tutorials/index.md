@@ -8,3 +8,5 @@ Artigos oficiais: Dashboard, Carteira, Operações, Mercado, Objetivos, Diagnós
 
 Conta e acesso explica cadastro, confirmação de e-mail, login, logout e recuperação de senha. A autenticação não sincroniza nem remove os dados financeiros locais nesta fase.
 CORE-07 adiciona à Conta uma comparação entre operações locais e remotas. A importação exige confirmação, baixa backup antes da escrita, não remove dados e não sobrescreve conflitos.
+
+Na CORE-08, Conta permite escolher explicitamente Local ou Supabase. A escolha remota exige confirmacao, mostra carteira, contagens, conflitos e permissao. Viewer usa somente leitura; sair limpa o cache remoto sem apagar dados locais.

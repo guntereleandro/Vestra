@@ -27,6 +27,7 @@ const admin = createClient(url, secretKey, {
 const testRun = randomUUID();
 const password = `Local-${randomUUID()}-Aa1!`;
 const createdUsers = [];
+const portfolioIds = [];
 let portfolioId = null;
 
 async function createUser(label) {
@@ -72,6 +73,7 @@ try {
   const portfoliosA = createSupabasePortfoliosRepository(clientA);
   const created = await portfoliosA.create({ name: "SDK Portfolio" });
   portfolioId = created.id;
+  portfolioIds.push(portfolioId);
   assert(created.role === "owner", "RPC nao retornou owner.");
   assert((await portfoliosA.list()).some((item) => item.id === portfolioId), "Owner nao listou carteira.");
   assert(
@@ -101,6 +103,14 @@ try {
     diagnosticPreferences: { maxPositionPercent: 20 },
     riskProfile: { calculatedProfile: "moderate" },
   });
+  assert((await preferencesA.getByPortfolio(portfolioId)).dataSource === "LOCAL", "Fonte inicial nao e LOCAL.");
+  const { error: invalidSourceError } = await clientA
+    .from("portfolio_preferences")
+    .update({ data_source: "INVALID" })
+    .eq("portfolio_id", portfolioId);
+  assert(invalidSourceError?.code === "23514", "Constraint de data_source nao rejeitou valor invalido.");
+  await preferencesA.upsertByPortfolio(portfolioId, { dataSource: "SUPABASE" });
+  assert((await createSupabasePreferencesRepository(clientA).getByPortfolio(portfolioId)).dataSource === "SUPABASE", "Fonte SUPABASE nao persistiu apos recarregar repository.");
   assert((await assetsA.getByTicker(portfolioId, "TEST3"))?.name === "Ativo SDK", "Asset SDK nao foi persistido.");
   assert((await quotesA.getByTicker(portfolioId, "TEST3"))?.currentQuote === 42.5, "Quote SDK nao foi persistida.");
   assert((await preferencesA.getByPortfolio(portfolioId)).riskProfile.calculatedProfile === "moderate", "Preferences SDK nao foram persistidas.");
@@ -115,6 +125,14 @@ try {
     remoteRegression.every((operation, index, list) => index === 0 || list[index - 1].date <= operation.date),
     "Ordenacao remota nao e deterministica.",
   );
+  assert((await preferencesA.getByPortfolio(portfolioId)).dataSource === "SUPABASE", "Importacao alterou a fonte escolhida.");
+
+  const secondPortfolio = await portfoliosA.create({ name: "SDK Portfolio B" });
+  portfolioIds.push(secondPortfolio.id);
+  const secondPreferences = createSupabasePreferencesRepository(clientA);
+  assert((await secondPreferences.getByPortfolio(secondPortfolio.id)).dataSource === "LOCAL", "Carteira B nao iniciou em LOCAL.");
+  assert((await secondPreferences.getByPortfolio(portfolioId)).dataSource === "SUPABASE", "Carteira B alterou preferencia da carteira A.");
+  await portfoliosA.setActive(portfolioId);
   assert(
     reconcileOperations(FINANCIAL_REGRESSION_OPERATIONS, remoteRegression).divergent.length === 0,
     "Reconciliacao marcou registros equivalentes como divergentes.",
@@ -153,6 +171,12 @@ try {
     throw new Error("Viewer criou operacao.");
   } catch (error) {
     assert(error.code === "STORAGE_WRITE_ERROR", "Viewer retornou erro inesperado.");
+  }
+  try {
+    await createSupabasePreferencesRepository(clientB).upsertByPortfolio(portfolioId, { dataSource: "LOCAL" });
+    throw new Error("Viewer alterou fonte.");
+  } catch (error) {
+    assert(error.code === "STORAGE_WRITE_ERROR", "Viewer retornou erro inesperado ao alterar fonte.");
   }
   const { data: membershipsB, error: membershipsBError } = await clientB
     .from("portfolio_members")
@@ -198,6 +222,9 @@ try {
   assert((await operationsB.getById(editorOperation.id)).notes === "editor", "Editor nao atualizou operacao.");
   await operationsB.remove(editorOperation.id);
   assert(await operationsB.getById(editorOperation.id) === null, "Editor nao excluiu operacao.");
+  await createSupabasePreferencesRepository(clientB).upsertByPortfolio(portfolioId, { dataSource: "LOCAL" });
+  assert((await preferencesA.getByPortfolio(portfolioId)).dataSource === "LOCAL", "Editor nao alterou fonte para LOCAL.");
+  await preferencesA.upsertByPortfolio(portfolioId, { dataSource: "SUPABASE" });
 
   const assetsB = createSupabaseAssetsRepository(clientB);
   await assetsB.upsert({
@@ -245,6 +272,13 @@ try {
     .select("user_id");
   assert(!ownerSelfDeleteError && ownerSelfDelete.length === 0, "Ultimo owner removeu a si proprio.");
 
+  await clientA.auth.signOut();
+  const clientAReloaded = await authenticatedClient(userA);
+  const preferencesReloaded = createSupabasePreferencesRepository(clientAReloaded);
+  assert((await preferencesReloaded.getByPortfolio(portfolioId)).dataSource === "SUPABASE", "Logout ou novo login alterou a preferencia remota.");
+  await preferencesReloaded.upsertByPortfolio(portfolioId, { dataSource: "LOCAL" });
+  assert((await preferencesReloaded.getByPortfolio(portfolioId)).dataSource === "LOCAL", "Retorno explicito ao LOCAL nao persistiu.");
+
   const anon = createClient(url, publishableKey, {
     auth: { persistSession: false, autoRefreshToken: false },
   });
@@ -256,14 +290,16 @@ try {
   assert(anonMembershipError, "Anon recebeu acesso a memberships.");
   const { error: anonOperationsError } = await anon.from("portfolio_operations").select("id");
   assert(anonOperationsError, "Anon recebeu acesso a operacoes.");
+  const { error: anonPreferencesError } = await anon.from("portfolio_preferences").select("data_source");
+  assert(anonPreferencesError, "Anon recebeu acesso a preferencia de fonte.");
   const { error: anonRpcError } = await anon.rpc("create_portfolio_with_owner", {
     portfolio_name: "Anon forbidden",
   });
   assert(anonRpcError, "Anon executou RPC protegida.");
 } finally {
   if (process.env.SUPABASE_TEST_KEEP_DATA !== "1") {
-    if (portfolioId) {
-      const { error } = await admin.from("portfolios").delete().eq("id", portfolioId);
+    for (const id of portfolioIds.reverse()) {
+      const { error } = await admin.from("portfolios").delete().eq("id", id);
       if (error) throw error;
     }
     for (const userId of createdUsers) {
@@ -274,5 +310,5 @@ try {
 }
 
 console.log(
-  "SDK validado: profile, carteira ativa, assets, quotes, preferences, operacoes, regressao, idempotencia, papeis e isolamento.",
+  "SDK validado: profile, carteiras, fonte LOCAL/SUPABASE, login/logout, assets, quotes, operacoes, regressao, idempotencia, papeis e isolamento.",
 );

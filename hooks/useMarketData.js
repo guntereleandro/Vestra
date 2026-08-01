@@ -4,7 +4,9 @@ import { useCallback, useMemo, useState } from "react";
 import { searchMarketAssets, getMarketAsset, getMarketQuote, getProviderStatus, fetchAutomaticQuotes } from "@/lib/market/marketService";
 import { clearMarketCache, getMarketCacheStats } from "@/lib/market/quoteCache";
 
-export default function useMarketData({ assetsMaster = [], quotes = [] } = {}) {
+const EMPTY_LIST = Object.freeze([]);
+
+export default function useMarketData({ assetsMaster = EMPTY_LIST, quotes = EMPTY_LIST } = {}) {
   const context = useMemo(() => ({ assetsMaster, quotes }), [assetsMaster, quotes]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");

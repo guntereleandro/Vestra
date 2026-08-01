@@ -80,21 +80,23 @@ Aceite: CRUD remoto consistente; zero dupla contagem; preço médio, saldo e pro
 
 Status: concluída em 2026-07-31. Importação manual com backup, reconciliação conservadora, UUIDs estáveis, RLS, regressão comum aos providers e benchmarks aprovados.
 
-## CORE-08 — Proventos
+## CORE-08 — Leitura remota e selecao da fonte
 
 Dependência: CORE-07.
 
-Entrega: página funcional, filtros, totais por período/ativo/tipo e CRUD integrado às operações.
+Entrega: resolver de fonte unica, escolha Local/Supabase, CRUD remoto por papel, troca segura de carteira e comparacao financeira.
 
-Aceite: nenhuma dupla contagem; edições refletem carteira/dashboard; fluxo substitui a função essencial de referência.
+Aceite: Local default; escolha remota explicita; nenhum modo hibrido ou dual write; cache isolado por carteira; engine inalterada.
 
-## CORE-09 — Snapshots e dashboard
+Status: concluida e validada remotamente em 2026-08-01. A ativacao operacional remota foi antecipada porque proventos dependem do consumo das operacoes persistidas. Migration, matriz SDK, RLS, CRUD e jornada visual foram aprovados; nenhuma tabela financeira nova foi criada.
+
+## CORE-09 — Proventos operacionais
 
 Dependência: CORE-08.
 
-Entrega: snapshots determinísticos com regra de timezone, histórico confiável e dashboard Core.
+Entrega: fluxo de proventos derivado das operacoes da fonte selecionada, com filtros, totais e CRUD consistente.
 
-Aceite: job/processo idempotente; operações retroativas têm política; dashboard não depende de visita para registrar história.
+Aceite: nenhuma dupla contagem; Local e Supabase produzem os mesmos resultados; viewer permanece somente leitura.
 
 ## CORE-10 — Migração assistida dos dados locais
 

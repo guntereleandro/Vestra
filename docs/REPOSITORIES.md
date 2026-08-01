@@ -2,6 +2,10 @@
 
 Status: Provider Local implementado na CORE-02; profiles/portfolios remotos na CORE-05; assets/quotes/preferences remotos na CORE-06.
 
+## CORE-08 - selecao operacional
+
+`dataSourceResolver` seleciona exatamente uma implementacao para operacoes, assets e quotes. `operationsService` nunca combina adapters nem executa dual write. O registry anterior permanece disponivel para compatibilidade.
+
 ## Objetivo
 
 Separar os fluxos essenciais do Core do mecanismo atual de persistência. Componentes e hooks consomem serviços; serviços obtêm contratos pelo registry; adapters locais preservam `lib/data`, migrações, chaves e backup existentes.

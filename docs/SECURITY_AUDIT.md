@@ -1,5 +1,11 @@
 # Auditoria de Segurança de Dependências
 
+## CORE-08 - selecao segura
+
+O resolver nao importa admin client, nao registra tokens, valida usuario e membership antes da fonte remota e isola cache por portfolio. Nao ha fallback silencioso, mistura de carteiras ou dual write.
+
+Validacao Development de 2026-08-01: RLS e grants permaneceram ativos; anon foi bloqueado; usuario sem membership nao leu dados; viewer leu e nao escreveu; editor e owner escreveram. Credenciais foram lidas somente em memoria e fixtures foram removidas.
+
 ## CORE-07 — Operações
 
 - `portfolio_operations` possui RLS explícito e nenhum grant para anon/public.

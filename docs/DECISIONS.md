@@ -1,5 +1,13 @@
 # Decisoes Arquiteturais
 
+## 2026-08-01 - Fonte operacional explicita por carteira
+
+`LOCAL` permanece o default e `SUPABASE` somente alimenta a engine depois de escolha confirmada, validacao de identidade/membership e carga completa. O resolver retorna uma unica origem, sem lista hibrida, dual write ou fallback silencioso. Falha remota preserva a preferencia e permite fallback Local apenas em memoria.
+
+Motivo: tornar a persistencia remota operacional sem arriscar dados locais nem acoplar a engine ao banco. Indisponibilidade remota bloqueia a fonte selecionada; o usuario pode retornar explicitamente ao Local.
+
+---
+
 ## 2026-07-31 — Operações remotas exigem consentimento
 
 Operações usam UUID estável e podem ser importadas manualmente para a carteira ativa após prévia e backup. Somente registros existentes apenas no Local são enviados. Mesmo UUID divergente nunca é sobrescrito automaticamente. O Provider Local continua alimentando a engine.

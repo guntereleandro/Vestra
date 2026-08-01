@@ -5,6 +5,7 @@ import { CheckCircle2, Flag, Plus, Target, Trophy } from "lucide-react";
 import GoalCard from "@/components/goals/GoalCard";
 import GoalFormModal from "@/components/goals/GoalFormModal";
 import useInvestmentData from "@/hooks/useInvestmentData";
+import DataSourceBadge from "@/components/data/DataSourceBadge";
 import { createGoal, readGoalMilestones, readGoals, writeGoalMilestones, writeGoals } from "@/lib/data/goals";
 import { enrichGoals, registerGoalMilestones, summarizeGoals } from "@/lib/dashboard/goalsAnalytics";
 import { percent } from "@/lib/engine/totals";
@@ -17,7 +18,7 @@ const filters = [
 ];
 
 export default function GoalsPage() {
-  const { totals, loaded } = useInvestmentData();
+  const { totals, loaded, dataSource, sourceError, useLocalSource } = useInvestmentData();
   const [goals, setGoals] = useState([]);
   const [filter, setFilter] = useState("all");
   const [editing, setEditing] = useState(null);
@@ -45,7 +46,7 @@ export default function GoalsPage() {
     setGoals(writeGoals(goals.filter((item) => item.id !== goal.id)));
   }
 
-  return <div className="page-container">
+  return <div className="page-container"><DataSourceBadge dataSource={dataSource} sourceError={sourceError} onUseLocal={useLocalSource} />
     <section className="fade-in card relative overflow-hidden rounded-[2rem] p-6 sm:p-8 lg:p-10">
       <div className="absolute right-0 top-0 h-52 w-52 rounded-full bg-[#d9b86c]/[.045] blur-3xl" />
       <div className="relative flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">

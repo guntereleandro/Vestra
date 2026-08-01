@@ -5,9 +5,11 @@ import {
   createRemotePortfolio,
   ensureCurrentRemoteProfile,
   listRemotePortfolios,
+  setActiveRemotePortfolio,
   synchronizeActiveRemotePortfolio,
 } from "@/lib/services/accountCoreService";
 import OperationsMigrationPanel from "@/components/auth/OperationsMigrationPanel";
+import DataSourceSelectionPanel from "@/components/auth/DataSourceSelectionPanel";
 
 export default function AccountCorePanel({ user }) {
   const [portfolios, setPortfolios] = useState([]);
@@ -55,6 +57,12 @@ export default function AccountCorePanel({ user }) {
     }
   }
 
+  async function handleActivate(portfolioId) {
+    setStatus("saving"); setMessage("");
+    try { await setActiveRemotePortfolio(portfolioId); setPortfolios(await listRemotePortfolios()); setStatus("ready"); setMessage("Carteira ativa alterada."); }
+    catch { setStatus("error"); setMessage("Não foi possível alterar a carteira ativa."); }
+  }
+
   return <section className="card mt-6 rounded-3xl p-6 sm:p-8">
     <p className="eyebrow">Carteiras da conta</p>
     <h2 className="font-display mt-2 text-2xl text-white">Espaços de organização</h2>
@@ -69,7 +77,7 @@ export default function AccountCorePanel({ user }) {
         className="flex items-center justify-between rounded-2xl border border-white/[.06] px-4 py-3"
       >
         <span className="text-sm text-white">{portfolio.name}</span>
-        <span className="text-[10px] uppercase tracking-[.14em] text-[#898e89]">{portfolio.role}</span>
+        <span className="flex items-center gap-2 text-[10px] uppercase tracking-[.14em] text-[#898e89]">{portfolio.role}{portfolio.isActive ? <b className="text-[#d9b86c]">Ativa</b> : <button className="btn-secondary" disabled={status === "saving"} onClick={() => handleActivate(portfolio.id)} type="button">Ativar</button>}</span>
       </li>)}
     </ul>}
     {status !== "loading" && portfolios.length === 0 && <p className="mt-5 text-sm text-[#898e89]">
@@ -91,6 +99,6 @@ export default function AccountCorePanel({ user }) {
       </button>
     </form>
     {message && <p className="mt-3 text-sm text-[#b7bbb7]" role="status">{message}</p>}
-    {portfolios.length > 0 && <OperationsMigrationPanel />}
+    {portfolios.length > 0 && <><DataSourceSelectionPanel /><OperationsMigrationPanel /></>}
   </section>;
 }
