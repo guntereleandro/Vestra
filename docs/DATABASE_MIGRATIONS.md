@@ -1,5 +1,9 @@
 # Migrations de banco
 
+## CORE-10 — Development
+
+`20260806000100_core_10_portfolio_snapshots.sql` foi aplicada em 2026-08-06 após dry run. Cria tabela, unicidade diária, precisão numeric, índices, proteção de identidade, timestamps, grants mínimos e policies de membership. O catálogo local não foi gerado porque o Docker Desktop estava desligado; a aplicação remota e o SDK foram aprovados.
+
 ## CORE-08.1 - Development
 
 `20260801000100_core_08_data_source_preference.sql` foi aplicada em 2026-08-01 ao projeto Development. O push oficial usou o pooler de Sao Paulo com TLS obrigatorio. O aviso de cache `pg-delta` ocorreu depois da aplicacao por o Docker Desktop estar desligado; o dry run final confirmou zero migrations pendentes.

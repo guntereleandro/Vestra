@@ -15,7 +15,7 @@ const ranges = [
 
 const dateFormatter = new Intl.DateTimeFormat("pt-BR", { timeZone: "UTC" });
 
-export default function PortfolioHistoryChart({ history, featured = false }) {
+export default function PortfolioHistoryChart({ history, featured = false, source = "LOCAL", unavailable = false }) {
   const [range, setRange] = useState("30d");
   const [active, setActive] = useState(null);
   const data = useMemo(() => prepareHistoryChartData(history, range), [history, range]);
@@ -37,13 +37,13 @@ export default function PortfolioHistoryChart({ history, featured = false }) {
       <div>
         <p className="eyebrow">Evolução</p>
         <h2 className="font-display mt-2 text-2xl sm:text-3xl">Evolução patrimonial</h2>
-        <p className="mt-2 text-sm text-[#777d78]">Snapshots diários do patrimônio atual.</p>
+        <p className="mt-2 text-sm text-[#777d78]">Snapshots diários do patrimônio atual · fonte {source === "SUPABASE" ? "Supabase" : "Local"}.</p>
       </div>
       <div className="grid grid-cols-2 gap-2 sm:flex" role="tablist" aria-label="Periodo do grafico">
         {ranges.map((item) => <button key={item.value} type="button" onClick={() => setRange(item.value)} className={`rounded-lg border px-3 py-2 text-[11px] font-bold ${range === item.value ? "border-[#d9b86c]/50 bg-[#d9b86c]/12 text-[#efd58f]" : "border-white/10 text-[#898e89] hover:text-white"}`}>{item.label}</button>)}
       </div>
     </div>
-    {data.length === 0 ? <EmptyChart title="Primeiro acompanhamento" text="A evolução aparecerá quando uma operação ou cotação atualizar o patrimônio." /> : data.length === 1 ? <EmptyChart title="Histórico iniciado" text={`Patrimônio em ${dateFormatter.format(new Date(`${data[0].date}T00:00:00Z`))}: ${currency.format(data[0].currentValue)}.`} /> : <div className="p-5 sm:p-7">
+    {unavailable ? <EmptyChart title="Histórico indisponível" text="Não foi possível carregar o histórico da fonte selecionada." /> : data.length === 0 ? <EmptyChart title="Primeiro acompanhamento" text="O primeiro snapshot será criado quando a carteira tiver dados financeiros completos. O histórico será construído com o uso." /> : data.length === 1 ? <EmptyChart title="Histórico iniciado" text={`Patrimônio em ${dateFormatter.format(new Date(`${data[0].date}T00:00:00Z`))}: ${currency.format(data[0].currentValue)}.`} /> : <div className="p-5 sm:p-7">
       <div className="mb-6 flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
         <div>
           <p className="text-[10px] uppercase tracking-[.16em] text-[#777d78]">Valor atual</p>

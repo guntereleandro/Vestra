@@ -1,0 +1,35 @@
+"use client";
+
+import { useMemo, useState } from "react";
+import { Coins, Edit3, Plus, Trash2 } from "lucide-react";
+import DataSourceBadge from "@/components/data/DataSourceBadge";
+import OperationModal from "@/components/operations/OperationModal";
+import useInvestmentData from "@/hooks/useInvestmentData";
+import { analyzeIncome } from "@/lib/engine/incomeAnalytics";
+import { currency } from "@/lib/engine/totals";
+
+const types = ["DIVIDENDO", "JCP", "RENDIMENTO"];
+const months = Array.from({ length: 12 }, (_, index) => String(index + 1).padStart(2, "0"));
+const dateFormatter = new Intl.DateTimeFormat("pt-BR", { timeZone: "UTC" });
+
+export default function IncomePage() {
+  const data = useInvestmentData();
+  const [filters, setFilters] = useState({ ticker: "", type: "", year: "", month: "", startDate: "", endDate: "", order: "newest" });
+  const [editing, setEditing] = useState(null); const [modal, setModal] = useState(false); const [deleting, setDeleting] = useState(null);
+  const analysis = useMemo(() => analyzeIncome(data.operations, filters), [data.operations, filters]);
+  const update = (key) => (event) => setFilters((current) => ({ ...current, [key]: event.target.value }));
+  const save = async (operation) => { const result = editing ? await data.editOperation(operation.id, operation) : await data.addOperation(operation); if (result.ok) { setModal(false); setEditing(null); } return result; };
+  const remove = async () => { const result = await data.deleteOperation(deleting.id); if (result.ok) setDeleting(null); };
+  return <div className="page-container"><header className="flex flex-col justify-between gap-5 sm:flex-row sm:items-end"><div><p className="eyebrow">Renda passiva</p><h1 className="font-display mt-2 text-4xl">Proventos</h1><p className="mt-3 text-sm text-[#777d78]">Dividendos, JCP e rendimentos derivados das operações da fonte ativa.</p><DataSourceBadge dataSource={data.dataSource} sourceError={data.sourceError} onUseLocal={data.useLocalSource} /></div>{data.dataSource?.canWrite && !data.sourceError && <button className="gold-button flex items-center gap-2" onClick={() => { setEditing(null); setModal(true); }}><Plus size={16} />Registrar provento</button>}</header>
+    <section className="mt-8 grid gap-3 sm:grid-cols-2 xl:grid-cols-4"><Metric label="Total recebido" value={currency.format(analysis.total)} /><Metric label="Total no período" value={currency.format(analysis.periodTotal)} /><Metric label="Pagamentos" value={String(analysis.paymentCount)} /><Metric label="Média mensal" value={analysis.monthlyAverage == null ? "Histórico insuficiente" : currency.format(analysis.monthlyAverage)} /></section>
+    <section className="card mt-6 rounded-2xl p-5"><div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4"><Select label="Ticker" value={filters.ticker} onChange={update("ticker")} options={analysis.tickers} /><Select label="Tipo" value={filters.type} onChange={update("type")} options={types} /><Select label="Ano" value={filters.year} onChange={update("year")} options={analysis.years} /><Select label="Mês" value={filters.month} onChange={update("month")} options={months} /><DateFilter label="De" value={filters.startDate} onChange={update("startDate")} /><DateFilter label="Até" value={filters.endDate} onChange={update("endDate")} /><Select label="Ordem" value={filters.order} onChange={update("order")} options={["newest", "oldest"]} labels={{ newest: "Mais recentes", oldest: "Mais antigos" }} /></div></section>
+    <section className="mt-6 grid gap-6 xl:grid-cols-2"><Breakdown title="Por ativo" items={analysis.byAsset} /><Breakdown title="Por tipo" items={analysis.byType} /></section>
+    <section className="card mt-6 overflow-hidden rounded-2xl"><div className="border-b border-white/[.06] p-5"><h2 className="font-display text-2xl">Histórico</h2><p className="mt-1 text-xs text-[#777d78]">{analysis.monthsWithoutPayments} mês(es) sem pagamento no intervalo observado.</p></div>{!data.loaded ? <Empty text="Carregando proventos..." /> : !analysis.filtered.length ? <Empty text="Você ainda não registrou nenhum provento para estes filtros." /> : <div className="divide-y divide-white/[.05]">{analysis.filtered.map((item) => <div key={item.id} className="flex flex-col gap-3 p-5 sm:flex-row sm:items-center sm:justify-between"><div><p className="font-bold text-white">{item.ticker} · {item.operationType}</p><p className="mt-1 text-xs text-[#777d78]">{dateFormatter.format(new Date(`${item.date}T00:00:00Z`))}</p></div><div className="flex items-center gap-2"><b className="mr-2 text-[#d9b86c]">{currency.format(item.totalValue)}</b>{data.dataSource?.canWrite && <><button className="icon-button" aria-label={`Editar provento ${item.ticker}`} onClick={() => { setEditing(item); setModal(true); }}><Edit3 size={15} /></button><button className="icon-button hover:text-rose-400" aria-label={`Excluir provento ${item.ticker}`} onClick={() => setDeleting(item)}><Trash2 size={15} /></button></>}</div></div>)}</div>}</section>
+    {modal && <OperationModal operation={editing} operations={data.operations} assetsMaster={data.assetsMaster} defaultType="DIVIDENDO" onClose={() => { setModal(false); setEditing(null); }} onSave={save} />}{deleting && <div className="fixed inset-0 z-[70] grid place-items-center bg-black/75 p-4"><div className="card max-w-md rounded-2xl p-6"><h2 className="font-display text-2xl">Excluir provento?</h2><p className="mt-2 text-sm text-[#898e89]">A carteira será recalculada.</p><div className="mt-6 flex justify-end gap-2"><button onClick={() => setDeleting(null)}>Cancelar</button><button className="rounded-xl bg-rose-500 px-4 py-3 font-bold" onClick={remove}>Excluir</button></div></div></div>}
+  </div>;
+}
+function Metric({ label, value }) { return <article className="card rounded-2xl p-5"><p className="eyebrow">{label}</p><p className="mt-3 text-2xl font-semibold">{value}</p></article>; }
+function Select({ label, value, onChange, options, labels = {} }) { return <label className="form-label">{label}<select className="field mt-2" value={value} onChange={onChange}><option value="">Todos</option>{options.map((item) => <option key={item} value={item}>{labels[item] || item}</option>)}</select></label>; }
+function DateFilter({ label, value, onChange }) { return <label className="form-label">{label}<input className="field mt-2" type="date" value={value} onChange={onChange} /></label>; }
+function Breakdown({ title, items }) { return <section className="card rounded-2xl p-5"><h2 className="font-display text-xl">{title}</h2>{items.length ? <div className="mt-4 space-y-3">{items.map((item) => <div key={item.name} className="flex justify-between text-sm"><span>{item.name}</span><b>{currency.format(item.total)}</b></div>)}</div> : <p className="mt-4 text-sm text-[#777d78]">Sem dados no período.</p>}</section>; }
+function Empty({ text }) { return <div className="px-6 py-14 text-center"><Coins className="mx-auto text-[#d9b86c]" /><p className="mt-4 text-sm text-[#777d78]">{text}</p></div>; }

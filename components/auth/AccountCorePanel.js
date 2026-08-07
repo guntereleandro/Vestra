@@ -10,12 +10,14 @@ import {
 } from "@/lib/services/accountCoreService";
 import OperationsMigrationPanel from "@/components/auth/OperationsMigrationPanel";
 import DataSourceSelectionPanel from "@/components/auth/DataSourceSelectionPanel";
+import SnapshotsMigrationPanel from "@/components/auth/SnapshotsMigrationPanel";
 
 export default function AccountCorePanel({ user }) {
   const [portfolios, setPortfolios] = useState([]);
   const [name, setName] = useState("");
   const [status, setStatus] = useState("loading");
   const [message, setMessage] = useState("");
+  const activePortfolioId = portfolios.find((portfolio) => portfolio.isActive)?.id || "no-active-portfolio";
 
   const load = useCallback(async () => {
     setStatus("loading");
@@ -67,7 +69,7 @@ export default function AccountCorePanel({ user }) {
     <p className="eyebrow">Carteiras da conta</p>
     <h2 className="font-display mt-2 text-2xl text-white">Espaços de organização</h2>
     <p className="mt-2 text-sm leading-relaxed text-[#898e89]">
-      Estas carteiras definem acesso e permissões. Seus investimentos continuam no Provider Local.
+      Estas carteiras definem acesso e permissões. A fonte escolhida determina se operações e histórico usam este navegador ou a carteira Supabase ativa.
     </p>
 
     {status === "loading" && <p className="mt-5 text-sm text-[#898e89]">Carregando...</p>}
@@ -94,11 +96,11 @@ export default function AccountCorePanel({ user }) {
         placeholder="Nome da primeira carteira"
         value={name}
       />
-      <button className="btn-primary" disabled={status === "saving"} type="submit">
+      <button className="btn-primary min-h-11" disabled={status === "saving"} type="submit">
         {status === "saving" ? "Criando..." : "Criar carteira"}
       </button>
     </form>
     {message && <p className="mt-3 text-sm text-[#b7bbb7]" role="status">{message}</p>}
-    {portfolios.length > 0 && <><DataSourceSelectionPanel /><OperationsMigrationPanel /></>}
+    {portfolios.length > 0 && <div key={activePortfolioId}><DataSourceSelectionPanel /><OperationsMigrationPanel /><SnapshotsMigrationPanel /></div>}
   </section>;
 }

@@ -46,7 +46,7 @@ function latestHistoryInfo(history, currentValue) {
 }
 
 export default function Dashboard() {
-  const { operations, positions, totals, portfolioHistory, loaded, storageError, dataSource, sourceError, useLocalSource } = useInvestmentData();
+  const { operations, positions, totals, portfolioHistory, portfolioHistoryUnavailable, loaded, storageError, dataSource, sourceError, useLocalSource } = useInvestmentData();
   const [journeyRecords, setJourneyRecords] = useState({});
   const [goals, setGoals] = useState([]);
   const [goalMilestones, setGoalMilestones] = useState([]);
@@ -144,7 +144,7 @@ export default function Dashboard() {
     </section>
 
     <section className="mt-14">
-      {appConfig.enablePortfolioHistory && <PortfolioHistoryChart history={portfolioHistory} featured />}
+      {appConfig.enablePortfolioHistory && <PortfolioHistoryChart history={portfolioHistory} source={dataSource?.source} unavailable={portfolioHistoryUnavailable} featured />}
     </section>
 
     <section className="mt-12 grid gap-8 xl:grid-cols-[minmax(0,1.05fr)_minmax(22rem,.95fr)]">

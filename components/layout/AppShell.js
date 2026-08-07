@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { BarChart3, BookOpen, Bot, Calculator, ChartNoAxesCombined, ClipboardList, Coins, Goal, Landmark, LayoutDashboard, Menu, Search, Settings, UserRound, WalletCards, X } from "lucide-react";
+import { BookOpen, ClipboardList, Coins, Goal, Landmark, LayoutDashboard, Menu, Search, Settings, UserRound, WalletCards, X } from "lucide-react";
 import { useEffect, useState } from "react";
 import CommandPalette from "@/components/command/CommandPalette";
 import { getContextualHelpHref } from "@/lib/knowledge/knowledgeService";
@@ -16,10 +16,6 @@ const navigation = [
   { href: "/proventos", label: "Proventos", icon: Coins },
   { href: "/objetivos", label: "Objetivos", icon: Goal },
   { href: "/mercado", label: "Mercado", icon: Search },
-  { href: "/relatorios", label: "Relatórios", icon: BarChart3 },
-  { href: "/imposto-de-renda", label: "Imposto de Renda", icon: Calculator },
-  { href: "/simulacoes", label: "Simulações", icon: ChartNoAxesCombined },
-  { href: "/ia", label: "IA", icon: Bot },
   { href: "/conhecimento", label: "Central de Conhecimento", icon: BookOpen },
   { href: "/configuracoes", label: "Configurações", icon: Settings },
   { href: "/conta", label: "Conta", icon: UserRound },
@@ -61,7 +57,7 @@ export default function AppShell({ children }) {
       </nav>
       <div className="mt-auto rounded-2xl border border-white/[.045] bg-white/[.015] p-4">
         <p className="text-[9px] font-bold uppercase tracking-[.16em] text-[#8f7e55]">Dados locais</p>
-        <p className="mt-2 text-[11px] leading-relaxed text-[#5d635e]">Sua carteira permanece somente neste navegador.</p>
+        <p className="mt-2 text-[11px] leading-relaxed text-[#5d635e]">A fonte ativa define onde os dados desta carteira são carregados.</p>
       </div>
     </aside>
     <div className="min-w-0 lg:col-start-2">

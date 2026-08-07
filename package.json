@@ -21,6 +21,9 @@
     "test:operations-benchmark": "node scripts/benchmark-operations.mjs",
     "test:data-source": "node scripts/validate-data-source.mjs",
     "test:public-private": "node scripts/validate-public-private.mjs",
+    "test:snapshots": "node scripts/validate-snapshots.mjs",
+    "test:income": "node scripts/validate-income.mjs",
+    "test:core-stability": "node scripts/validate-core-stability.mjs",
     "test:brapi": "node --use-system-ca scripts/validate-brapi-integration.mjs"
   },
   "dependencies": {
@@ -28,7 +31,7 @@
     "@supabase/supabase-js": "^2.110.9",
     "@tailwindcss/postcss": "latest",
     "lucide-react": "latest",
-    "next": "latest",
+    "next": "16.3.0",
     "react": "latest",
     "react-dom": "latest",
     "tailwindcss": "latest"

@@ -136,10 +136,7 @@ assert(
   "Privilegios server-only de auditoria/limpeza ausentes.",
 );
 
-for (const forbiddenTable of [
-  "dividends",
-  "portfolio_snapshots",
-]) {
+for (const forbiddenTable of ["dividends"]) {
   assert(
     !new RegExp(`create\\s+table\\s+(?:public\\.)?${forbiddenTable}\\b`).test(sql),
     `Tabela fora do escopo criada antes da etapa correspondente: ${forbiddenTable}.`,
@@ -197,6 +194,6 @@ const testFiles = fs.existsSync(testDirectory)
 assert(testFiles.length >= 2, "Testes SQL de schema e RLS ausentes.");
 
 console.log(
-  `Schema validado: ${migrationFiles.length} migrations, 8 tabelas, RLS, policies, grants, `
+  `Schema validado: ${migrationFiles.length} migrations, 9 tabelas, RLS, policies, grants, `
   + "funcoes seguras, indices, backfill idempotente e escopo financeiro preservado.",
 );

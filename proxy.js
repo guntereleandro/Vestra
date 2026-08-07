@@ -38,6 +38,14 @@ export async function proxy(request) {
         .select("portfolio_id")
         .limit(1);
       if (!membershipError) hasPortfolio = Boolean(memberships?.length);
+      if (hasPortfolio === false) {
+        const { error: userError } = await proxyClient.supabase.auth.getUser();
+        if (userError) {
+          await proxyClient.supabase.auth.signOut();
+          authenticated = false;
+          hasPortfolio = null;
+        }
+      }
     }
     response = proxyClient.getResponse();
   } catch {

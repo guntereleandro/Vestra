@@ -6,6 +6,7 @@ import { createSupabaseAssetsRepository } from "../lib/repositories/supabase/sup
 import { createSupabaseQuotesRepository } from "../lib/repositories/supabase/supabaseQuotesRepository.js";
 import { createSupabasePreferencesRepository } from "../lib/repositories/supabase/supabasePreferencesRepository.js";
 import { createSupabaseOperationsRepository } from "../lib/repositories/supabase/supabaseOperationsRepository.js";
+import { createSupabasePortfolioSnapshotsRepository } from "../lib/repositories/supabase/supabasePortfolioSnapshotsRepository.js";
 import {
   assertFinancialRegression,
   FINANCIAL_REGRESSION_OPERATIONS,
@@ -128,6 +129,17 @@ try {
     "Ordenacao remota nao e deterministica.",
   );
   assert((await preferencesA.getByPortfolio(portfolioId)).dataSource === "SUPABASE", "Importacao alterou a fonte escolhida.");
+  const snapshotsA = createSupabasePortfolioSnapshotsRepository(clientA);
+  const snapshot = {
+    portfolioId, date: "2026-08-01", timestamp: Date.parse("2026-08-01T12:00:00Z"),
+    totalInvested: 1000, currentValue: 1100, profitLoss: 100, dividends: 25, positionsCount: 2,
+  };
+  await snapshotsA.upsertDaily(snapshot);
+  await snapshotsA.upsertDaily({ ...snapshot, currentValue: 1120, profitLoss: 120 });
+  assert((await snapshotsA.listByPortfolio(portfolioId)).length === 1, "Upsert diario duplicou snapshot.");
+  assert((await snapshotsA.getLatest(portfolioId)).currentValue === 1120, "Atualizacao diaria nao foi deterministica.");
+  await snapshotsA.upsertDaily({ ...snapshot, date: "2026-08-02", timestamp: Date.parse("2026-08-02T12:00:00Z") });
+  assert((await snapshotsA.getRange(portfolioId, "2026-08-02", "2026-08-02")).length === 1, "Range remoto incorreto.");
 
   const secondPortfolio = await portfoliosA.create({ name: "SDK Portfolio B" });
   portfolioIds.push(secondPortfolio.id);
@@ -164,6 +176,14 @@ try {
   assert((await createSupabaseAssetsRepository(clientB).listByPortfolio(portfolioId)).length === 1, "Viewer nao leu assets.");
   const operationsB = createSupabaseOperationsRepository(clientB);
   assert((await operationsB.listByPortfolio(portfolioId)).length === FINANCIAL_REGRESSION_OPERATIONS.length, "Viewer nao leu operacoes.");
+  const snapshotsB = createSupabasePortfolioSnapshotsRepository(clientB);
+  assert((await snapshotsB.listByPortfolio(portfolioId)).length === 2, "Viewer nao leu snapshots.");
+  try {
+    await snapshotsB.upsertDaily({ ...snapshot, date: "2026-08-03" });
+    throw new Error("Viewer criou snapshot.");
+  } catch (error) {
+    assert(error.code === "STORAGE_WRITE_ERROR", "Viewer retornou erro inesperado ao criar snapshot.");
+  }
   try {
     await operationsB.create({
       ...FINANCIAL_REGRESSION_OPERATIONS[0],
@@ -224,6 +244,8 @@ try {
   assert((await operationsB.getById(editorOperation.id)).notes === "editor", "Editor nao atualizou operacao.");
   await operationsB.remove(editorOperation.id);
   assert(await operationsB.getById(editorOperation.id) === null, "Editor nao excluiu operacao.");
+  await snapshotsB.upsertDaily({ ...snapshot, date: "2026-08-03", timestamp: Date.parse("2026-08-03T12:00:00Z") });
+  assert((await snapshotsA.listByPortfolio(portfolioId)).length === 3, "Editor nao persistiu snapshot.");
   await createSupabasePreferencesRepository(clientB).upsertByPortfolio(portfolioId, { dataSource: "LOCAL" });
   assert((await preferencesA.getByPortfolio(portfolioId)).dataSource === "LOCAL", "Editor nao alterou fonte para LOCAL.");
   await preferencesA.upsertByPortfolio(portfolioId, { dataSource: "SUPABASE" });
@@ -251,6 +273,7 @@ try {
   assert(!membershipsCError && membershipsC.length === 0, "Usuario C leu memberships alheios.");
   assert((await createSupabaseAssetsRepository(clientC).listByPortfolio(portfolioId)).length === 0, "Usuario C leu assets alheios.");
   assert((await createSupabaseOperationsRepository(clientC).listByPortfolio(portfolioId)).length === 0, "Usuario C leu operacoes alheias.");
+  assert((await createSupabasePortfolioSnapshotsRepository(clientC).listByPortfolio(portfolioId)).length === 0, "Usuario C leu snapshots alheios.");
 
   const { error: addByCError } = await clientC.from("portfolio_members").insert({
     portfolio_id: portfolioId,
@@ -294,6 +317,8 @@ try {
   assert(anonOperationsError, "Anon recebeu acesso a operacoes.");
   const { error: anonPreferencesError } = await anon.from("portfolio_preferences").select("data_source");
   assert(anonPreferencesError, "Anon recebeu acesso a preferencia de fonte.");
+  const { error: anonSnapshotsError } = await anon.from("portfolio_snapshots").select("id");
+  assert(anonSnapshotsError, "Anon recebeu acesso a snapshots.");
   const { error: anonRpcError } = await anon.rpc("create_portfolio_with_owner", {
     portfolio_name: "Anon forbidden",
   });
@@ -312,5 +337,5 @@ try {
 }
 
 console.log(
-  "SDK validado: profile, carteiras, fonte LOCAL/SUPABASE, login/logout, assets, quotes, operacoes, regressao, idempotencia, papeis e isolamento.",
+  "SDK validado: profile, carteiras, fonte LOCAL/SUPABASE, login/logout, assets, quotes, operacoes, snapshots, regressao, idempotencia, papeis e isolamento.",
 );

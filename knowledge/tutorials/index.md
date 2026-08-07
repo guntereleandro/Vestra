@@ -1,5 +1,11 @@
 # Tutoriais
 
+Durante a validação de 30 dias, registre diariamente o uso do Dashboard, operações, proventos, cotações, carteira, histórico, erros e qualquer necessidade de recorrer a outro serviço.
+
+Em Proventos, registre dividendos, JCP e rendimentos, filtre por ativo, tipo, ano e mês e acompanhe totais. Esses registros são operações da fonte ativa.
+
+O histórico patrimonial segue a fonte ativa. Na Conta, use **Gerar prévia** em “Importar snapshots locais” antes de confirmar uma cópia manual para a carteira Supabase. Datas divergentes são exibidas como conflito e não são substituídas.
+
 Selecione um tutorial pela pesquisa, pela Command Palette ou por sua categoria. Cada conteúdo possui URL própria e é entregue pelo serviço público da Central. O repositório local continua sendo o fallback, sem alterar a navegação do usuário.
 
 No Mercado, a pesquisa combina a listagem disponível da BRAPI com o catálogo local. Indicadores avançados podem depender do plano do provedor; nesses casos, cotação e dados básicos permanecem disponíveis.

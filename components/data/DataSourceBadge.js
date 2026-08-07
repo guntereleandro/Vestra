@@ -8,6 +8,10 @@ export default function DataSourceBadge({ dataSource, sourceError, onUseLocal })
     {onUseLocal && <button className="btn-secondary shrink-0" onClick={onUseLocal} type="button">Usar Local neste dispositivo</button>}
   </div>;
 
+  if (!dataSource) return <div className="mt-4 flex flex-wrap items-center gap-2 text-[11px] text-[#898e89]" aria-label="Carregando fonte de dados">
+    <span className="inline-flex items-center gap-1.5 rounded-full border border-white/[.08] bg-white/[.025] px-3 py-1.5 text-[#b7bbb7]">Carregando fonte...</span>
+  </div>;
+
   const remote = dataSource?.source === "SUPABASE";
   const Icon = remote ? Database : HardDrive;
   return <div className="mt-4 flex flex-wrap items-center gap-2 text-[11px] text-[#898e89]" aria-label={`Fonte de dados: ${remote ? "Supabase" : "Local"}`}>

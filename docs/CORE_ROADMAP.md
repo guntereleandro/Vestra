@@ -100,21 +100,25 @@ Aceite: visitante nao acessa patrimonio; usuario sem carteira conclui primeiro a
 
 Status: concluida em 2026-08-01. Esta etapa foi priorizada antes de proventos para estabelecer a fronteira de seguranca e a jornada de entrada do produto; nenhuma regra financeira ou tabela foi alterada.
 
-## CORE-10 — Proventos operacionais
+## CORE-10 — Dashboard persistente, snapshots e histórico patrimonial
 
 Dependência: CORE-09.
 
-Entrega: fluxo de proventos derivado das operacoes da fonte selecionada, com filtros, totais e CRUD consistente.
+Entrega: snapshots diários por carteira, histórico coerente com a fonte ativa, Dashboard remoto e importação manual não destrutiva.
 
-Aceite: nenhuma dupla contagem; Local e Supabase produzem os mesmos resultados; viewer permanece somente leitura.
+Aceite: nenhuma mistura Local/Supabase; upsert diário idempotente; RLS por papel; engine inalterada; dados locais preservados.
 
-## CORE-11 — Estabilização e testes de uso diário
+Status: concluída em 2026-08-06 no Development. Snapshots foram priorizados para tornar o Dashboard portátil entre dispositivos; proventos permanecem derivados das operações e passam para a CORE-11.
+
+## CORE-11 — Proventos persistentes
 
 Dependência: CORE-10.
 
-Entrega: testes dos fluxos críticos, acessibilidade e mobile, tratamento de erros, observabilidade mínima, backup/export e checklist operacional.
+Entrega: fluxo de proventos derivado das operações da fonte selecionada, filtros e consistência Local/Supabase, sem tabela duplicada salvo necessidade comprovada.
 
-Aceite: jornadas críticas automatizadas; nenhum bloqueador aberto; restauração e incidentes básicos documentados.
+Aceite: nenhuma dupla contagem; Local e Supabase equivalentes; viewer somente leitura; engine preservada.
+
+Status: concluída em 2026-08-07. Proventos permanecem operações; a página, filtros, métricas e CRUD usam exclusivamente a coleção da fonte ativa, sem migration ou tabela adicional.
 
 ## CORE-12 — Validação dos 30 dias
 
@@ -123,6 +127,8 @@ Dependência: CORE-11.
 Entrega: protocolo de uso, diário de lacunas, métricas e decisão de conclusão.
 
 Aceite: 30 dias consecutivos sem recorrer ao Investidor10 para funções essenciais; qualquer exceção deve ser classificada e resolvida ou formalmente retirada do escopo.
+
+Status: validação pré-30 dias aprovada em 2026-08-07. Jornada remota, mobile, regressões, Next.js 16.3.0, audit, lint e build passaram. O responsável confirmou manualmente recebimento do e-mail de recuperação, abertura do link, troca de senha e novo login. Não existe bloqueador categoria A; o teste oficial de 30 dias pode iniciar. pgTAP continua pendência de ambiente sem bloquear o uso diário.
 
 ## Dependências críticas
 

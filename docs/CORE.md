@@ -1,5 +1,7 @@
 # Vestra Core
 
+O início do teste oficial exige os critérios de estabilidade e o registro diário definidos em `CORE_STABILITY.md` e `CORE_30_DAY_VALIDATION.md`.
+
 Status: fonte oficial de escopo a partir da CORE-00. O nome “Vestra” é interno e não representa decisão final de marca.
 
 ## Missão

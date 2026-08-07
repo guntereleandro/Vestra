@@ -34,8 +34,16 @@ if (mode === "setup") {
   console.log("Fixture visual criada.");
 } else if (mode === "cleanup") {
   const fixture = JSON.parse(fs.readFileSync(fixtureFile, "utf8"));
-  const { error: portfolioError } = await admin.from("portfolios").delete().eq("id", fixture.portfolioId);
-  if (portfolioError) throw portfolioError;
+  const { data: memberships, error: membershipsError } = await admin
+    .from("portfolio_members")
+    .select("portfolio_id")
+    .eq("user_id", fixture.userId);
+  if (membershipsError) throw membershipsError;
+  const portfolioIds = new Set([fixture.portfolioId, ...(memberships || []).map((item) => item.portfolio_id)]);
+  for (const portfolioId of portfolioIds) {
+    const { error: portfolioError } = await admin.from("portfolios").delete().eq("id", portfolioId);
+    if (portfolioError) throw portfolioError;
+  }
   const { error: userError } = await admin.auth.admin.deleteUser(fixture.userId);
   if (userError) throw userError;
   fs.rmSync(fixtureFile, { force: true });

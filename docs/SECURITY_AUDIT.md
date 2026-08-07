@@ -1,5 +1,21 @@
 # Auditoria de Segurança de Dependências
 
+## CORE-12.1 — atualização validada em 2026-08-07
+
+O Next.js foi atualizado de 16.2.12 para 16.3.0, sem `npm audit fix --force`. A cadeia passou a usar PostCSS 8.5.23 e Sharp 0.35.3. `npm audit` passou com **0 vulnerabilidades**.
+
+| Pacote | Cadeia | Alcance no Vestra | Versão corrigida | Impacto validado | Risco de não atualizar |
+|---|---|---|---|---|---|
+| `next` | direta | App Router, Proxy, renderização e build | 16.3.0 | Auth, rotas públicas/privadas, Supabase SSR, Mercado, lint, build e regressão financeira aprovados | mantém as vulnerabilidades transitivas agregadas |
+| `postcss` | `next -> postcss` | processamento de CSS/source maps | 8.5.23 | build aprovado | leitura indevida de source maps e XSS nos cenários dos advisories |
+| `sharp` | `next -> sharp` | otimização de imagens no servidor | 0.35.3 | build e rotas de imagem aprovados | vulnerabilidades herdadas do libvips |
+
+O Browser Client padrão do Supabase passou a reutilizar uma única instância, removendo a causa dos avisos de múltiplos clientes Auth no mesmo contexto. Configurações explícitas de teste continuam isoladas.
+
+Os registros abaixo permanecem como histórico e foram substituídos, para a decisão atual, por este resultado.
+
+CORE-12 reafirma que diagnósticos técnicos não podem registrar tokens, cookies, service role ou operações financeiras completas. Vulnerabilidades transitivas de PostCSS/Sharp bloqueiam Production até atualização validada.
+
 ## CORE-08 - selecao segura
 
 O resolver nao importa admin client, nao registra tokens, valida usuario e membership antes da fonte remota e isola cache por portfolio. Nao ha fallback silencioso, mistura de carteiras ou dual write.
@@ -13,7 +29,7 @@ Validacao Development de 2026-08-01: RLS e grants permaneceram ativos; anon foi 
 - `created_by` deriva da sessão e identidade/carteira/autoria são imutáveis.
 - O Browser Client não recebe secret key; service role aparece somente em testes server-only e limpeza.
 - Importação e reconciliação não registram conteúdo financeiro ou credenciais.
-- Nenhuma tabela de snapshots, histórico ou proventos foi criada.
+- `portfolio_snapshots` está protegida por RLS e grants mínimos; anon não acessa, viewer não escreve e DELETE do cliente permanece revogado. Proventos continuam sem tabela independente.
 
 ## Relatório npm — 2026-07-31
 

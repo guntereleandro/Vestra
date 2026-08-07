@@ -1,5 +1,7 @@
 # Persistência de operações
 
+Proventos são persistidos somente como operações `DIVIDENDO`, `JCP` ou `RENDIMENTO`, usando `income_amount` no Supabase. Não existe tabela ou sincronização paralela.
+
 ## Arquitetura
 
 `OperationsRepository` mantém o contrato assíncrono existente. Local usa `vestra:operations:v1`; Supabase usa `portfolio_operations`. O registry continua selecionando Local por padrão e a engine recebe uma coleção coerente de uma única origem.

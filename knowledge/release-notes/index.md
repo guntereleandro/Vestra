@@ -1,5 +1,17 @@
 # Release Notes
 
+## 2026-08-07 — CORE-12
+
+A navegação foi limitada às áreas funcionais do Core e foi criado o protocolo oficial de estabilidade e validação dos 30 dias.
+
+## 2026-08-07 — CORE-11
+
+A página de Proventos passou a oferecer métricas, filtros, agrupamentos, histórico e CRUD usando as operações da fonte ativa.
+
+## 2026-08-06 — CORE-10
+
+Dashboard, histórico patrimonial e performance passaram a respeitar integralmente a fonte Local ou Supabase. Foram adicionados snapshots remotos por carteira e importação manual não destrutiva.
+
 Histórico consolidado das versões 0.1 a 0.8.2 do Vestra. A versão 0.8.2 introduziu contrato de repositório, schema editorial normalizado e fallback local.
 
 Recuperação funcional: pesquisa de ativos combinada, campos reais dos módulos BRAPI mapeados e fallback básico para módulos não permitidos.

@@ -155,6 +155,8 @@ const proxySource = read("proxy.js");
 assert(proxySource.includes("!isPublicRoute(pathname) && !authenticated"), "Proxy nao protege globalmente a area privada.");
 assert(proxySource.includes('"/entrar"') && proxySource.includes('"/cadastrar"'), "Rotas públicas de autenticação ausentes no Proxy.");
 assert(proxySource.includes("auth.getClaims()"), "Proxy não verifica claims para renovar/validar identidade.");
+assert(proxySource.includes("auth.getUser()"), "Proxy nao invalida sessao de usuario removido antes do onboarding.");
+assert(proxySource.includes("auth.signOut()"), "Proxy nao limpa a sessao de usuario removido.");
 assert(!proxySource.includes("serviceRole") && !proxySource.includes("SERVICE_ROLE"), "Proxy referencia service role.");
 for (const publicRoute of ["/recuperar-senha", "/atualizar-senha", "/confirmar-email", "/auth/callback"]) {
   assert(proxySource.includes(`"${publicRoute}"`), `${publicRoute} nao foi declarada publica.`);
@@ -187,7 +189,7 @@ function collectSql(directory) {
 }
 collectSql(path.join(root, "supabase"));
 const sqlSource = sqlFiles.map((file) => fs.readFileSync(file, "utf8")).join("\n").toLowerCase();
-for (const forbiddenTable of ["dividends", "portfolio_snapshots"]) {
+for (const forbiddenTable of ["dividends"]) {
   assert(
     !new RegExp(`create\\s+table\\s+(?:public\\.)?${forbiddenTable}\\b`).test(sqlSource),
     `CORE-05 não pode criar tabela financeira: ${forbiddenTable}.`,
@@ -210,5 +212,5 @@ if (process.argv.includes("--connectivity")) {
 
 console.log(
   "Auth validado: 7 rotas, contratos, erros, entradas, redirects, PKCE, separação client/server, "
-  + "Provider Local e ausência de proventos/snapshots remotos.",
+  + "Provider Local, snapshots remotos e ausência de tabela independente de proventos.",
 );

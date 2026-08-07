@@ -1,5 +1,7 @@
 # Definition of Done do Vestra Core
 
+Para iniciar os 30 dias, também é obrigatório: nenhuma rota futura exposta como funcional, recuperação para erros críticos, validação mobile/acessível, backup testado e ausência de bloqueador financeiro conhecido.
+
 Status: critério oficial de conclusão para etapas do Vestra Core.
 
 Uma etapa só pode ser declarada concluída quando todos os itens aplicáveis estiverem atendidos e houver evidência verificável. Item não aplicável deve ser registrado com justificativa; não deve ser simplesmente omitido.
@@ -70,4 +72,3 @@ Uma etapa não está concluída quando:
 - introduz segredo ou dado sensível em local indevido;
 - atualiza código sem atualizar a documentação aplicável;
 - exige a etapa seguinte para tornar a entrega atual compilável ou utilizável.
-

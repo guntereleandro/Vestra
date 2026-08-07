@@ -15,7 +15,7 @@ A CORE-05 introduz somente identidade de negócio e autorização:
 - `public.portfolio_members`;
 - enum `public.portfolio_role`.
 
-Operações, proventos e snapshots ainda não possuem tabelas. O Provider Local continua sendo a fonte operacional da interface.
+Operações e snapshots possuem tabelas por carteira. Proventos continuam derivados das operações e não possuem tabela independente. `portfolio_snapshots` guarda somente o contrato histórico necessário e possui unicidade em `portfolio_id + snapshot_date`.
 
 ## Domínio persistente CORE-06
 

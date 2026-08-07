@@ -9,8 +9,8 @@ import { currency } from "@/lib/engine/totals";
 import { safeNumber } from "@/lib/engine/validations";
 import AssetAutocomplete from "@/components/assets/AssetAutocomplete";
 
-export default function OperationModal({ operation, operations, assetsMaster, onClose, onSave }) {
-  const [form, setForm] = useState(operation || { ...EMPTY_OPERATION, date: new Date().toISOString().slice(0, 10) });
+export default function OperationModal({ operation, operations, assetsMaster, onClose, onSave, defaultType }) {
+  const [form, setForm] = useState(operation || { ...EMPTY_OPERATION, operationType: defaultType || EMPTY_OPERATION.operationType, date: new Date().toISOString().slice(0, 10) });
   const [error, setError] = useState("");
   const income = isIncomeOperation(form.operationType);
   const tradeTotal = useMemo(() => form.operationType === "COMPRA" ? safeNumber(form.quantity) * safeNumber(form.unitPrice) + safeNumber(form.fees) : Math.max(0, safeNumber(form.quantity) * safeNumber(form.unitPrice) - safeNumber(form.fees)), [form.operationType, form.quantity, form.unitPrice, form.fees]);

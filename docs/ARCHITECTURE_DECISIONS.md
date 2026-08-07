@@ -363,3 +363,13 @@ O Proxy usa `getClaims()` para validar e renovar a identidade; páginas protegid
 **Consequências:** valores inválidos são impossíveis; novos papéis exigem migration explícita.
 
 **Alternativas consideradas:** texto com CHECK. Seria flexível, mas repetiria o contrato e reduziria clareza nas funções.
+
+## ADR-014 — Snapshots históricos por fonte e carteira
+
+**Contexto:** o histórico Local alimentava Dashboard e performance, mas não podia acompanhar uma carteira Supabase em outro dispositivo.
+
+**Decisão:** persistir um snapshot diário mínimo por carteira, gerado somente após carga financeira completa. O provider selecionado fornece operações e snapshots em conjunto, sem fallback cruzado. `journeyRecords` permanece derivado e `lastDashboardVisit` local.
+
+**Consequências:** histórico remoto é portátil e protegido por RLS; a mesma data é atualizada idempotentemente; carteira nova começa no primeiro estado observado; importação exige prévia e confirmação.
+
+**Alternativas consideradas:** recalcular todo o passado apenas por operações, misturar histórico Local com operações remotas, criar tabelas de recordes/visitas e executar cron. Rejeitadas por ausência de cotações históricas confiáveis, risco de mistura e complexidade desnecessária.

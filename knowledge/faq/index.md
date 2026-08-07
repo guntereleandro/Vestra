@@ -1,5 +1,17 @@
 # Perguntas frequentes
 
+## Quando o Vestra Core será considerado validado?
+
+Após 30 dias consecutivos de uso real sem depender do Investidor10 para funções essenciais e sem divergência financeira.
+
+## Proventos possuem sincronização separada?
+
+Não. Dividendos, JCP e rendimentos são operações e acompanham a fonte Local ou Supabase escolhida.
+
+## Meu histórico local é enviado ao entrar?
+
+Não. A importação Local → Supabase é manual, apresenta uma prévia e preserva os dados deste navegador. Datas remotas divergentes não são sobrescritas.
+
 Respostas sobre dados locais, operações, carteira, mercado, objetivos, diagnósticos, performance, perfil, estratégia e backup.
 
 Também cobre conta e acesso: criar uma conta não envia operações; a importação é manual, e sair não apaga dados locais.

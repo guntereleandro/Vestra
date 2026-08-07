@@ -18,6 +18,15 @@ if (mode === "setup") {
   console.log("Fixture de onboarding criada.");
 } else if (mode === "cleanup") {
   const fixture = JSON.parse(fs.readFileSync(fixtureFile, "utf8"));
+  const { data: memberships, error: membershipsError } = await admin
+    .from("portfolio_members")
+    .select("portfolio_id")
+    .eq("user_id", fixture.userId);
+  if (membershipsError) throw membershipsError;
+  for (const membership of memberships || []) {
+    const { error: portfolioError } = await admin.from("portfolios").delete().eq("id", membership.portfolio_id);
+    if (portfolioError) throw portfolioError;
+  }
   const { error } = await admin.auth.admin.deleteUser(fixture.userId);
   if (error) throw error;
   fs.rmSync(fixtureFile, { force: true });

@@ -114,12 +114,10 @@ const [
     setRepositoryProvider,
   },
   { REPOSITORY_PROVIDER },
-  { SUPABASE_NOT_IMPLEMENTED },
 ] = await Promise.all([
   import("../lib/repositories/contracts/index.js"),
   import("../lib/repositories/repositoryRegistry.js"),
   import("../lib/repositories/repositoryTypes.js"),
-  import("../lib/repositories/supabase/createSupabaseRepositoryStub.js"),
 ]);
 
 assert(getRepositoryProvider() === REPOSITORY_PROVIDER.LOCAL, "Provider Local não é o provider inicial.");
@@ -128,18 +126,6 @@ const supabaseRepositories = getRepositories();
 for (const name of Object.keys(repositoryContracts)) {
   const validation = validateRepositoryContract(name, supabaseRepositories[name]);
   assert(validation.valid, `${name}: adapter Supabase não respeita o contrato.`);
-}
-for (const name of [
-  "dividends",
-  "portfolioSnapshots",
-]) {
-  const method = repositoryContracts[name][0];
-  try {
-    await supabaseRepositories[name][method]();
-    throw new Error(`${name}: stub Supabase não lançou erro explícito.`);
-  } catch (error) {
-    assert(error.code === SUPABASE_NOT_IMPLEMENTED, `${name}: stub não retornou NOT_IMPLEMENTED.`);
-  }
 }
 setRepositoryProvider(REPOSITORY_PROVIDER.LOCAL);
 assert(getRepositoryProvider() === REPOSITORY_PROVIDER.LOCAL, "Provider Local não foi restaurado.");
@@ -150,10 +136,16 @@ const assetsRepositorySource = read("lib/repositories/supabase/supabaseAssetsRep
 const quotesRepositorySource = read("lib/repositories/supabase/supabaseQuotesRepository.js");
 const preferencesRepositorySource = read("lib/repositories/supabase/supabasePreferencesRepository.js");
 const operationsRepositorySource = read("lib/repositories/supabase/supabaseOperationsRepository.js");
+const snapshotsRepositorySource = read("lib/repositories/supabase/supabasePortfolioSnapshotsRepository.js");
 assert(
   profilesRepositorySource.includes('.from("profiles")')
   && profilesRepositorySource.includes(".upsert("),
   "SupabaseProfilesRepository não foi implementado.",
+);
+assert(
+  snapshotsRepositorySource.includes('.from("portfolio_snapshots")')
+  && snapshotsRepositorySource.includes("portfolio_id,snapshot_date"),
+  "SupabasePortfolioSnapshotsRepository não foi implementado com upsert diário.",
 );
 assert(
   portfoliosRepositorySource.includes('.from("portfolios")')
@@ -234,5 +226,5 @@ assert(getRepositoryProvider() === REPOSITORY_PROVIDER.LOCAL, "Provider final de
 
 console.log(
   "Supabase validado: clientes browser/server/admin, configuração opcional, separação de segredos, "
-  + "6 adapters implementados, 2 stubs, registry multi-provider e Provider Local ativo.",
+  + "8 adapters implementados, nenhum stub, registry multi-provider e Provider Local ativo.",
 );

@@ -13,24 +13,13 @@ import {
   getDataSourceErrorMessage,
 } from "@/lib/services/dataSourceResolver";
 
-const LOCAL_SOURCE = Object.freeze({
-  source: DATA_SOURCE.LOCAL,
-  portfolioId: "local-default-portfolio",
-  portfolioName: "Carteira local",
-  role: "owner",
-  canWrite: true,
-  operationCount: 0,
-  updatedAt: "",
-  loadedAt: "",
-});
-
 export default function useInvestmentData() {
   const [operations, setOperations] = useState([]);
   const [assetsMaster, setAssetsMaster] = useState([]);
   const [assetQuotes, setAssetQuotes] = useState([]);
   const [portfolioHistory, setPortfolioHistory] = useState([]);
   const [portfolioHistoryUnavailable, setPortfolioHistoryUnavailable] = useState(false);
-  const [dataSource, setDataSource] = useState(LOCAL_SOURCE);
+  const [dataSource, setDataSource] = useState(null);
   const [sourceError, setSourceError] = useState(null);
   const [loaded, setLoaded] = useState(false);
   const [storageError, setStorageError] = useState(false);
@@ -43,6 +32,7 @@ export default function useInvestmentData() {
       setAssetsMaster([]);
       setAssetQuotes([]);
       setPortfolioHistory([]);
+      setDataSource(null);
       setLoaded(false);
       setRevision((current) => current + 1);
     };
@@ -60,10 +50,10 @@ export default function useInvestmentData() {
         setOperations(data.operations);
         setAssetsMaster(data.assetsMaster);
         setAssetQuotes(data.quotes);
-        setPortfolioHistory(data.migrated ? await registerPortfolioSnapshot(data) : data.portfolioHistory);
+        setPortfolioHistory(data.portfolioHistory);
         setPortfolioHistoryUnavailable(data.portfolioHistoryUnavailable);
         setDataSource(data.dataSource);
-        financeSignature.current = JSON.stringify({ operations: data.operations, quotes: data.quotes });
+        financeSignature.current = "";
       } catch (error) {
         if (!cancelled) {
           setSourceError({ code: error?.code || "REMOTE_UNAVAILABLE", message: getDataSourceErrorMessage(error) });
@@ -78,15 +68,20 @@ export default function useInvestmentData() {
   }, [revision]);
 
   useEffect(() => {
-    if (!loaded || sourceError || dataSource.source !== DATA_SOURCE.LOCAL) return;
+    if (!loaded || sourceError) return;
     const merged = mergeAssetsMaster(assetsMaster, operations, assetQuotes);
     const nextSignature = JSON.stringify({ operations, quotes: assetQuotes });
     let cancelled = false;
     async function persist() {
       try {
-        await savePortfolioData({ operations, assetsMaster: merged, quotes: assetQuotes });
+        if (dataSource.source === DATA_SOURCE.LOCAL) {
+          await savePortfolioData({ operations, assetsMaster: merged, quotes: assetQuotes });
+        }
         if (nextSignature !== financeSignature.current) {
-          const history = await registerPortfolioSnapshot({ operations, assetsMaster: merged, quotes: assetQuotes });
+          const history = await registerPortfolioSnapshot(
+            { operations, assetsMaster: merged, quotes: assetQuotes },
+            dataSource.portfolioId,
+          );
           if (!cancelled) setPortfolioHistory(history);
           financeSignature.current = nextSignature;
         }
@@ -97,7 +92,7 @@ export default function useInvestmentData() {
     }
     persist();
     return () => { cancelled = true; };
-  }, [operations, assetQuotes, assetsMaster, dataSource.source, loaded, sourceError]);
+  }, [operations, assetQuotes, assetsMaster, dataSource?.source, loaded, sourceError]);
 
   const addOperation = useCallback(async (operation) => {
     try {

@@ -4,6 +4,8 @@
 
 O produto separa [site publico e aplicacao privada](docs/PUBLIC_PRIVATE_ARCHITECTURE.md). Visitantes acessam a Landing e o Mercado; gerenciamento patrimonial exige login. O [onboarding](docs/ONBOARDING.md) cria somente Profile e primeira carteira.
 
+Dashboard e performance respeitam a fonte selecionada. Local mantém o histórico no navegador; Supabase usa snapshots diários da carteira remota. A importação Local → Supabase é manual, possui prévia e preserva conflitos e dados originais. Consulte [Portfolio Snapshots](docs/PORTFOLIO_SNAPSHOTS.md) e [Histórico Patrimonial](docs/PORTFOLIO_HISTORY.md).
+
 Versao 0.8.2
 
 Gerenciador pessoal de investimentos para investidores brasileiros, com interface escura, responsiva e foco em acompanhamento patrimonial.
@@ -20,6 +22,9 @@ O desenvolvimento ocorre em etapas pequenas, compatíveis e verificáveis. Cada 
 
 As fontes oficiais de governança são:
 
+- `docs/CORE_STABILITY.md`: jornadas, recuperação, acessibilidade e pendências;
+- `docs/CORE_30_DAY_VALIDATION.md`: protocolo oficial de validação diária;
+
 - `docs/CORE.md`: missão, escopo e critério dos 30 dias;
 - `docs/ARCHITECTURE_DECISIONS.md`: decisões arquitetônicas permanentes;
 - `docs/ENGINEERING_PRINCIPLES.md`: princípios de engenharia;
@@ -27,6 +32,8 @@ As fontes oficiais de governança são:
 - `docs/CORE_ROADMAP.md`: ordem e dependências das entregas.
 
 ## Funcionalidades atuais
+
+- Proventos operacionais com totais, filtros, agrupamentos e CRUD Local/Supabase, sem persistência duplicada.
 
 - Dashboard 2.0 refinado, com hero patrimonial premium, grafico em destaque, cards padronizados, alocacao com legenda lateral, resumo em mini cards, carteira em cards e ultimas 5 operacoes.
 - Experiencia diaria do Dashboard na versao 0.4.2, com Timeline, recordes, jornada, insights por regras e conquistas discretas.
@@ -221,9 +228,13 @@ npm run build
 
 - Sem dividendos automaticos.
 - Sem corretoras.
-- Sem banco de dados.
-- Sem autenticacao.
 - Sem painel administrativo funcional.
 - Sem recomendacoes de investimento.
 - Os diagnosticos nao avaliam retorno esperado, volatilidade, correlacao ou liquidez.
 - A disponibilidade e limites da brapi.dev dependem do fornecedor e dos termos de uso.
+
+## Gate dos 30 dias
+
+A infraestrutura persistente, autenticação, carteiras, operações, proventos, snapshots e seleção Local/Supabase estão operacionais no Development. A validação pré-30 dias de 2026-08-07 aprovou jornada funcional, viewports de 320 a 768 px, regressões, Next.js 16.3.0, `npm audit`, lint e build.
+
+O gate foi aprovado em 2026-08-07 após confirmação manual do fluxo real de recuperação de senha. Não existe bloqueador categoria A e a contagem oficial dos 30 dias pode iniciar. Consulte `docs/CORE_30_DAY_VALIDATION.md` e `docs/CORE_STABILITY.md`.

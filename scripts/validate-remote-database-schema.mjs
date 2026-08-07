@@ -93,7 +93,6 @@ for (const forbiddenTable of [
   "dividends",
   "quotes",
   "assets",
-  "portfolio_snapshots",
   "preferences",
 ]) {
   assert(

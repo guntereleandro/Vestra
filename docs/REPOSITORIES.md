@@ -75,6 +75,8 @@ Reutiliza `normalizeOperations`, `readLocalData` e `writeLocalData`.
 
 ### DividendsRepository
 
+É uma visão derivada do `OperationsRepository`: Local e Supabase filtram `DIVIDENDO`, `JCP` e `RENDIMENTO` e delegam o CRUD ao mesmo armazenamento operacional.
+
 - `listByPortfolio(portfolioId)`
 - `create(input)`
 - `update(id, input)`
@@ -96,6 +98,8 @@ Preserva a chave `vestra:assetQuotes:v1` e a prioridade manual/automática exist
 
 - `listByPortfolio(portfolioId)`
 - `upsertDaily(snapshot)`
+- `getRange(portfolioId, startDate, endDate)`
+- `getLatest(portfolioId)`
 - `removeAllByPortfolio(portfolioId)`
 
 Preserva um snapshot por data e a chave `vestra:portfolioHistory:v1`.

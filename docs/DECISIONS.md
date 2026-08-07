@@ -1,5 +1,15 @@
 # Decisoes Arquiteturais
 
+## 2026-08-06 - Snapshots são estados observados por carteira
+
+Operações continuam como fonte da verdade. Snapshots persistem somente o contrato histórico necessário, com unicidade diária por carteira. `journeyRecords` é derivável e não recebe tabela; `lastDashboardVisit` permanece local por dispositivo. A importação Local → Supabase é manual, idempotente e nunca sobrescreve conflitos.
+
+Motivo: permitir continuidade entre dispositivos sem duplicar métricas derivadas ou misturar históricos de providers diferentes.
+
+Consequência: Dashboard e performance consomem exclusivamente o histórico da fonte ativa. A CORE-10 de snapshots foi priorizada antes dos proventos persistentes, movidos para a CORE-11.
+
+---
+
 ## 2026-08-01 - Site publico separado da aplicacao
 
 `/` passa a ser Landing, `/dashboard` passa a ser a entrada patrimonial e o proxy protege todas as rotas internas. Mercado e rotas tecnicas de Auth permanecem publicos. Usuario autenticado sem membership recebe onboarding minimo antes do destino solicitado.

@@ -6,6 +6,8 @@ Status: contrato oficial auditado na CORE-07.
 
 Operações são a única fonte persistida para posições, custo, preço médio, vendas, resultados e proventos. A engine deriva esses valores e nenhuma tabela pode competir com ela.
 
+Proventos são operações e não constituem uma segunda fonte de verdade. Página, Dashboard, ativo, snapshots e performance consomem a mesma coleção operacional da fonte ativa.
+
 ## Tipos canônicos
 
 | Tipo | Quantidade | Preço unitário | Taxas | Valor recebido |

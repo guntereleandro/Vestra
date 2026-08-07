@@ -9,4 +9,4 @@ Owner/editor executam CRUD remoto; viewer possui leitura. RLS e a autoridade fin
 
 A reconciliacao compara UUIDs, quantidade, preco medio, custo, posicao, proventos, lucro realizado e totais. Divergencias nao sao resolvidas automaticamente.
 
-Limitacoes: historico patrimonial e snapshots continuam locais; cotacoes remotas sao lidas, mas a edicao visual de cotacao permanece Local nesta etapa.
+Atualização CORE-10: histórico patrimonial e snapshots também podem usar exclusivamente a carteira Supabase ativa. Cotações remotas são lidas, mas a edição visual de cotação permanece Local.

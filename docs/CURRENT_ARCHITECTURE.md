@@ -1,5 +1,7 @@
 # Arquitetura atual
 
+Rotas futuras de IA, IR, simulações e relatórios permanecem preservadas tecnicamente, mas não são expostas na navegação do Core. O checklist de estabilidade está em `CORE_STABILITY.md`.
+
 ## Site, aplicacao e onboarding (CORE-09)
 
 `/` e a Landing publica; `/dashboard` e a entrada autenticada. `AppShell` separa navegacao publica e privada, enquanto `proxy.js` protege todo o patrimonio, preserva `next` e encaminha usuario sem membership ao onboarding. Mercado e Auth permanecem publicos. Detalhes em `PUBLIC_PRIVATE_ARCHITECTURE.md` e `ONBOARDING.md`.
@@ -32,7 +34,8 @@ Supabase Auth opcional:
   profiles/portfolios -> repositories implementados
   assets/quotes/preferences -> tabelas CORE-06 com RLS
   operations -> tabela CORE-07; uso manual em /conta
-  dividends/snapshots -> NOT_IMPLEMENTED
+  dividends -> NOT_IMPLEMENTED
+  snapshots -> portfolio_snapshots
   PostgreSQL -> profiles, portfolios, portfolio_members + RLS
 ```
 
@@ -74,7 +77,7 @@ O schema de identidade/autorização e o primeiro domínio persistente estão ap
 | `/mercado` e `/mercado/[ticker]` | Busca pública e detalhes via mercado/fallback |
 | `/configuracoes` | Cotações, estratégia, risco, mercado e backup |
 | `/conhecimento/*` | Central local, categorias e artigos estáticos |
-| `/proventos` | Placeholder; os registros existem apenas como operações |
+| `/proventos` | Totais, filtros, agrupamentos, histórico e CRUD derivados das operações ativas |
 | `/entrar`, `/cadastrar`, `/recuperar-senha`, `/atualizar-senha`, `/confirmar-email` | Auth público |
 | `/auth/callback` | callback PKCE/OTP |
 | `/conta` | única rota protegida; mostra dados seguros do Auth |
@@ -95,7 +98,7 @@ Há duplicidade conceitual entre `/metas` (placeholder) e `/objetivos` (funciona
 
 ### Histórico patrimonial
 
-`lib/data/portfolioHistory.js` mantém no máximo um snapshot por dia. `useInvestmentData` chama `snapshotsService`, que persiste por `PortfolioSnapshotsRepository`, quando muda a assinatura de operações ou cotações e também após migração.
+`lib/data/portfolioHistory.js` mantém no máximo um snapshot por dia. `useInvestmentData` chama `snapshotsService` somente após carga completa e quando muda a assinatura financeira. Local usa `vestra:portfolioHistory:v1`; Supabase usa `portfolio_snapshots` da carteira ativa, sem mistura ou fallback cruzado.
 
 ### Objetivos
 

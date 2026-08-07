@@ -1,5 +1,7 @@
 # Performance Patrimonial
 
+Proventos usados na decomposição são os tipos de renda da mesma coleção operacional ativa. Nenhum repository ou schema paralelo participa do cálculo.
+
 ## Objetivo
 
 A engine em `lib/engine/performance` explica a evolução registrada do patrimônio sem acessar interface, armazenamento, mercado ou APIs. Aportes são fluxos de capital e nunca são apresentados como rentabilidade.

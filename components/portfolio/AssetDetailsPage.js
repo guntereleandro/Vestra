@@ -42,7 +42,7 @@ export default function AssetDetailsPage({ ticker }) {
         <AssetLogo ticker={base.ticker} name={base.name} logoPath={base.logoPath || asset?.logoPath} size="lg" />
         <div><p className="eyebrow">Detalhes do ativo</p><h1 className="font-display mt-2 text-4xl">{base.ticker}</h1><p className="mt-2 text-sm text-[#777d78]">{base.name} {base.type ? `· ${base.type}` : ""}{base.exchange ? ` · ${base.exchange}` : ""}</p></div>
       </div>
-      {dataSource.canWrite && !sourceError && <Link href="/operacoes" className="gold-button text-center">Registrar operacao</Link>}
+      {dataSource?.canWrite && !sourceError && <Link href="/operacoes" className="gold-button text-center">Registrar operacao</Link>}
     </header>
 
     <section className="mt-8 grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
