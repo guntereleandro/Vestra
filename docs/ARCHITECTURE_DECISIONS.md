@@ -1,5 +1,23 @@
 # Decisões de Arquitetura do Vestra Core
 
+## ADR-016 — Ledger único distingue fluxos e eventos patrimoniais
+
+### Contexto
+
+Desdobramentos, bônus, conversões e caixa remunerado afetam posições reais, mas não cabem corretamente em compra/venda/provento.
+
+### Decisão
+
+Evoluir `portfolio_operations` como ledger de fatos cronológicos. Tipos corporativos não geram fluxo; depósitos e retiradas de caixa são fluxos de valor puro. A engine processa conversões entre ativos em uma passagem global. Bonificação sem custo fica pendente e não é persistida remotamente.
+
+### Consequências
+
+Uma única fonte reconstrói posições e snapshots; schema e backup ganham campos; a UI manual permanece compatível; importadores precisam classificar antes de gravar.
+
+### Alternativas consideradas
+
+Tabela `corporate_actions` separada: rejeitada agora por exigir junção e ordenação transacional entre duas fontes. Compra/venda sintética: rejeitada por criar caixa e resultado fictícios. Posições ajustadas diretamente: rejeitada por perder auditabilidade.
+
 ## ADR-015 — Eventos externos incompatíveis são retidos sem conversão artificial
 
 ### Contexto

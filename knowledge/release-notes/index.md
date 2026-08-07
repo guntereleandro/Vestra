@@ -1,5 +1,9 @@
 # Release Notes
 
+## 2026-08-07 — Compatibilidade de importação
+
+O ledger passou a distinguir desdobramentos, bonificações, conversões e movimentações de caixa remunerado sem criar compras, vendas ou rendimentos fictícios. A importação real continua condicionada à prévia e reconciliação completa.
+
 ## 2026-08-07 — CORE-12
 
 A navegação foi limitada às áreas funcionais do Core e foi criado o protocolo oficial de estabilidade e validação dos 30 dias.

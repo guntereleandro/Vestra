@@ -42,7 +42,7 @@ Limitação: a migração usa a data corrente, portanto não reconstrói o hist�
 
 ## Lacunas do backup
 
-O backup declara schema 5, mas omite metas, marcos, jornada e última visita. Isso contradiz a expectativa de “todos os dados” e pode produzir perda funcional em troca de navegador. O cache deve continuar excluído. As chaves legadas e o marcador também não precisam ser exportados, desde que a migração nova mantenha rastreabilidade.
+O backup declara schema 6 e preserva os campos dos eventos do ledger, mas omite metas, marcos, jornada e última visita. Isso contradiz a expectativa de “todos os dados” e pode produzir perda funcional em troca de navegador. O cache deve continuar excluído. As chaves legadas e o marcador também não precisam ser exportados, desde que a migração nova mantenha rastreabilidade.
 
 ## Requisitos para a migração Core
 

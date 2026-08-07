@@ -145,6 +145,8 @@ A área `/conta` compara Local e Supabase, baixa backup e importa manualmente so
 
 O contrato operacional cobre apenas compra, venda, dividendo, JCP e rendimento. A arquitetura atual não representa eventos societários (bonificação, desdobramento ou conversão/incorporação) nem o ciclo próprio de uma conta remunerada. A classe visual `Caixa` não acrescenta semântica à engine. Quantidades fracionárias são aceitas; atributos estruturados de renda fixa, como vencimento e indexador, ainda não fazem parte da operação. A fronteira de compatibilidade da carteira real está documentada em `REAL_PORTFOLIO_IMPORT_READINESS.md`.
 
+O patch de importação amplia esse mesmo ledger com eventos patrimoniais e caixa remunerado, sem criar uma segunda coleção. `portfolio.js` processa o histórico globalmente para permitir transferência entre tickers. `portfolioImportClassifier.js` faz triagem explícita; backup schema 6 e os adapters Local/Supabase preservam os campos adicionais. O formulário manual continua limitado aos tipos anteriores.
+
 ### Cotação
 
 1. Cotação manual/automática persistente vive em `vestra:assetQuotes:v1`.
@@ -155,7 +157,7 @@ O contrato operacional cobre apenas compra, venda, dividendo, JCP e rendimento. 
 
 ### Backup
 
-O schema 5 inclui operações, cotações, ativos customizados, histórico, preferências diagnósticas e perfil de risco. Não inclui objetivos, marcos, jornada, última visita, cache ou chaves legadas.
+O schema 6 inclui operações e eventos do ledger, cotações, ativos customizados, histórico, preferências diagnósticas e perfil de risco. Não inclui objetivos, marcos, jornada, última visita, cache ou chaves legadas. Backups 1–5 permanecem legíveis.
 
 ## API e providers de mercado
 

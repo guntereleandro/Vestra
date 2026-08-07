@@ -132,6 +132,8 @@ Status: validação técnica pré-30 dias aprovada em 2026-08-07. Jornada remota
 
 Gate de importação real, reaberto em 2026-08-07: a auditoria da carteira do Investidor10 encontrou bonificação, desdobramento, conversão/incorporação e caixa remunerado sem representação fiel no contrato atual. Esses registros devem permanecer retidos conforme `REAL_PORTFOLIO_IMPORT_READINESS.md`. Enquanto afetarem posições, base de custo ou saldos necessários ao uso diário, constituem pendência categoria A e o teste oficial não deve iniciar. O gate fecha após decisão de domínio, validação de regressão e reconciliação do lote real, sem exigir que atributos analíticos adiados da renda fixa sejam inventados.
 
+Patch de compatibilidade: domínio, engine, backup schema 6, repository, migration e SDK foram validados no Development para os casos conhecidos. O bloqueador A permanece somente até a reconciliação do arquivo real completo; fixtures não substituem os saldos de origem.
+
 ## Dependências críticas
 
 ```text

@@ -111,7 +111,7 @@ Esses valores são referências. A estratégia nunca é sobrescrita durante cál
 
 Diagnósticos com `scope: "risk_profile"` verificam renda variável frente ao perfil, cripto, liquidez declarada, ausência informada de reserva e horizonte curto com classes voláteis. A interface apresenta no máximo três itens em “Coerência com seu perfil”.
 
-O backup schema 5 inclui `riskProfile` sem recalcular o perfil na importação. Backups 1 a 4 permanecem aceitos.
+O backup schema 6 inclui `riskProfile` e eventos do ledger sem recalcular o perfil na importação. Backups 1 a 5 permanecem aceitos.
 
 ## Padrões de comportamento
 

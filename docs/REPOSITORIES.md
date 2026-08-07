@@ -161,7 +161,7 @@ A causa técnica pode permanecer em `error.cause`, sem ser encaminhada à interf
 ## Compatibilidade
 
 - nenhuma chave foi criada ou renomeada;
-- schema de backup permanece 5;
+- schema de backup passa a 6 e preserva leitura das versões 1–5;
 - migrações legadas continuam em `readLocalData`;
 - operações continuam sendo a fonte de verdade;
 - proventos não são duplicados;
@@ -190,3 +190,5 @@ Veja `docs/SUPABASE_INFRASTRUCTURE.md`.
 `SupabaseProfilesRepository` implementa `getCurrent` e `upsert`, sempre derivando o ID do Auth User. `SupabasePortfoliosRepository` implementa listagem, carteira ativa persistente por usuário, criação pela RPC `create_portfolio_with_owner` e atualização limitada por RLS.
 
 Assets, Quotes, Preferences e Operations persistem por carteira e reutilizam os normalizadores existentes. Operations faz CRUD e upsert idempotente em lotes de 500, sem exclusão implícita. Dividends e PortfolioSnapshots continuam como stubs. O registry permanece em `local`.
+
+Operations agora realiza round-trip dos campos de eventos corporativos e caixa remunerado. O contrato público de métodos não mudou; Local e Supabase compartilham normalização e validação. O Data Source Resolver continua entregando exatamente um repository, sem dual write.

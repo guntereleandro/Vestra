@@ -1,5 +1,13 @@
 # Perguntas frequentes
 
+## O Vestra transforma bônus ou desdobramentos em compras?
+
+Não. Eventos societários possuem tipos próprios. Bonificação sem custo atribuído fica pendente para revisão, e conversões preservam a continuidade econômica entre os ativos.
+
+## Aportes no Mercado Pago são rendimentos?
+
+Não. Entradas de capital são depósitos em Caixa Remunerado. Apenas a remuneração efetiva aumenta o retorno, sem inflar aportes ou proventos passivos.
+
 ## Quando o Vestra Core será considerado validado?
 
 Após 30 dias consecutivos de uso real sem depender do Investidor10 para funções essenciais e sem divergência financeira.

@@ -8,7 +8,7 @@
 4. Operações locais são validadas e comparadas por UUID.
 5. A prévia classifica somente local, somente remoto, iguais e divergentes.
 6. O usuário confirma “Baixar backup e importar registros seguros”.
-7. Um backup schema 5 é baixado antes da escrita.
+7. Um backup schema 6 é baixado antes da escrita; versões 1–5 continuam restauráveis.
 8. Ativos necessários são sincronizados e somente registros “somente local” são enviados.
 9. O serviço relê o remoto e apresenta a reconciliação final.
 
@@ -31,3 +31,7 @@ Mesmo UUID com conteúdo diferente é conflito. A CORE-07 apenas informa ticker/
 A importação não troca a fonte global e não faz pull para o navegador. Operações exclusivamente remotas são apenas informadas. Dados já normalizados pelo legado podem ter perdido a forma bruta inválida anterior.
 
 O fluxo existente pressupõe que a entrada já obedeça ao contrato canônico. Uma carga externa do Investidor10 deve passar antes pela triagem descrita em `REAL_PORTFOLIO_IMPORT_READINESS.md`. Bonificações, desdobramentos, conversões/incorporações e caixa remunerado ficam em lote retido; não podem ser remodelados como compra, venda ou rendimento para aproveitar este fluxo. Tesouro e renda fixa tradicional entram somente após identificação não ambígua e reconciliação de quantidade, preço, taxas e valor aplicado.
+
+Após o patch de compatibilidade, a retenção permanece para itens desconhecidos e bônus sem custo atribuído. `previewPortfolioImport` classifica registros antes da normalização. Eventos válidos usam o mesmo UUID, backup prévio, idempotência e reconciliação das operações comuns; nenhuma classificação altera automaticamente a fonte LOCAL/SUPABASE.
+
+A migration necessária foi aplicada somente ao Supabase Development em 2026-08-07. O teste SDK remoto validou round-trip e permissões; a importação da carteira real não foi executada.

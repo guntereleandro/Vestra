@@ -1,5 +1,11 @@
 # Decisoes Arquiteturais
 
+## 2026-08-07 - Ledger único para compatibilidade da importação real
+
+Eventos `SPLIT`, `BONUS` e `CONVERSION` modificam posições sem fluxo. `CASH_DEPOSIT` e `CASH_WITHDRAWAL` representam capital de Caixa Remunerado por valor puro; `RENDIMENTO` aumenta seu saldo sem virar aporte ou provento passivo. A decisão permanente está na ADR-016.
+
+---
+
 ## 2026-08-07 - Importação real usa retenção explícita de eventos incompatíveis
 
 A carteira do Investidor10 será dividida em lote importável e lote retido antes de qualquer escrita. Compras, vendas e rendas economicamente equivalentes ao contrato podem avançar após reconciliação. Bonificação, desdobramento, conversão/incorporação e caixa remunerado não serão convertidos em tipos existentes. Tesouro fracionário e renda fixa tradicional são aceitos para movimentação básica quando identidade e valores fecharem, sem inferir atributos ausentes.

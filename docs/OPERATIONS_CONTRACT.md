@@ -20,6 +20,18 @@ Proventos são operações e não constituem uma segunda fonte de verdade. Pági
 
 Não há aliases canônicos adicionais. O MVP antigo convertia posições agregadas em `COMPRA` e renda agregada em `DIVIDENDO` ou `RENDIMENTO`.
 
+### Eventos adicionais do ledger
+
+| Tipo | Fluxo externo | Efeito |
+|---|---:|---|
+| `SPLIT` | não | altera quantidade pela razão e preserva custo |
+| `BONUS` | não | acrescenta quantidade e custo atribuído explícito |
+| `CONVERSION` | não | transfere quantidade e custo entre ativos |
+| `CASH_DEPOSIT` | aporte | aumenta saldo e capital de caixa remunerado |
+| `CASH_WITHDRAWAL` | retirada | reduz saldo e capital de caixa remunerado |
+
+`OPERATION_TYPES` continua contendo apenas os cinco tipos do formulário manual existente. `PORTFOLIO_EVENT_TYPES` define todos os fatos aceitos pelo normalizador e pela persistência, evitando expor formulários incompletos.
+
 ## Limite para importações externas
 
 Os cinco tipos canônicos representam negociações e rendas, não todos os eventos capazes de alterar uma carteira real. Bonificação, desdobramento, grupamento, conversão/incorporação e transferência de custódia não podem ser convertidos artificialmente em compra ou venda: isso mudaria aportes, custo, preço médio ou lucro realizado. Caixa remunerado também não deve ser classificado como rendimento nem presumido como CDB convencional.

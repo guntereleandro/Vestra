@@ -1,6 +1,6 @@
 # Preparação da importação da carteira real
 
-Status: auditoria documental prévia ao Dia 1/30, realizada em 2026-08-07. Nenhum dado foi importado.
+Status: suporte de domínio implementado e migration/SDK validados no Supabase Development em 2026-08-07; a carteira real ainda não foi importada. O gate fecha somente após reconciliação do arquivo real completo.
 
 ## Objetivo e limite
 
@@ -60,3 +60,9 @@ Se os eventos retidos não afetarem posição, custo ou histórico exigido no pe
 ## Fora do escopo desta auditoria
 
 Não foram alterados contrato, engine, repositories, schema, migrations ou dados. Não foi executada importação nem definida implementação definitiva dos novos eventos.
+
+## Patch de compatibilidade
+
+O ledger passou a reconhecer `SPLIT`, `BONUS`, `CONVERSION`, `CASH_DEPOSIT` e `CASH_WITHDRAWAL`. A classificação de origem distingue operação comum, desdobramento, bônus, conversão, caixa remunerado e item não suportado. Nenhum item desconhecido recebe alias silencioso. O round-trip remoto, idempotência e matriz owner/editor/viewer/anon passaram com dados artificiais removidos ao final.
+
+Fixtures sanitizadas confirmam SADI11 1:10, transferência SADI11 → SAPI11, bônus de GGBR4/GOAU4 com custo atribuído explícito, depósitos/rendimento/retirada do Mercado Pago e Tesouro IPCA+ 2032 com quantidade `0,10`. Os saldos integrais do arquivo real não foram fornecidos ao patch; portanto, a reconciliação final de quantidade, custo e patrimônio permanece obrigatória antes da carga.

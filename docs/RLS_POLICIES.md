@@ -90,3 +90,7 @@ No Development remoto, a mesma matriz foi repetida pelo SDK com contas artificia
 | DELETE | sim | sim | não | não |
 
 INSERT exige `created_by = auth.uid()`. `protect_operation_identity` impede alterar UUID, carteira ou autor. A exclusão é física e explícita. `core_07_operations_rls.test.sql` cobre CRUD, papéis, isolamento, anon, idempotência, enum e constraints.
+
+O patch de compatibilidade não altera policies ou grants: owner/editor escrevem, viewer lê, não membro e anon não acessam. `core_import_compatibility_events.test.sql` repete o bloqueio anon e valida constraints dos eventos; o índice parcial por ticker destino permanece dentro da carteira.
+
+O SDK remoto confirmou round-trip dos eventos, leitura de viewer, escrita de owner/editor, isolamento sem membership e bloqueio anon no Development. Usuários, carteiras e eventos artificiais foram removidos ao final.

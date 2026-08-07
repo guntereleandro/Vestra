@@ -23,7 +23,7 @@ body {
   min-height: 100vh;
 }
 main { overflow-x: clip; }
-button, input, select { font: inherit; }
+button, input, select, textarea { font: inherit; }
 button { cursor: pointer; }
 ::selection { background: var(--gold); color: #090b0a; }
 
@@ -69,7 +69,12 @@ button { cursor: pointer; }
   box-shadow: 0 0 0 3px rgba(217, 184, 108, .08);
 }
 .field::placeholder { color: #555b56; }
+.relative > svg.absolute + .field { padding-inline-start: 2.75rem; }
 select.field { color-scheme: dark; }
+
+@media (max-width: 767px), (hover: none) and (pointer: coarse) {
+  input, select, textarea { font-size: 1rem !important; }
+}
 
 @media (max-width: 767px) {
   .asset-table thead { display: none; }

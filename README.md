@@ -181,7 +181,7 @@ O cache e temporario e pode ser limpo sem afetar a carteira.
 
 ## Backup
 
-O backup schema atual e `5`.
+O backup schema atual e `6`; backups 1–5 continuam aceitos.
 
 Inclui:
 
@@ -237,4 +237,4 @@ npm run build
 
 A infraestrutura persistente, autenticação, carteiras, operações, proventos, snapshots e seleção Local/Supabase estão operacionais no Development. A validação pré-30 dias de 2026-08-07 aprovou jornada funcional, viewports de 320 a 768 px, regressões, Next.js 16.3.0, `npm audit`, lint e build.
 
-O gate foi aprovado em 2026-08-07 após confirmação manual do fluxo real de recuperação de senha. Não existe bloqueador categoria A e a contagem oficial dos 30 dias pode iniciar. Consulte `docs/CORE_30_DAY_VALIDATION.md` e `docs/CORE_STABILITY.md`.
+O gate técnico foi aprovado em 2026-08-07 após confirmação manual da recuperação de senha. A carga real reabriu um bloqueador A: eventos societários e caixa remunerado precisam concluir validação remota e reconciliação integral antes do Dia 1. Consulte `docs/REAL_PORTFOLIO_IMPORT_READINESS.md`, `docs/CORPORATE_ACTIONS.md` e `docs/CASH_MANAGEMENT.md`.

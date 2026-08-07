@@ -12,6 +12,7 @@ import {
   FINANCIAL_REGRESSION_OPERATIONS,
 } from "./financial-regression-fixtures.mjs";
 import { reconcileOperations } from "../lib/services/operationsMigrationService.js";
+import { calculatePositions } from "../lib/engine/portfolio.js";
 
 function assert(condition, message) {
   if (!condition) throw new Error(message);
@@ -129,6 +130,21 @@ try {
     "Ordenacao remota nao e deterministica.",
   );
   assert((await preferencesA.getByPortfolio(portfolioId)).dataSource === "SUPABASE", "Importacao alterou a fonte escolhida.");
+  const compatibilityEvents = [
+    { id: "51000000-0000-4000-8000-000000000001", ticker: "SADI11", assetName: "SADI", assetType: "FII", operationType: "COMPRA", date: "2024-01-10", quantity: 2, unitPrice: 100, fees: 0, totalValue: 200, notes: "" },
+    { id: "51000000-0000-4000-8000-000000000002", ticker: "SADI11", assetName: "SADI", assetType: "FII", operationType: "SPLIT", date: "2024-10-16", ratioFrom: 1, ratioTo: 10, notes: "" },
+    { id: "51000000-0000-4000-8000-000000000003", ticker: "SADI11", assetName: "SADI", assetType: "FII", operationType: "CONVERSION", date: "2025-12-10", quantity: 20, targetTicker: "SAPI11", targetAssetName: "SAPI", targetAssetType: "FII", targetQuantity: 18, notes: "" },
+    { id: "51000000-0000-4000-8000-000000000004", ticker: "MP-CASH", assetName: "Mercado Pago", assetType: "Caixa Remunerado", operationType: "CASH_DEPOSIT", date: "2025-01-02", totalValue: 25, notes: "" },
+    { id: "51000000-0000-4000-8000-000000000005", ticker: "MP-CASH", assetName: "Mercado Pago", assetType: "Caixa Remunerado", operationType: "RENDIMENTO", date: "2025-01-03", totalValue: 2, notes: "" },
+  ];
+  await operationsA.replaceAllByPortfolio(portfolioId, compatibilityEvents);
+  const remoteCompatibility = await operationsA.listByPortfolio(portfolioId);
+  const compatibilityIds = new Set(compatibilityEvents.map((operation) => operation.id));
+  const roundTripEvents = remoteCompatibility.filter((operation) => compatibilityIds.has(operation.id));
+  assert(roundTripEvents.length === compatibilityEvents.length, "Eventos de compatibilidade nao completaram round-trip remoto.");
+  const compatibilityPositions = calculatePositions(roundTripEvents);
+  assert(compatibilityPositions.find((position) => position.ticker === "SAPI11")?.quantity === 18, "Conversao remota perdeu quantidade destino.");
+  assert(compatibilityPositions.find((position) => position.ticker === "MP-CASH")?.currentValue === 27, "Caixa remunerado remoto perdeu saldo.");
   const snapshotsA = createSupabasePortfolioSnapshotsRepository(clientA);
   const snapshot = {
     portfolioId, date: "2026-08-01", timestamp: Date.parse("2026-08-01T12:00:00Z"),
@@ -153,7 +169,7 @@ try {
   );
   assert(
     (await createSupabaseOperationsRepository(clientA).listByPortfolio(portfolioId)).length
-      === FINANCIAL_REGRESSION_OPERATIONS.length,
+      === FINANCIAL_REGRESSION_OPERATIONS.length + compatibilityEvents.length,
     "Operacoes nao persistiram apos recriar repository.",
   );
 
@@ -175,7 +191,7 @@ try {
   assert((await portfoliosB.list()).some((item) => item.id === portfolioId), "Viewer nao listou carteira.");
   assert((await createSupabaseAssetsRepository(clientB).listByPortfolio(portfolioId)).length === 1, "Viewer nao leu assets.");
   const operationsB = createSupabaseOperationsRepository(clientB);
-  assert((await operationsB.listByPortfolio(portfolioId)).length === FINANCIAL_REGRESSION_OPERATIONS.length, "Viewer nao leu operacoes.");
+  assert((await operationsB.listByPortfolio(portfolioId)).length === FINANCIAL_REGRESSION_OPERATIONS.length + compatibilityEvents.length, "Viewer nao leu operacoes.");
   const snapshotsB = createSupabasePortfolioSnapshotsRepository(clientB);
   assert((await snapshotsB.listByPortfolio(portfolioId)).length === 2, "Viewer nao leu snapshots.");
   try {
