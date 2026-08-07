@@ -20,6 +20,14 @@ Proventos são operações e não constituem uma segunda fonte de verdade. Pági
 
 Não há aliases canônicos adicionais. O MVP antigo convertia posições agregadas em `COMPRA` e renda agregada em `DIVIDENDO` ou `RENDIMENTO`.
 
+## Limite para importações externas
+
+Os cinco tipos canônicos representam negociações e rendas, não todos os eventos capazes de alterar uma carteira real. Bonificação, desdobramento, grupamento, conversão/incorporação e transferência de custódia não podem ser convertidos artificialmente em compra ou venda: isso mudaria aportes, custo, preço médio ou lucro realizado. Caixa remunerado também não deve ser classificado como rendimento nem presumido como CDB convencional.
+
+Quantidade fracionária é suportada até oito casas. Assim, uma operação de Tesouro Direto com quantidade `0,10` é compatível com a precisão do contrato, desde que preço, taxas e total derivado sejam reconciliados. Vencimento, indexador, emissor, liquidez e tributação não possuem campos estruturados no contrato atual.
+
+As regras de triagem e retenção da carteira real estão em `REAL_PORTFOLIO_IMPORT_READINESS.md`.
+
 ## Registro de domínio
 
 - `id`: UUID estável.

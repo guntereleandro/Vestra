@@ -1,5 +1,30 @@
 # Decisões de Arquitetura do Vestra Core
 
+## ADR-015 — Eventos externos incompatíveis são retidos sem conversão artificial
+
+### Contexto
+
+A carteira real do Investidor10 contém bonificações, desdobramentos, conversões/incorporações, títulos fracionários e depósitos em caixa remunerado. O contrato atual reconhece somente compra, venda e três tipos de renda. Como operações são a fonte da verdade, uma equivalência apenas sintática pode alterar custo, quantidade, lucro e performance.
+
+### Decisão
+
+Importar imediatamente apenas fatos cujo significado econômico coincida com o contrato canônico e cujos valores sejam reconciliáveis. Preservar eventos incompatíveis em lote retido, fora da engine e sem perda da forma de origem, até existir decisão explícita de domínio e cobertura de regressão. É proibido representar bonificação ou desdobramento como compra, conversão como venda seguida de compra e aporte em caixa remunerado como rendimento. Quantidade fracionária não exige novo tipo; atributos próprios de renda fixa exigem tratamento separado da movimentação básica.
+
+### Consequências
+
+- a importação real deixa de ser “tudo ou nada” e passa a ter lote importável e lote retido;
+- a engine não recebe fatos com significado adulterado;
+- posições afetadas por eventos retidos não podem ser consideradas reconciliadas;
+- a prontidão técnica da CORE-12 não basta para iniciar os 30 dias enquanto esses eventos afetarem a carteira em uso;
+- suporte futuro exige mudança deliberada de contrato, persistência, importação e testes, nunca apenas um alias.
+
+### Alternativas consideradas
+
+- registrar bonificação/desdobramento como compra de custo zero: rejeitada por não expressar alocação de custo, aporte e regra fiscal;
+- registrar conversão como venda e compra: rejeitada por criar realização e fluxos de caixa possivelmente inexistentes;
+- registrar depósitos do Mercado Pago como rendimento ou CDB genérico: rejeitada por confundir capital, remuneração, liquidez e tributação;
+- descartar eventos não reconhecidos: rejeitada por causar perda silenciosa e reconciliação falsa.
+
 ## ADR-011 — Sincronização inicial não destrutiva
 
 ### Contexto

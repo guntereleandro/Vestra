@@ -128,7 +128,9 @@ Entrega: protocolo de uso, diário de lacunas, métricas e decisão de conclusã
 
 Aceite: 30 dias consecutivos sem recorrer ao Investidor10 para funções essenciais; qualquer exceção deve ser classificada e resolvida ou formalmente retirada do escopo.
 
-Status: validação pré-30 dias aprovada em 2026-08-07. Jornada remota, mobile, regressões, Next.js 16.3.0, audit, lint e build passaram. O responsável confirmou manualmente recebimento do e-mail de recuperação, abertura do link, troca de senha e novo login. Não existe bloqueador categoria A; o teste oficial de 30 dias pode iniciar. pgTAP continua pendência de ambiente sem bloquear o uso diário.
+Status: validação técnica pré-30 dias aprovada em 2026-08-07. Jornada remota, mobile, regressões, Next.js 16.3.0, audit, lint e build passaram. O responsável confirmou manualmente recebimento do e-mail de recuperação, abertura do link, troca de senha e novo login. pgTAP continua pendência de ambiente sem bloquear o uso diário.
+
+Gate de importação real, reaberto em 2026-08-07: a auditoria da carteira do Investidor10 encontrou bonificação, desdobramento, conversão/incorporação e caixa remunerado sem representação fiel no contrato atual. Esses registros devem permanecer retidos conforme `REAL_PORTFOLIO_IMPORT_READINESS.md`. Enquanto afetarem posições, base de custo ou saldos necessários ao uso diário, constituem pendência categoria A e o teste oficial não deve iniciar. O gate fecha após decisão de domínio, validação de regressão e reconciliação do lote real, sem exigir que atributos analíticos adiados da renda fixa sejam inventados.
 
 ## Dependências críticas
 

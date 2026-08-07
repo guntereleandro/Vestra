@@ -1,5 +1,15 @@
 # Decisoes Arquiteturais
 
+## 2026-08-07 - Importação real usa retenção explícita de eventos incompatíveis
+
+A carteira do Investidor10 será dividida em lote importável e lote retido antes de qualquer escrita. Compras, vendas e rendas economicamente equivalentes ao contrato podem avançar após reconciliação. Bonificação, desdobramento, conversão/incorporação e caixa remunerado não serão convertidos em tipos existentes. Tesouro fracionário e renda fixa tradicional são aceitos para movimentação básica quando identidade e valores fecharem, sem inferir atributos ausentes.
+
+Motivo: operações são a fonte da verdade; aliases artificiais corromperiam quantidade, custo, preço médio, lucro realizado, patrimônio ou performance.
+
+Consequência: a prontidão para o Dia 1 volta a depender da resolução dos eventos que afetam posições e saldos reais. Detalhes e gate estão em `REAL_PORTFOLIO_IMPORT_READINESS.md`; a decisão permanente está na ADR-015.
+
+---
+
 ## 2026-08-06 - Snapshots são estados observados por carteira
 
 Operações continuam como fonte da verdade. Snapshots persistem somente o contrato histórico necessário, com unicidade diária por carteira. `journeyRecords` é derivável e não recebe tabela; `lastDashboardVisit` permanece local por dispositivo. A importação Local → Supabase é manual, idempotente e nunca sobrescreve conflitos.

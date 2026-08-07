@@ -143,6 +143,8 @@ Oito contratos públicos cobrem profiles, portfolios, assets, operations, divide
 
 A área `/conta` compara Local e Supabase, baixa backup e importa manualmente somente UUIDs seguros. Ela não troca a origem usada pela engine.
 
+O contrato operacional cobre apenas compra, venda, dividendo, JCP e rendimento. A arquitetura atual não representa eventos societários (bonificação, desdobramento ou conversão/incorporação) nem o ciclo próprio de uma conta remunerada. A classe visual `Caixa` não acrescenta semântica à engine. Quantidades fracionárias são aceitas; atributos estruturados de renda fixa, como vencimento e indexador, ainda não fazem parte da operação. A fronteira de compatibilidade da carteira real está documentada em `REAL_PORTFOLIO_IMPORT_READINESS.md`.
+
 ### Cotação
 
 1. Cotação manual/automática persistente vive em `vestra:assetQuotes:v1`.

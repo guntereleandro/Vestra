@@ -29,3 +29,5 @@ Mesmo UUID com conteúdo diferente é conflito. A CORE-07 apenas informa ticker/
 ## Limitações
 
 A importação não troca a fonte global e não faz pull para o navegador. Operações exclusivamente remotas são apenas informadas. Dados já normalizados pelo legado podem ter perdido a forma bruta inválida anterior.
+
+O fluxo existente pressupõe que a entrada já obedeça ao contrato canônico. Uma carga externa do Investidor10 deve passar antes pela triagem descrita em `REAL_PORTFOLIO_IMPORT_READINESS.md`. Bonificações, desdobramentos, conversões/incorporações e caixa remunerado ficam em lote retido; não podem ser remodelados como compra, venda ou rendimento para aproveitar este fluxo. Tesouro e renda fixa tradicional entram somente após identificação não ambígua e reconciliação de quantidade, preço, taxas e valor aplicado.
