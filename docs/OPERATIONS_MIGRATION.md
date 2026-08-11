@@ -30,7 +30,9 @@ Mesmo UUID com conteúdo diferente é conflito. A CORE-07 apenas informa ticker/
 
 A importação não troca a fonte global e não faz pull para o navegador. Operações exclusivamente remotas são apenas informadas. Dados já normalizados pelo legado podem ter perdido a forma bruta inválida anterior.
 
-O fluxo existente pressupõe que a entrada já obedeça ao contrato canônico. Uma carga externa do Investidor10 deve passar antes pela triagem descrita em `REAL_PORTFOLIO_IMPORT_READINESS.md`. Bonificações, desdobramentos, conversões/incorporações e caixa remunerado ficam em lote retido; não podem ser remodelados como compra, venda ou rendimento para aproveitar este fluxo. Tesouro e renda fixa tradicional entram somente após identificação não ambígua e reconciliação de quantidade, preço, taxas e valor aplicado.
+O fluxo pressupõe entrada canônica e triagem por `REAL_PORTFOLIO_IMPORT_READINESS.md`. Bonificações, desdobramentos, conversões e caixa remunerado usam eventos próprios; renda fixa por valor usa aplicação/resgate monetários sem quantidade inventada. Registros ambíguos continuam retidos.
+
+Para a carteira real congelada, o preflight de 2026-08-11 confirmou 109 eventos em um único lote atômico, IDs determinísticos, zero conflito de UUID, zero duplicidade semântica, destino único, fonte SUPABASE, backup disponível e ausência de dual write. Nenhuma gravação foi realizada.
 
 Após o patch de compatibilidade, a retenção permanece para itens desconhecidos e bônus sem custo atribuído. `previewPortfolioImport` classifica registros antes da normalização. Eventos válidos usam o mesmo UUID, backup prévio, idempotência e reconciliação das operações comuns; nenhuma classificação altera automaticamente a fonte LOCAL/SUPABASE.
 

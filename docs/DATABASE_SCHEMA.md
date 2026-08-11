@@ -28,11 +28,13 @@ Campos derivados de mercado (`effectivePrice`, indicadores, dividendos do provid
 
 ## Operações CORE-07
 
-`portfolio_operations` possui UUID, `portfolio_id`, snapshot de ticker/nome/tipo, tipo textual com constraint explícita, data civil, quantidade, preço unitário, taxas, valores de renda/caixa, campos de evento, notas, origem, ID externo opcional, autor e timestamps.
+`portfolio_operations` possui UUID, `portfolio_id`, snapshot de ticker/nome/tipo, tipo textual com constraint explícita, data civil, quantidade, preço unitário, taxas, valores de renda/caixa/renda fixa, campos de evento, notas, origem, ID externo opcional, autor e timestamps.
 
 Quantidade usa `numeric(28,8)` e dinheiro `numeric(24,8)`. Compra/venda exigem quantidade positiva e não aceitam `income_amount`; renda exige quantidade/preço zero e `income_amount` positivo. Não existem colunas de preço médio, saldo, posição, lucro, patrimônio ou totais. Ticker é referência histórica, sem FK obrigatória ao catálogo.
 
 O patch de importação adiciona `cash_amount`, `ratio_from`, `ratio_to`, `attributed_cost`, dados do ativo destino, `target_quantity` e `transferred_cost`. `SPLIT`, `BONUS` e `CONVERSION` não possuem valor financeiro; `CASH_DEPOSIT`/`CASH_WITHDRAWAL` usam somente `cash_amount`. O enum anterior foi convertido para texto validado para permitir evolução versionada sem bloquear migrations transacionais.
+
+A migration `20260811000100_value_based_fixed_income.sql`, aplicada ao Supabase Development em 2026-08-11, adiciona `value_amount` e os tipos `FIXED_INCOME_APPLICATION`/`FIXED_INCOME_REDEMPTION`. Esses eventos exigem `asset_type = 'Renda Fixa'`, quantidade/preço zero e valor positivo. Nenhum saldo, rendimento derivado ou posição é persistido.
 
 A migration `20260807000100_import_compatibility_events.sql` foi aplicada ao Development em 2026-08-07. O histórico local/remoto ficou alinhado; Production não foi alterado.
 

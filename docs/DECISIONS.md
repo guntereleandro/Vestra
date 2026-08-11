@@ -1,5 +1,13 @@
 # Decisoes Arquiteturais
 
+## 2026-08-11 — Renda fixa por valor sem quantidade artificial
+
+CDB, LCI, LCA, LCD e instrumentos equivalentes podem usar `FIXED_INCOME_APPLICATION` e `FIXED_INCOME_REDEMPTION`, persistidos em `value_amount`. A engine deriva saldo monetário com preço interno 1; `RENDIMENTO` registra valorização ou ajuste acumulado explicitamente datado sem virar aporte ou provento passivo. Tesouro continua quantitativo quando a origem fornece quantidade e preço. Decisão permanente: ADR-017.
+
+Motivo: preservar o significado econômico sem inventar quantidade, reutilizar o ledger único e separar capital aplicado de remuneração.
+
+---
+
 ## 2026-08-07 - Ledger único para compatibilidade da importação real
 
 Eventos `SPLIT`, `BONUS` e `CONVERSION` modificam posições sem fluxo. `CASH_DEPOSIT` e `CASH_WITHDRAWAL` representam capital de Caixa Remunerado por valor puro; `RENDIMENTO` aumenta seu saldo sem virar aporte ou provento passivo. A decisão permanente está na ADR-016.

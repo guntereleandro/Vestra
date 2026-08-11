@@ -29,8 +29,14 @@ Não há aliases canônicos adicionais. O MVP antigo convertia posições agrega
 | `CONVERSION` | não | transfere quantidade e custo entre ativos |
 | `CASH_DEPOSIT` | aporte | aumenta saldo e capital de caixa remunerado |
 | `CASH_WITHDRAWAL` | retirada | reduz saldo e capital de caixa remunerado |
+| `FIXED_INCOME_APPLICATION` | aporte | aumenta saldo e capital de renda fixa por valor |
+| `FIXED_INCOME_REDEMPTION` | retirada | reduz saldo e realiza resultado proporcional de renda fixa por valor |
 
 `OPERATION_TYPES` continua contendo apenas os cinco tipos do formulário manual existente. `PORTFOLIO_EVENT_TYPES` define todos os fatos aceitos pelo normalizador e pela persistência, evitando expor formulários incompletos.
+
+### Renda fixa baseada em valor
+
+CDB, LCI, LCA, LCD e produtos equivalentes sem unidade natural usam `FIXED_INCOME_APPLICATION`/`FIXED_INCOME_REDEMPTION` com `totalValue` no domínio e `value_amount` no PostgreSQL. Quantidade e preço unitário persistidos ficam zero. A engine representa o saldo derivado com unidade monetária interna igual a 1; essa unidade não é dado de origem nem quantidade inventada. `RENDIMENTO` pode registrar uma diferença acumulada na data de uma conciliação confirmada, com nota explícita, sem fabricar distribuição diária. Tesouro Direto permanece quantitativo quando a origem fornece quantidade fracionária e preço.
 
 ## Limite para importações externas
 
@@ -46,12 +52,12 @@ As regras de triagem e retenção da carteira real estão em `REAL_PORTFOLIO_IMP
 - `ticker`: 1–30 caracteres normalizados em maiúsculas.
 - `assetName`: nome obrigatório, até 80 caracteres na interface.
 - `assetType`: tipo normalizado pelo catálogo.
-- `operationType`: um dos cinco tipos canônicos.
+- `operationType`: tipo reconhecido por `PORTFOLIO_EVENT_TYPES`; o formulário manual continua limitado aos cinco tipos originais.
 - `date`: data civil ISO `YYYY-MM-DD`.
 - `quantity`: Number não negativo; até oito casas são preservadas no banco.
 - `unitPrice`: Number não negativo; até oito casas são preservadas no banco.
 - `fees`: Number não negativo; até oito casas são preservadas.
-- `totalValue`: para compra, `quantity * unitPrice + fees`; para venda, `max(0, quantity * unitPrice - fees)`; para renda, valor informado.
+- `totalValue`: para compra, `quantity * unitPrice + fees`; para venda, `max(0, quantity * unitPrice - fees)`; para renda e eventos por valor, valor informado.
 - `notes`: texto opcional, até 240 caracteres.
 
 `portfolioId`, `createdBy`, timestamps, `source` e `externalId` são metadados de infraestrutura e não entram na engine.

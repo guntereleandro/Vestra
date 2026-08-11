@@ -1,12 +1,14 @@
 # Preparação da importação da carteira real
 
-Status: suporte de domínio implementado e migration/SDK validados no Supabase Development em 2026-08-07; a carteira real ainda não foi importada. O gate fecha somente após reconciliação do arquivo real completo.
+> Decisão final de 2026-08-11: as evidências posteriores eliminaram as pendências categoria A. Renda variável, Tesouro, LCI BRB e Mercado Pago reconciliam; CDBs encerrados permanecem retidos como B. O preflight operacional de destino, fonte, backup, idempotência e duplicidade foi aprovado. A escrita aguarda autorização expressa.
+
+Status: suporte de domínio implementado; migrations e SDK validados no Supabase Development; reconciliação integral e preflight aprovados em 2026-08-11. A carteira real ainda não foi importada.
 
 ## Objetivo e limite
 
 Este documento compara os eventos encontrados na carteira do Investidor10 com o contrato canônico do Vestra. A importação não deve transformar eventos desconhecidos em `COMPRA`, `VENDA` ou provento apenas para fazê-los passar pela validação. Registros sem representação econômica fiel ficam retidos, preservados em sua forma de origem e fora da engine até uma decisão explícita de domínio.
 
-O contrato atual aceita somente `COMPRA`, `VENDA`, `DIVIDENDO`, `JCP` e `RENDIMENTO`. Compras aumentam quantidade, custo e aportes; vendas reduzem quantidade e custo médio e podem gerar lucro realizado; proventos não alteram quantidade nem aportes. Essa semântica determina a compatibilidade abaixo.
+O contrato atual também aceita `SPLIT`, `BONUS`, `CONVERSION`, `CASH_DEPOSIT`, `CASH_WITHDRAWAL`, `FIXED_INCOME_APPLICATION` e `FIXED_INCOME_REDEMPTION`. A matriz abaixo preserva o diagnóstico anterior; sua resolução definitiva está registrada na seção “Patch de compatibilidade” e em `REAL_PORTFOLIO_PRE_IMPORT_RECONCILIATION.md`.
 
 ## Matriz de compatibilidade
 
@@ -65,4 +67,10 @@ Não foram alterados contrato, engine, repositories, schema, migrations ou dados
 
 O ledger passou a reconhecer `SPLIT`, `BONUS`, `CONVERSION`, `CASH_DEPOSIT` e `CASH_WITHDRAWAL`. A classificação de origem distingue operação comum, desdobramento, bônus, conversão, caixa remunerado e item não suportado. Nenhum item desconhecido recebe alias silencioso. O round-trip remoto, idempotência e matriz owner/editor/viewer/anon passaram com dados artificiais removidos ao final.
 
-Fixtures sanitizadas confirmam SADI11 1:10, transferência SADI11 → SAPI11, bônus de GGBR4/GOAU4 com custo atribuído explícito, depósitos/rendimento/retirada do Mercado Pago e Tesouro IPCA+ 2032 com quantidade `0,10`. Os saldos integrais do arquivo real não foram fornecidos ao patch; portanto, a reconciliação final de quantidade, custo e patrimônio permanece obrigatória antes da carga.
+Fixtures sanitizadas confirmam SADI11 1:10, transferência SADI11 → SAPI11, bônus de GGBR4/GOAU4 com custo atribuído explícito, depósitos/rendimento/retirada do Mercado Pago e Tesouro IPCA+ 2032 com quantidade `0,10`. Esta foi a validação inicial do contrato; a reconciliação integral posterior está no fechamento abaixo.
+
+## Fechamento do gate — 2026-08-11
+
+A reconciliação posterior substitui as ressalvas históricas acima. As 22 posições de renda variável fecharam sem divergência; Tesouro preservou quantidade `0,10`; LCI BRB fechou em R$ 1.004,47 por ledger monetário; Mercado Pago fechou em R$ 183,18, separando R$ 171,58 de capital e R$ 11,60 de remuneração. Os seis registros de CDBs encerrados ficam fora do lote como categoria B.
+
+O preflight remoto confirmou 109 eventos canônicos, destino único, fonte SUPABASE, backup disponível, ausência de fixtures e dual write, lote atômico, IDs determinísticos, zero conflito de UUID e zero duplicidade semântica contra as 8 operações remotas existentes. Não resta pendência A. **APROVADO PARA IMPORTAÇÃO REAL**, sem autorizar a escrita nesta etapa.

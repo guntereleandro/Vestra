@@ -151,6 +151,7 @@ for (const column of [
   "fees",
   "income_amount",
   "cash_amount",
+  "value_amount",
   "ratio_from",
   "ratio_to",
   "attributed_cost",
@@ -161,7 +162,7 @@ for (const column of [
 ]) {
   assert(new RegExp(`\\b${column}\\b`).test(sql), `Coluna de operação ausente: ${column}.`);
 }
-for (const type of ["COMPRA", "VENDA", "DIVIDENDO", "JCP", "RENDIMENTO", "SPLIT", "BONUS", "CONVERSION", "CASH_DEPOSIT", "CASH_WITHDRAWAL"]) {
+for (const type of ["COMPRA", "VENDA", "DIVIDENDO", "JCP", "RENDIMENTO", "SPLIT", "BONUS", "CONVERSION", "CASH_DEPOSIT", "CASH_WITHDRAWAL", "FIXED_INCOME_APPLICATION", "FIXED_INCOME_REDEMPTION"]) {
   assert(new RegExp(`['"]${type}['"]`, "i").test(sql), `Tipo de operação ausente: ${type}.`);
 }
 for (const policy of [

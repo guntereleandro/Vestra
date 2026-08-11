@@ -1,5 +1,23 @@
 # Decisões de Arquitetura do Vestra Core
 
+## ADR-017 — Renda fixa sem quantidade usa ledger por valor
+
+### Contexto
+
+CDB, LCI, LCA, LCD e instrumentos equivalentes podem ser apresentados naturalmente por aplicação, resgate e saldo monetário, sem quantidade ou preço unitário confiáveis. Forçar quantidade 1 e preço igual ao saldo cria unidades artificiais e mistura capital com remuneração.
+
+### Decisão
+
+Adicionar `FIXED_INCOME_APPLICATION` e `FIXED_INCOME_REDEMPTION` ao ledger único. Esses fatos persistem somente `value_amount`; quantidade e preço permanecem zero. A engine deriva um saldo monetário com preço interno 1, separa capital aplicado de rendimento e aceita `RENDIMENTO` como ajuste acumulado explícito na data de reconciliação. Tesouro Direto continua no contrato de quantidade fracionária quando quantidade e preço existem.
+
+### Consequências
+
+O modelo atende genericamente renda fixa baseada em valor sem tratamento específico para um emissor. Aplicações e resgates entram em contribuições líquidas; rendimento altera saldo e performance, mas não proventos passivos. O banco ganha `value_amount`, adapters fazem round-trip e a UI manual permanece inalterada.
+
+### Alternativas consideradas
+
+Quantidade 1 e preço igual ao aporte: rejeitada por inventar unidade. Reusar `cash_amount`: rejeitada por confundir renda fixa com Caixa Remunerado. Persistir saldo atual diretamente: rejeitada por criar segunda fonte de verdade. Fabricar rendimentos diários: rejeitada por perder auditabilidade.
+
 ## ADR-016 — Ledger único distingue fluxos e eventos patrimoniais
 
 ### Contexto

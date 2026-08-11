@@ -19,9 +19,14 @@ const events = normalizeOperations([
   base("10000000-0000-4000-8000-000000000010", "MP-CASH", "Mercado Pago", "Caixa Remunerado", "RENDIMENTO", "2025-01-04", { totalValue: 3 }),
   base("10000000-0000-4000-8000-000000000011", "MP-CASH", "Mercado Pago", "Caixa Remunerado", "CASH_WITHDRAWAL", "2025-01-05", { totalValue: 5 }),
   base("10000000-0000-4000-8000-000000000012", "TESOURO-IPCA-2032", "Tesouro IPCA+ 2032", "Renda Fixa", "COMPRA", "2025-02-01", { quantity: 0.1, unitPrice: 4000 }),
+  base("10000000-0000-4000-8000-000000000014", "LCI-BRB-20270730", "LCI BRB 107% CDI", "Renda Fixa", "FIXED_INCOME_APPLICATION", "2026-07-30", { totalValue: 1000 }),
+  base("10000000-0000-4000-8000-000000000015", "LCI-BRB-20270730", "LCI BRB 107% CDI", "Renda Fixa", "RENDIMENTO", "2026-08-11", { totalValue: 4.47 }),
+  base("10000000-0000-4000-8000-000000000016", "CDB-TESTE", "CDB Teste", "Renda Fixa", "FIXED_INCOME_APPLICATION", "2026-01-01", { totalValue: 1000 }),
+  base("10000000-0000-4000-8000-000000000017", "CDB-TESTE", "CDB Teste", "Renda Fixa", "RENDIMENTO", "2026-02-01", { totalValue: 100 }),
+  base("10000000-0000-4000-8000-000000000018", "CDB-TESTE", "CDB Teste", "Renda Fixa", "FIXED_INCOME_REDEMPTION", "2026-03-01", { totalValue: 550 }),
 ]);
 
-assert.equal(events.length, 12);
+assert.equal(events.length, 17);
 for (const event of events) assert.equal(validatePortfolioEvent(event).valid, true, event.operationType);
 const positions = calculatePositions(events, [{ ticker: "GGBR4", currentQuote: 12 }, { ticker: "GOAU4", currentQuote: 9 }, { ticker: "SAPI11", currentQuote: 12 }]);
 const byTicker = new Map(positions.map((position) => [position.ticker, position]));
@@ -38,7 +43,14 @@ assert.equal(byTicker.get("MP-CASH").profit, 3);
 assert.equal(byTicker.get("MP-CASH").dividends, 0);
 assert.equal(byTicker.get("TESOURO-IPCA-2032").quantity, 0.1);
 assert.equal(byTicker.get("TESOURO-IPCA-2032").invested, 400);
-assert.equal(calculatePortfolioTotals(positions).realizedProfit, 0);
+assert.equal(byTicker.get("LCI-BRB-20270730").quantity, 1004.47);
+assert.equal(byTicker.get("LCI-BRB-20270730").invested, 1000);
+assert.ok(Math.abs(byTicker.get("LCI-BRB-20270730").profit - 4.47) < 1e-8);
+assert.equal(byTicker.get("LCI-BRB-20270730").dividends, 0);
+assert.equal(byTicker.get("CDB-TESTE").quantity, 550);
+assert.equal(byTicker.get("CDB-TESTE").invested, 500);
+assert.equal(byTicker.get("CDB-TESTE").realizedProfit, 50);
+assert.equal(calculatePortfolioTotals(positions).realizedProfit, 50);
 const growth = calculateWealthGrowth([{ date: "2025-01-01", currentValue: 0, dividends: 0 }, { date: "2025-01-06", currentValue: 28, dividends: 0 }], events);
 assert.equal(growth.contributions, 25);
 assert.equal(growth.appreciation, 3);

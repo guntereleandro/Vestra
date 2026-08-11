@@ -136,6 +136,8 @@ try {
     { id: "51000000-0000-4000-8000-000000000003", ticker: "SADI11", assetName: "SADI", assetType: "FII", operationType: "CONVERSION", date: "2025-12-10", quantity: 20, targetTicker: "SAPI11", targetAssetName: "SAPI", targetAssetType: "FII", targetQuantity: 18, notes: "" },
     { id: "51000000-0000-4000-8000-000000000004", ticker: "MP-CASH", assetName: "Mercado Pago", assetType: "Caixa Remunerado", operationType: "CASH_DEPOSIT", date: "2025-01-02", totalValue: 25, notes: "" },
     { id: "51000000-0000-4000-8000-000000000005", ticker: "MP-CASH", assetName: "Mercado Pago", assetType: "Caixa Remunerado", operationType: "RENDIMENTO", date: "2025-01-03", totalValue: 2, notes: "" },
+    { id: "51000000-0000-4000-8000-000000000006", ticker: "LCI-BRB-107CDI-20270730", assetName: "LCI BRB 107% CDI", assetType: "Renda Fixa", operationType: "FIXED_INCOME_APPLICATION", date: "2026-07-30", totalValue: 1000, notes: "" },
+    { id: "51000000-0000-4000-8000-000000000007", ticker: "LCI-BRB-107CDI-20270730", assetName: "LCI BRB 107% CDI", assetType: "Renda Fixa", operationType: "RENDIMENTO", date: "2026-08-11", totalValue: 4.47, notes: "" },
   ];
   await operationsA.replaceAllByPortfolio(portfolioId, compatibilityEvents);
   const remoteCompatibility = await operationsA.listByPortfolio(portfolioId);
@@ -145,6 +147,7 @@ try {
   const compatibilityPositions = calculatePositions(roundTripEvents);
   assert(compatibilityPositions.find((position) => position.ticker === "SAPI11")?.quantity === 18, "Conversao remota perdeu quantidade destino.");
   assert(compatibilityPositions.find((position) => position.ticker === "MP-CASH")?.currentValue === 27, "Caixa remunerado remoto perdeu saldo.");
+  assert(Math.abs(compatibilityPositions.find((position) => position.ticker === "LCI-BRB-107CDI-20270730")?.currentValue - 1004.47) < 1e-8, "Renda fixa por valor perdeu saldo.");
   const snapshotsA = createSupabasePortfolioSnapshotsRepository(clientA);
   const snapshot = {
     portfolioId, date: "2026-08-01", timestamp: Date.parse("2026-08-01T12:00:00Z"),

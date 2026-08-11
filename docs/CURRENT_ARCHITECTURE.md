@@ -147,6 +147,8 @@ O contrato operacional cobre apenas compra, venda, dividendo, JCP e rendimento. 
 
 O patch de importação amplia esse mesmo ledger com eventos patrimoniais e caixa remunerado, sem criar uma segunda coleção. `portfolio.js` processa o histórico globalmente para permitir transferência entre tickers. `portfolioImportClassifier.js` faz triagem explícita; backup schema 6 e os adapters Local/Supabase preservam os campos adicionais. O formulário manual continua limitado aos tipos anteriores.
 
+Renda fixa sem unidade natural usa eventos por valor (`FIXED_INCOME_APPLICATION`/`FIXED_INCOME_REDEMPTION`). O domínio mantém `totalValue`, o adapter remoto usa `value_amount` e a engine deriva saldo com preço interno 1. Rendimentos acumulados ficam no ledger como `RENDIMENTO` datado e não entram na visão de proventos passivos.
+
 ### Cotação
 
 1. Cotação manual/automática persistente vive em `vestra:assetQuotes:v1`.

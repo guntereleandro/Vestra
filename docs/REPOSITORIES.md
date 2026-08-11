@@ -192,3 +192,5 @@ Veja `docs/SUPABASE_INFRASTRUCTURE.md`.
 Assets, Quotes, Preferences e Operations persistem por carteira e reutilizam os normalizadores existentes. Operations faz CRUD e upsert idempotente em lotes de 500, sem exclusão implícita. Dividends e PortfolioSnapshots continuam como stubs. O registry permanece em `local`.
 
 Operations agora realiza round-trip dos campos de eventos corporativos e caixa remunerado. O contrato público de métodos não mudou; Local e Supabase compartilham normalização e validação. O Data Source Resolver continua entregando exatamente um repository, sem dual write.
+
+Eventos de renda fixa por valor preservam `totalValue` no adapter Local e fazem round-trip por `value_amount` no Supabase. Os métodos do repository não mudam; quantidade e preço não são sintetizados.

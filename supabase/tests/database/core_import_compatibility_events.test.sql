@@ -2,6 +2,7 @@ begin;
 select no_plan();
 
 select has_column('public', 'portfolio_operations', 'cash_amount');
+select has_column('public', 'portfolio_operations', 'value_amount');
 select has_column('public', 'portfolio_operations', 'ratio_from');
 select has_column('public', 'portfolio_operations', 'ratio_to');
 select has_column('public', 'portfolio_operations', 'attributed_cost');
@@ -41,6 +42,18 @@ select lives_ok(
      (id, portfolio_id, ticker, asset_name, asset_type, operation_type, trade_date, cash_amount)
      values (gen_random_uuid(), (select portfolio_id from import_context), 'MP-CASH', 'Mercado Pago', 'Caixa Remunerado', 'CASH_DEPOSIT', '2025-01-02', 10) $$,
   'remunerated cash deposit is value-only'
+);
+select lives_ok(
+  $$ insert into public.portfolio_operations
+     (id, portfolio_id, ticker, asset_name, asset_type, operation_type, trade_date, value_amount)
+     values (gen_random_uuid(), (select portfolio_id from import_context), 'LCI-BRB-107CDI-20270730', 'LCI BRB 107% CDI', 'Renda Fixa', 'FIXED_INCOME_APPLICATION', '2026-07-30', 1000) $$,
+  'fixed income application is value-only'
+);
+select throws_ok(
+  $$ insert into public.portfolio_operations
+     (id, portfolio_id, ticker, asset_name, asset_type, operation_type, trade_date, value_amount)
+     values (gen_random_uuid(), (select portfolio_id from import_context), 'LCI-BRB', 'LCI BRB', 'Caixa Remunerado', 'FIXED_INCOME_APPLICATION', '2026-07-30', 1000) $$,
+  '23514', null, 'fixed income value event requires Renda Fixa asset type'
 );
 select throws_ok(
   $$ insert into public.portfolio_operations

@@ -130,7 +130,7 @@ Aceite: 30 dias consecutivos sem recorrer ao Investidor10 para funções essenci
 
 Status: validação técnica pré-30 dias aprovada em 2026-08-07. Jornada remota, mobile, regressões, Next.js 16.3.0, audit, lint e build passaram. O responsável confirmou manualmente recebimento do e-mail de recuperação, abertura do link, troca de senha e novo login. pgTAP continua pendência de ambiente sem bloquear o uso diário.
 
-Gate de importação real, reaberto em 2026-08-07: a auditoria da carteira do Investidor10 encontrou bonificação, desdobramento, conversão/incorporação e caixa remunerado sem representação fiel no contrato atual. Esses registros devem permanecer retidos conforme `REAL_PORTFOLIO_IMPORT_READINESS.md`. Enquanto afetarem posições, base de custo ou saldos necessários ao uso diário, constituem pendência categoria A e o teste oficial não deve iniciar. O gate fecha após decisão de domínio, validação de regressão e reconciliação do lote real, sem exigir que atributos analíticos adiados da renda fixa sejam inventados.
+Gate de importação real fechado tecnicamente em 2026-08-11: eventos corporativos, Caixa Remunerado e renda fixa por valor possuem representação fiel; as 22 posições de renda variável, Tesouro, LCI BRB e Mercado Pago reconciliaram. O preflight confirmou destino, fonte, backup, lote atômico, idempotência e ausência de duplicidades. CDBs encerrados permanecem categoria B, fora do lote. A escrita aguarda autorização expressa do usuário.
 
 Patch de compatibilidade: domínio, engine, backup schema 6, repository, migration e SDK foram validados no Development para os casos conhecidos. O bloqueador A permanece somente até a reconciliação do arquivo real completo; fixtures não substituem os saldos de origem.
 

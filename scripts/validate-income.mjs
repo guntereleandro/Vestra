@@ -6,6 +6,8 @@ const records = [
   { id: "2", ticker: "AAA3", operationType: "JCP", date: "2026-01-10", totalValue: 20 },
   { id: "3", ticker: "BBB11", operationType: "RENDIMENTO", date: "2026-01-10", totalValue: 30 },
   { id: "4", ticker: "AAA3", operationType: "COMPRA", date: "2026-01-11", totalValue: 999 },
+  { id: "5", ticker: "MP-CASH", assetType: "Caixa Remunerado", operationType: "RENDIMENTO", date: "2026-01-12", totalValue: 11.60 },
+  { id: "6", ticker: "LCI-BRB", assetType: "Renda Fixa", operationType: "RENDIMENTO", date: "2026-01-12", totalValue: 4.47 },
 ];
 assert.equal(analyzeIncome([]).total, 0);
 const all = analyzeIncome(records);
