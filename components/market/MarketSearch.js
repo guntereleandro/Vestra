@@ -94,7 +94,7 @@ export default function MarketSearch({ initialQuery = "" }) {
         onKeyDown={onKeyDown}
         placeholder="Pesquisar por ticker, nome ou empresa"
         aria-label="Pesquisar ativos no mercado"
-        className="w-full rounded-2xl border border-white/[.08] bg-[#070908]/85 py-5 pl-14 pr-12 text-base text-white outline-none shadow-[0_20px_70px_rgba(0,0,0,.25)] transition focus:border-[#d9b86c]/60 focus:shadow-[0_0_0_4px_rgba(217,184,108,.08)] sm:text-lg"
+        className="field-with-prefix-icon field-with-prefix-icon-wide w-full rounded-2xl border border-white/[.08] bg-[#070908]/85 py-5 pr-12 text-base text-white outline-none shadow-[0_20px_70px_rgba(0,0,0,.25)] transition focus:border-[#d9b86c]/60 focus:shadow-[0_0_0_4px_rgba(217,184,108,.08)] sm:text-lg"
       />
       {loading && <Loader2 className="absolute right-5 top-1/2 -translate-y-1/2 animate-spin text-[#898e89]" size={19} />}
     </div>

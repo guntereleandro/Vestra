@@ -69,7 +69,11 @@ button { cursor: pointer; }
   box-shadow: 0 0 0 3px rgba(217, 184, 108, .08);
 }
 .field::placeholder { color: #555b56; }
-.relative > svg.absolute + .field { padding-inline-start: 2.75rem; }
+.field-with-prefix-icon {
+  --field-prefix-padding: 2.75rem;
+  padding-inline-start: var(--field-prefix-padding) !important;
+}
+.field-with-prefix-icon-wide { --field-prefix-padding: 3.5rem; }
 select.field { color-scheme: dark; }
 
 @media (max-width: 767px), (hover: none) and (pointer: coarse) {
