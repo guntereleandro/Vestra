@@ -1,0 +1,15 @@
+{
+  "version": 1,
+  "source_fingerprint": "04a5d53e194a19dc77dd4e7dec3f036934cff24ed2dbf3323e08aa0d11e94f61",
+  "portfolio_id": "1397a16f-105c-4058-99af-1eca724d67fc",
+  "aliases": [
+    { "canonical_id": "2f6fa32d-5560-56f6-8524-03efb0862f24", "preserved_remote_id": "2fc8b389-a98a-429f-bc19-26d4fb487411" },
+    { "canonical_id": "96e4186a-612d-5548-89a5-c93012da9aa4", "preserved_remote_id": "35560cc5-e507-43be-8bea-78fe868580d6" },
+    { "canonical_id": "1f25ab49-f52d-55f2-8627-284fceef9bd6", "preserved_remote_id": "e957de0c-bf17-4122-9b19-3b8cf97081df" },
+    { "canonical_id": "9164e751-1325-5c2c-8a57-716e8d29a9b8", "preserved_remote_id": "117146e5-c313-4ddb-a1c7-ce50d1279d3a" },
+    { "canonical_id": "57a2382c-7b57-5161-8cc9-203d0da7cbc9", "preserved_remote_id": "2480d998-06b3-4b82-981a-c1575c1002ae" },
+    { "canonical_id": "a47b8a14-67ac-579e-8602-0d0080bad803", "preserved_remote_id": "529a5fe1-f472-494b-988b-0f91b3412f63" },
+    { "canonical_id": "f268c755-4a3e-5d0a-8205-d570db226ae7", "preserved_remote_id": "6dc3bbd7-23a3-4db0-ac2f-c2abe5bae53b" },
+    { "canonical_id": "62a7739e-585a-589a-8e79-853f6ac6d102", "preserved_remote_id": "cfdfc250-2491-463d-a55b-e90daf83914e" }
+  ]
+}

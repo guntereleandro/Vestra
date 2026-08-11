@@ -34,6 +34,17 @@ Não há aliases canônicos adicionais. O MVP antigo convertia posições agrega
 
 `OPERATION_TYPES` continua contendo apenas os cinco tipos do formulário manual existente. `PORTFOLIO_EVENT_TYPES` define todos os fatos aceitos pelo normalizador e pela persistência, evitando expor formulários incompletos.
 
+### Capital, retorno e provento
+
+Fluxo de capital, retorno econômico e provento são conceitos distintos:
+
+- `COMPRA`, `CASH_DEPOSIT` e `FIXED_INCOME_APPLICATION` são entradas de capital; `VENDA`, `CASH_WITHDRAWAL` e `FIXED_INCOME_REDEMPTION` são saídas.
+- remuneração de `Caixa Remunerado` e de `Renda Fixa` baseada em valor aumenta saldo e retorno econômico, mas não alimenta o domínio de Proventos;
+- `DIVIDENDO`, `JCP` e o `RENDIMENTO` legado/canônico de ativos que pagam renda passiva pertencem a Proventos;
+- um registro `RENDIMENTO` associado a `Caixa Remunerado` ou `Renda Fixa` é ajuste de saldo do respectivo ledger, não dividendo.
+
+Dashboard, `journeyRecords`, timeline, conquistas, página de Proventos e snapshots devem consumir a mesma classificação de renda passiva. O tipo isolado não é suficiente para distinguir os dois significados de `RENDIMENTO`; o domínio do ativo também faz parte da decisão.
+
 ### Renda fixa baseada em valor
 
 CDB, LCI, LCA, LCD e produtos equivalentes sem unidade natural usam `FIXED_INCOME_APPLICATION`/`FIXED_INCOME_REDEMPTION` com `totalValue` no domínio e `value_amount` no PostgreSQL. Quantidade e preço unitário persistidos ficam zero. A engine representa o saldo derivado com unidade monetária interna igual a 1; essa unidade não é dado de origem nem quantidade inventada. `RENDIMENTO` pode registrar uma diferença acumulada na data de uma conciliação confirmada, com nota explícita, sem fabricar distribuição diária. Tesouro Direto permanece quantitativo quando a origem fornece quantidade fracionária e preço.

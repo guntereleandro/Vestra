@@ -2,6 +2,7 @@ import assert from "node:assert/strict";
 import { readFile } from "node:fs/promises";
 import { createClient } from "@supabase/supabase-js";
 import { createSupabaseOperationsRepository } from "../lib/repositories/supabase/supabaseOperationsRepository.js";
+import { calculatePositions } from "../lib/engine/portfolio.js";
 import { canonicalOperations } from "./reconcile-real-import.mjs";
 
 const url = process.env.SUPABASE_TEST_URL;
@@ -46,8 +47,18 @@ const idConflicts = canonicalOperations.filter((item) => remoteById.has(item.id)
 const semanticDuplicates = canonicalOperations.filter((item) => remoteSignatures.has(comparable(item)) && remoteSignatures.get(comparable(item)) !== item.id);
 assert.equal(idConflicts.length, 0, "Conflito de UUID com operação remota.");
 assert.equal(semanticDuplicates.length, 0, "Possível duplicação econômica com operação remota existente.");
+const canonicalTickers = new Set(canonicalOperations.map((item) => item.ticker));
+const overlapping = remoteOperations.filter((item) => canonicalTickers.has(item.ticker));
+const combinedPositions = calculatePositions([...remoteOperations, ...canonicalOperations], []);
+const approvedByTicker = new Map(calculatePositions(canonicalOperations, []).map((item) => [item.ticker, item]));
+const combinedDivergences = combinedPositions.filter((item) => approvedByTicker.has(item.ticker)).filter((item) => {
+  const approved = approvedByTicker.get(item.ticker);
+  return Math.abs(item.quantity - approved.quantity) > 1e-8 || Math.abs(item.invested - approved.invested) > 1e-8 || Math.abs(item.realizedProfit - approved.realizedProfit) > 1e-8;
+}).map((item) => ({ ticker: item.ticker, quantityDelta: item.quantity - approvedByTicker.get(item.ticker).quantity, investedDelta: item.invested - approvedByTicker.get(item.ticker).invested, realizedProfitDelta: item.realizedProfit - approvedByTicker.get(item.ticker).realizedProfit }));
 
 console.log(JSON.stringify({
   target: { id: eligible[0].id, name: eligible[0].name, dataSource: eligible[0].dataSource, role: "owner", existingOperations: eligible[0].operationCount },
   checks: { uniqueDestination: true, activePortfolio: true, supabaseSelected: true, fixturesAbsent: true, backupAvailable: true, dualWriteAbsent: true, oneAtomicBatchFor109Events: canonicalOperations.length <= 500, idConflicts: idConflicts.length, semanticDuplicates: semanticDuplicates.length },
+  preexistingOverlap: overlapping.map((item) => ({ ticker: item.ticker, operationType: item.operationType })),
+  combinedDivergences,
 }, null, 2));
