@@ -1,5 +1,23 @@
 # Decisões de Arquitetura do Vestra Core
 
+## ADR-018 — Semântica de proventos possui uma única fonte de domínio
+
+### Contexto
+
+`RENDIMENTO` pode representar tanto provento convencional quanto retorno econômico interno de Caixa Remunerado ou Renda Fixa por valor. Listas locais baseadas apenas no tipo operacional fizeram diagnósticos tratarem ajustes internos como proventos, embora Dashboard, totais e snapshots estivessem corretos.
+
+### Decisão
+
+`lib/domain/operations/passiveIncome.js` é a fonte oficial para classificar proventos. `DIVIDENDO`, `JCP` e `RENDIMENTO` são elegíveis, mas eventos associados a `Caixa Remunerado` ou `Renda Fixa` são retorno econômico, não provento. Dashboard, Proventos, diagnósticos, métricas comportamentais e repositories de proventos reutilizam a mesma regra. `lib/data/operations.js` mantém reexportação compatível.
+
+### Consequências
+
+Fluxo de capital, retorno econômico, provento e evento patrimonial permanecem conceitos distintos. Ajustes internos continuam compondo saldo e performance, mas não totais, recordes, concentração, dependência ou snapshots de proventos. Um validador impede listas paralelas nos consumidores auditados.
+
+### Alternativas consideradas
+
+Ocultar os cards: rejeitada por manter o cálculo incorreto. Tratar todo `RENDIMENTO` como provento: rejeitada por confundir domínios. Criar novos tipos apenas para a importação: rejeitada por alterar o lote reconciliado sem necessidade.
+
 ## ADR-017 — Renda fixa sem quantidade usa ledger por valor
 
 ### Contexto

@@ -1,5 +1,11 @@
 # Decisoes Arquiteturais
 
+## 2026-08-11 — Fonte única para semântica de proventos
+
+`lib/domain/operations/passiveIncome.js` determina se uma operação pertence a Proventos. Ajustes `RENDIMENTO` de Caixa Remunerado e Renda Fixa continuam como retorno econômico, mas não alimentam totais, records, diagnostics ou snapshots de proventos. Decisão permanente: ADR-018.
+
+---
+
 ## 2026-08-11 — Renda fixa por valor sem quantidade artificial
 
 CDB, LCI, LCA, LCD e instrumentos equivalentes podem usar `FIXED_INCOME_APPLICATION` e `FIXED_INCOME_REDEMPTION`, persistidos em `value_amount`. A engine deriva saldo monetário com preço interno 1; `RENDIMENTO` registra valorização ou ajuste acumulado explicitamente datado sem virar aporte ou provento passivo. Tesouro continua quantitativo quando a origem fornece quantidade e preço. Decisão permanente: ADR-017.

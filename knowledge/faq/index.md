@@ -16,6 +16,10 @@ Após 30 dias consecutivos de uso real sem depender do Investidor10 para funçõ
 
 Não. Dividendos, JCP e rendimentos são operações e acompanham a fonte Local ou Supabase escolhida.
 
+## Toda operação RENDIMENTO é um provento?
+
+Não. Em ativos convencionais, `RENDIMENTO` pertence a Proventos. Em Caixa Remunerado e Renda Fixa por valor, representa retorno econômico interno: aumenta o saldo e a performance, mas não os totais ou diagnósticos de proventos.
+
 ## Meu histórico local é enviado ao entrar?
 
 Não. A importação Local → Supabase é manual, apresenta uma prévia e preserva os dados deste navegador. Datas remotas divergentes não são sobrescritas.

@@ -30,6 +30,8 @@ Preferencias de diagnostico pertencem a `lib/data/diagnosticPreferences.js`, usa
 
 `lib/engine/performance` e um dominio puro e independente que explica crescimento, fluxos, valorizacao, proventos, drawdown e contribuicoes. Seu contrato esta em `docs/PERFORMANCE.md`.
 
+`lib/domain/operations/passiveIncome.js` e a fonte unica da semantica de proventos. Fluxos de capital, retorno economico interno e eventos patrimoniais nao sao classificados como proventos; consumidores reutilizam essa regra em vez de manter listas proprias.
+
 O questionario de risco e persistido por `lib/data/riskProfile.js` em `vestra:riskProfile:v1`. A classificacao e os parametros derivados pertencem a `riskProfileAssessment.js`; diagnósticos de coerencia usam escopo `risk_profile` e nao alteram preferencias automaticamente.
 
 ### Dados locais

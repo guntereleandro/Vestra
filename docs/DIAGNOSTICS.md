@@ -8,6 +8,8 @@
 
 `generatePortfolioDiagnostics(input)` aceita `positions`, `operations`, `totals`, `income` (ou `proventos`), `assetMetadata` (ou `assetsMetadata`), `objectives`, `parameters` e `generatedAt`.
 
+Diagnósticos de renda usam exclusivamente `isPassiveIncomeOperation`. `RENDIMENTO` de Caixa Remunerado ou Renda Fixa por valor não participa de concentração, dependência, média ou resiliência de proventos, embora continue compondo retorno econômico e performance.
+
 - Posições devem chegar consolidadas, com ticker, tipo, quantidade, valor atual e dados da cotação.
 - Operações inválidas são contadas e ignoradas nas análises dependentes delas.
 - Proventos consolidados aceitam ticker, data e valor em `totalValue`, `value` ou `amount`.

@@ -1,5 +1,9 @@
 # Release Notes
 
+## 2026-08-11 — Semântica única de proventos
+
+Dashboard, Proventos e diagnósticos agora compartilham a mesma classificação de domínio. Remunerações internas de Caixa Remunerado e Renda Fixa continuam no retorno econômico sem gerar recordes, concentração ou dependência de proventos.
+
 ## 2026-08-07 — Compatibilidade de importação
 
 O ledger passou a distinguir desdobramentos, bonificações, conversões e movimentações de caixa remunerado sem criar compras, vendas ou rendimentos fictícios. A importação real continua condicionada à prévia e reconciliação completa.
