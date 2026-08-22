@@ -168,7 +168,17 @@ O schema 6 inclui operações e eventos do ledger, cotações, ativos customizad
 - `GET /api/market/quotes?tickers=`
 - `GET /api/market/status`
 
-`brapiProvider` é server-only, usa `BRAPI_TOKEN`, timeout de 7 segundos, limite de resposta de 500 KB e até 20 tickers por chamada. O plano sem módulos avançados tenta novamente sem esses módulos. `localProvider` pesquisa catálogo e cotações fornecidos pelo cliente.
+`brapiProvider` é server-only, usa `BRAPI_TOKEN`, timeout de 7 segundos, limite de resposta de 500 KB e um ticker por chamada no plano Free. O plano sem módulos avançados tenta novamente sem esses módulos. `localProvider` pesquisa catálogo e cotações fornecidos pelo cliente.
+
+### Auditoria CORE-13
+
+A arquitetura de mercado cobre busca, identidade, cotação, indicadores parciais e uma coleção curta de dividendos. Não existem contratos de provider, rotas internas ou UI para histórico de preços, demonstrações, composição, dividendos v2 ou eventos corporativos completos. O cache é exclusivamente cliente e guarda cotações por 30 minutos.
+
+A auditoria real identificou quatro fronteiras prioritárias: limite de lote incompatível com o plano Free, classificação indevida de ETF/unit terminado em `11` como FII, ausência convertida em zero/frescor atual e loading público sem término no deployment. Cobertura, campos, custos, segurança e proposta incremental estão em `MARKET_DATA_AUDIT.md`.
+
+### Mercado 2.0 implementado
+
+Quote Contract 2.0 preserva OHLCV, `null` e proveniência. `marketCapabilities` descreve capacidades Local/BRAPI; `assetClassification` resolve classe por metadata, catálogo e provider; histórico possui contrato, rota e gráfico para 1M/3M. O plano Free usa uma chamada por ticker com concorrência três, deduplicação, cache e falha parcial. Rotas públicas possuem rate limit best-effort e não aguardam Supabase Auth no Proxy. Detalhes: `MARKET_DATA.md`, `MARKET_CAPABILITIES.md` e `MARKET_HISTORY.md`.
 
 ## Configuração
 

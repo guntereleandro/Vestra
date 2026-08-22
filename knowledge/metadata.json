@@ -1,14 +1,14 @@
 {
   "schemaVersion": 1,
-  "updatedAt": "2026-08-11",
-  "lastFunctionalReview": "2026-08-11",
+  "updatedAt": "2026-08-22",
+  "lastFunctionalReview": "2026-08-22",
   "appVersion": "0.8.2",
   "requiredFields": ["id", "slug", "category", "title", "description", "tags", "version", "updatedAt", "content", "relatedIds", "status", "visibility", "author", "revision"],
   "articles": [
     { "id": "tutorial-dashboard", "slug": "dashboard", "category": "tutorials", "tags": ["dashboard", "patrimônio", "evolução"], "updatedAt": "2026-07-14", "version": "0.8.0" },
     { "id": "tutorial-carteira", "slug": "carteira", "category": "tutorials", "tags": ["carteira", "ativos", "posições"], "updatedAt": "2026-07-14", "version": "0.8.0" },
     { "id": "tutorial-operacoes", "slug": "operacoes", "category": "tutorials", "tags": ["operações", "compras", "proventos"], "updatedAt": "2026-08-11", "version": "0.8.2" },
-    { "id": "tutorial-mercado", "slug": "mercado", "category": "tutorials", "tags": ["mercado", "cotações", "indicadores"], "updatedAt": "2026-07-14", "version": "0.8.0" },
+    { "id": "tutorial-mercado", "slug": "mercado", "category": "tutorials", "tags": ["mercado", "cotações", "indicadores", "histórico"], "updatedAt": "2026-08-22", "version": "0.8.0" },
     { "id": "tutorial-objetivos", "slug": "objetivos", "category": "tutorials", "tags": ["objetivos", "metas", "progresso"], "updatedAt": "2026-07-14", "version": "0.8.0" },
     { "id": "tutorial-diagnosticos", "slug": "diagnosticos", "category": "tutorials", "tags": ["diagnósticos", "scores", "limitações"], "updatedAt": "2026-08-11", "version": "0.8.2" },
     { "id": "tutorial-performance", "slug": "performance", "category": "tutorials", "tags": ["performance", "drawdown", "rentabilidade"], "updatedAt": "2026-07-14", "version": "0.8.0" },
@@ -25,10 +25,10 @@
     { "id": "concept-diversificacao", "slug": "diversificacao", "category": "concepts", "tags": ["diversificação", "concentração"], "updatedAt": "2026-07-14", "version": "0.8.0" },
     { "id": "concept-preco-medio", "slug": "preco-medio", "category": "concepts", "tags": ["preço médio", "custo"], "updatedAt": "2026-07-14", "version": "0.8.0" },
     { "id": "concept-rentabilidade", "slug": "rentabilidade", "category": "concepts", "tags": ["rentabilidade", "aportes", "performance"], "updatedAt": "2026-07-14", "version": "0.8.0" },
-    { "id": "faq-areas", "slug": "areas-atuais", "category": "faq", "tags": ["dúvidas", "funcionalidades", "páginas"], "updatedAt": "2026-08-11", "version": "0.8.2" },
-    { "id": "release-history", "slug": "versoes-0-1-a-0-8", "category": "release-notes", "tags": ["versões", "lançamentos", "histórico"], "updatedAt": "2026-08-11", "version": "0.8.2" },
-    { "id": "glossary-financial", "slug": "glossario-financeiro", "category": "glossary", "tags": ["glossário", "termos financeiros"], "updatedAt": "2026-08-11", "version": "0.8.2" },
+    { "id": "faq-areas", "slug": "areas-atuais", "category": "faq", "tags": ["dúvidas", "funcionalidades", "páginas", "mercado"], "updatedAt": "2026-08-22", "version": "0.8.2" },
+    { "id": "release-history", "slug": "versoes-0-1-a-0-8", "category": "release-notes", "tags": ["versões", "lançamentos", "histórico", "mercado"], "updatedAt": "2026-08-22", "version": "0.8.2" },
+    { "id": "glossary-financial", "slug": "glossario-financeiro", "category": "glossary", "tags": ["glossário", "termos financeiros", "mercado"], "updatedAt": "2026-08-22", "version": "0.8.2" },
     { "id": "glossary-operations-sync", "slug": "operacoes-e-sincronizacao", "category": "glossary", "tags": ["operações", "sincronização", "UUID"], "updatedAt": "2026-07-31", "version": "0.8.2" },
-    { "id": "changelog-product", "slug": "historico-produto", "category": "changelog", "tags": ["changelog", "mudanças"], "updatedAt": "2026-07-31", "version": "0.8.2" }
+    { "id": "changelog-product", "slug": "historico-produto", "category": "changelog", "tags": ["changelog", "mudanças", "mercado"], "updatedAt": "2026-08-22", "version": "0.8.2" }
   ]
 }

@@ -93,6 +93,33 @@ check("ausente permanece ausente", fixtureIndicators({}).priceBook === undefined
 check("403 classificado como plano", 403 === 403);
 check("401 classificado como token", 401 === 401);
 
+const { normalizeMarketAsset: normalizeAssetV2, normalizeMarketQuote: normalizeQuoteV2, normalizeMarketHistory, quoteToManualRecord } = await import("../lib/market/marketNormalizers.js");
+const { classifyMarketAsset } = await import("../lib/market/assetClassification.js");
+const { getMarketCapabilities } = await import("../lib/market/marketCapabilities.js");
+const { appConfig } = await import("../lib/config/appConfig.js");
+
+const quoteV2 = normalizeQuoteV2({ ticker: "PETR4", price: 40, change: 0, regularMarketOpen: 39, regularMarketDayHigh: 41, regularMarketDayLow: 38, regularMarketPreviousClose: 40, regularMarketVolume: 1234 }, "fixture");
+check("ausencia numerica permanece null", quoteV2.changePercent === null);
+check("zero real permanece zero", quoteV2.change === 0);
+check("timestamp ausente permanece null", quoteV2.updatedAt === null && quoteV2.provenance.sourceUpdatedAt === null);
+check("quote sem timestamp converte com seguranca", quoteToManualRecord(quoteV2)?.updatedAt === "");
+check("timestamp de identidade ausente permanece null", normalizeAssetV2({ ticker: "PETR4", name: "Petrobras", updatedAt: null }, "local").updatedAt === null);
+check("quote 2.0 preserva OHLCV", quoteV2.open === 39 && quoteV2.dayHigh === 41 && quoteV2.dayLow === 38 && quoteV2.previousClose === 40 && quoteV2.volume === 1234);
+check("ETF IVVB11 nao vira FII", classifyMarketAsset({ ticker: "IVVB11", providerType: "ETF" }) === "ETF");
+check("ETF BOVA11 conhecido", classifyMarketAsset({ ticker: "BOVA11" }) === "ETF");
+check("ETF GOLD11 conhecido", classifyMarketAsset({ ticker: "GOLD11" }) === "ETF");
+check("FII MXRF11 conhecido", classifyMarketAsset({ ticker: "MXRF11" }) === "FII");
+check("FII HGLG11 conhecido", classifyMarketAsset({ ticker: "HGLG11" }) === "FII");
+check("FII KNCR11 conhecido", classifyMarketAsset({ ticker: "KNCR11" }) === "FII");
+check("unit SANB11 conhecida", classifyMarketAsset({ ticker: "SANB11" }) === "A\u00e7\u00e3o/Unit");
+check("tipo explicito vence sufixo", classifyMarketAsset({ ticker: "TEST11", providerType: "ETF" }) === "ETF");
+check("acao sem catalogo usa fallback controlado", classifyMarketAsset({ ticker: "ITUB4" }) === "A\u00e7\u00e3o");
+check("BDR conhecido preservado", classifyMarketAsset({ ticker: "AAPL34" }) === "BDR");
+check("plano free usa um ticker", appConfig.maxTickersPerRequest === 1 && appConfig.marketQuoteConcurrency > 0 && appConfig.marketQuoteConcurrency <= 3);
+check("capabilities explicitas", getMarketCapabilities("brapi").quote === true && getMarketCapabilities("brapi").historicalPrices === "free-3-months" && getMarketCapabilities("brapi").etfComposition === false);
+const historyV1 = normalizeMarketHistory({ ticker: "PETR4", range: "1mo", prices: [{ timestamp: "2026-08-20T00:00:00.000Z", close: 40, adjustedClose: 39.5, volume: 10 }, { timestamp: "2026-08-21T00:00:00.000Z", close: 41 }] }, "fixture");
+check("historico preserva close e adjustedClose", historyV1.prices[0].close === 40 && historyV1.prices[0].adjustedClose === 39.5 && historyV1.adjustedCloseAvailable === true);
+
 if (fail.length) {
   console.error(`Falhas: ${fail.join(", ")}`);
   process.exit(1);

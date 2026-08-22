@@ -22,6 +22,10 @@ function loginRedirect(request) {
 }
 
 export async function proxy(request) {
+  const pathname = request.nextUrl.pathname;
+  if (pathname.startsWith("/mercado") || pathname.startsWith("/api/market")) {
+    return NextResponse.next({ request });
+  }
   let response = NextResponse.next({ request });
   let authenticated = false;
   let hasPortfolio = null;
@@ -52,7 +56,6 @@ export async function proxy(request) {
     authenticated = false;
   }
 
-  const pathname = request.nextUrl.pathname;
   if (!isPublicRoute(pathname) && !authenticated) {
     return loginRedirect(request);
   }

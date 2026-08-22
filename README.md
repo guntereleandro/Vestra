@@ -112,6 +112,10 @@ Rotas internas:
 
 A interface consome apenas as rotas internas e `marketService`. Nenhum componente React importa provider externo.
 
+A auditoria CORE-13 documenta a cobertura real da BRAPI por classe, campos descartados, limites do plano, cache, fallback, histórico, eventos e segurança em [`docs/MARKET_DATA_AUDIT.md`](docs/MARKET_DATA_AUDIT.md).
+
+O Mercado 2.0 implementa cotação OHLCV, classificação correta de ações/FIIs/ETFs/units, capabilities, proveniência, histórico e gráfico de 1M/3M, cache com deduplicação, retry e fila compatível com o plano Free. Consulte [`MARKET_DATA.md`](docs/MARKET_DATA.md), [`MARKET_CAPABILITIES.md`](docs/MARKET_CAPABILITIES.md) e [`MARKET_HISTORY.md`](docs/MARKET_HISTORY.md).
+
 ## Mercado publico
 
 A area `/mercado` permite pesquisar ativos sem autenticacao. O campo principal aceita ticker, nome ou empresa e abre `/mercado/[ticker]` ao selecionar um resultado ou pressionar Enter.
@@ -232,6 +236,8 @@ npm run build
 - Sem recomendacoes de investimento.
 - Os diagnosticos nao avaliam retorno esperado, volatilidade, correlacao ou liquidez.
 - A disponibilidade e limites da brapi.dev dependem do fornecedor e dos termos de uso.
+- Eventos corporativos completos, composição de ETF e fundamentos avançados continuam limitados pela fonte/plano.
+- O histórico público está limitado a 1M/3M no plano atual e não representa análise técnica ou retorno total.
 
 ## Gate dos 30 dias
 

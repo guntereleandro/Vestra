@@ -1,5 +1,25 @@
 # Decisões de Arquitetura do Vestra Core
 
+## ADR-019 — Mercado orientado por capacidades e proveniência
+
+### Contexto
+
+O contrato atual trata providers como se todos entregassem as mesmas funções. Na prática, busca, cotação, lote, perfil, fundamentos, histórico, dividendos e eventos variam por classe, plano e fonte. Fallback silencioso e valores fabricados para campos ausentes tornam impossível distinguir dado real de indisponibilidade.
+
+### Decisão
+
+A evolução do Mercado deve declarar capacidades por provider e classe. Toda resposta externa deve preservar provider, disponibilidade, limitação, timestamp da fonte, momento da coleta e estado de cache. `null` permanece ausência; zero e horário atual não são fallback. UI e engine continuam consumindo contratos internos e nunca importam fornecedor diretamente. O Provider Local permanece permanente e seu uso deve ser rastreável.
+
+### Consequências
+
+Novas fontes podem ser compostas por capacidade sem reescrever consumidores. Limites de plano passam a orientar lote, cache e UX. Histórico, fundamentos e eventos entram como contratos próprios. A primeira implementação precisa corrigir classificação, nulls, loading e lote antes de ampliar campos.
+
+Implementação CORE-13: BRAPI Free usa uma chamada por ticker e concorrência três; histórico oferece somente 1M/3M e exibe `close`, preservando `adjustedClose`; rotas públicas de Mercado não aguardam Auth; rate limit em memória é best-effort. Eventos externos nunca são persistidos automaticamente.
+
+### Alternativas consideradas
+
+Ampliar apenas `brapiProvider`: rejeitada por manter acoplamento a um fornecedor. Exibir todos os campos para todas as classes: rejeitada por criar indicadores irrelevantes. Ocultar falhas com fallback local: rejeitada por perder proveniência. Migrar imediatamente para outra API: rejeitada sem auditoria de cobertura, licença e custo.
+
 ## ADR-018 — Semântica de proventos possui uma única fonte de domínio
 
 ### Contexto

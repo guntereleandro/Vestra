@@ -1,10 +1,10 @@
 "use client";
 
-import { Search, Loader2 } from "lucide-react";
+import { AlertTriangle, Search, Loader2, RefreshCw } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useEffect, useMemo, useRef, useState } from "react";
 import AssetLogo from "@/components/assets/AssetLogo";
-import { searchMarketAssets } from "@/lib/market/marketService";
+import { searchMarketAssetsDetailed } from "@/lib/market/marketService";
 
 function normalizeTicker(value) {
   return String(value || "").trim().toUpperCase().replace(/[^A-Z0-9.-]/g, "").slice(0, 30);
@@ -26,10 +26,13 @@ function highlight(text, query) {
 export default function MarketSearch({ initialQuery = "" }) {
   const router = useRouter();
   const inputRef = useRef(null);
+  const requestIdRef = useRef(0);
   const [query, setQuery] = useState(initialQuery);
   const [results, setResults] = useState([]);
   const [loading, setLoading] = useState(false);
   const [selectedIndex, setSelectedIndex] = useState(0);
+  const [searchState, setSearchState] = useState({ error: null, fallback: false });
+  const [retryKey, setRetryKey] = useState(0);
   const normalizedQuery = useMemo(() => normalizeTicker(query), [query]);
 
   useEffect(() => {
@@ -39,21 +42,24 @@ export default function MarketSearch({ initialQuery = "" }) {
   useEffect(() => {
     const term = query.trim();
     let active = true;
+    const requestId = ++requestIdRef.current;
     if (term.length < 2) {
       setResults([]);
+      setSearchState({ error: null, fallback: false });
       setLoading(false);
       return undefined;
     }
     setLoading(true);
     const timeout = setTimeout(async () => {
       try {
-        const assets = await searchMarketAssets(term);
-        if (active) {
-          setResults(assets);
+        const result = await searchMarketAssetsDetailed(term);
+        if (active && requestId === requestIdRef.current) {
+          setResults(result.assets);
+          setSearchState({ error: result.error, fallback: result.fallback });
           setSelectedIndex(0);
         }
-      } catch {
-        if (active) setResults([]);
+      } catch (error) {
+        if (active && requestId === requestIdRef.current) setSearchState({ error: { code: error?.code || "PROVIDER_ERROR", message: "Não foi possível consultar o mercado agora." }, fallback: false });
       } finally {
         if (active) setLoading(false);
       }
@@ -62,7 +68,7 @@ export default function MarketSearch({ initialQuery = "" }) {
       active = false;
       clearTimeout(timeout);
     };
-  }, [query]);
+  }, [query, retryKey]);
 
   function openTicker(ticker) {
     const target = normalizeTicker(ticker || results[selectedIndex]?.ticker || normalizedQuery);
@@ -99,7 +105,13 @@ export default function MarketSearch({ initialQuery = "" }) {
       {loading && <Loader2 className="absolute right-5 top-1/2 -translate-y-1/2 animate-spin text-[#898e89]" size={19} />}
     </div>
 
-    {(results.length > 0 || (query.trim().length >= 2 && !loading)) && <div className="absolute z-30 mt-3 w-full overflow-hidden rounded-2xl border border-white/[.08] bg-[#101311]/98 shadow-[0_24px_90px_rgba(0,0,0,.45)] backdrop-blur-xl">
+    {loading && <p role="status" className="mt-2 text-xs text-[#898e89]">Consultando o mercado…</p>}
+    {searchState.error && <div role="alert" className="mt-3 flex flex-col gap-3 rounded-xl border border-amber-300/15 bg-amber-300/[.04] p-3 text-xs text-amber-100/80 sm:flex-row sm:items-center sm:justify-between">
+      <span className="flex items-center gap-2"><AlertTriangle size={15} />{searchState.fallback && results.length ? "Resultados locais exibidos. " : ""}{searchState.error.message}</span>
+      <button type="button" onClick={() => setRetryKey((value) => value + 1)} className="inline-flex min-h-10 items-center justify-center gap-2 rounded-lg border border-amber-300/20 px-3 font-bold"><RefreshCw size={14} />Tentar novamente</button>
+    </div>}
+
+    {(results.length > 0 || (query.trim().length >= 2 && !loading && !searchState.error)) && <div className="absolute z-30 mt-3 w-full overflow-hidden rounded-2xl border border-white/[.08] bg-[#101311]/98 shadow-[0_24px_90px_rgba(0,0,0,.45)] backdrop-blur-xl">
       <div className="max-h-80 overflow-y-auto p-2">
         {results.length ? results.map((asset, index) => <button
           key={asset.ticker}
@@ -114,7 +126,7 @@ export default function MarketSearch({ initialQuery = "" }) {
             <span className="block truncate text-xs text-[#898e89]">{highlight(asset.name || asset.shortName, query)}</span>
           </span>
           <span className="hidden rounded-full border border-white/[.06] px-2 py-1 text-[10px] font-semibold text-[#777d78] sm:inline">{asset.type || "Ativo"}</span>
-          <span className="text-[10px] font-semibold uppercase tracking-[.12em] text-[#d9b86c]">{asset.exchange || "B3"}</span>
+          <span className="text-[10px] font-semibold uppercase tracking-[.12em] text-[#d9b86c]">{asset.source === "local" ? "Local" : asset.exchange || "B3"}</span>
         </button>) : <div className="px-5 py-8 text-center">
           <p className="font-display text-lg text-white">Ativo nao encontrado</p>
           <p className="mt-2 text-sm text-[#898e89]">Pressione Enter para abrir a busca por {normalizedQuery || "este ticker"}.</p>

@@ -50,20 +50,20 @@ export default function useMarketData({ assetsMaster = EMPTY_LIST, quotes = EMPT
     }
   }, [context]);
 
-  const refreshQuotes = useCallback(async (tickers) => {
+  const refreshQuotes = useCallback(async (tickers, options) => {
     setLoading(true);
     setError("");
     try {
-      return await fetchAutomaticQuotes(tickers);
+      return await fetchAutomaticQuotes(tickers, options);
     } catch {
       setError("Nao foi possivel atualizar as cotacoes agora.");
-      return { quotes: [], cached: [], fetched: [], notFound: [], error: "PROVIDER_ERROR" };
+      return { quotes: [], cached: [], fetched: [], notFound: [], failed: [], error: "PROVIDER_ERROR" };
     } finally {
       setLoading(false);
     }
   }, []);
 
-  const providerStatus = useCallback(() => getProviderStatus(), []);
+  const providerStatus = useCallback((options) => getProviderStatus(options), []);
   const cacheStats = useCallback(() => getMarketCacheStats(), []);
   const clearCache = useCallback(() => clearMarketCache(), []);
 

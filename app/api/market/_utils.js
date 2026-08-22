@@ -1,6 +1,7 @@
 import { appConfig } from "@/lib/config/appConfig";
 import { normalizeTicker } from "@/lib/data/assetsMaster";
 import { MARKET_ERRORS, MarketError, marketErrorResponse } from "@/lib/market/marketErrors";
+import { enforceMarketRateLimit } from "@/lib/market/server/marketRateLimit";
 
 export function jsonOk(data) {
   return Response.json({ ok: true, ...data });
@@ -9,6 +10,7 @@ export function jsonOk(data) {
 export function safeRoute(handler) {
   return async (request, context) => {
     try {
+      enforceMarketRateLimit(request);
       return await handler(request, context);
     } catch (error) {
       return marketErrorResponse(error);

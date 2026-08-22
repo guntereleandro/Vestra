@@ -1,5 +1,19 @@
 # Auditoria de Segurança de Dependências
 
+## CORE-13 — npm audit em 2026-08-22
+
+`npm audit`, executado com certificados do sistema, reportou quatro vulnerabilidades altas agregadas em `nanoid`, `postcss`, `@tailwindcss/postcss` e `next`. Advisory principal: `GHSA-2v37-7h3g-55p8`, custom generators do nanoid podem entrar em loop quando recebem tamanho zero. O relatório informa **No fix available**.
+
+O Vestra não importa `nanoid` nem chama custom generator diretamente; o alcance observado é transitivo pelo pipeline Next/PostCSS/Tailwind. Nenhuma dependência foi alterada e nenhum `audit fix --force` foi executado. A pendência exige monitoramento e nova auditoria quando a cadeia publicar correção; não invalida os contratos do Mercado 2.0, mas permanece risco de dependência para Production.
+
+## CORE-13 — superfície de mercado
+
+A auditoria de 2026-08-22 confirmou que `BRAPI_TOKEN` permanece server-only, fora do bundle, backup e localStorage; componentes acessam somente rotas internas; respostas possuem limite de 500 KB e timeout no provider; erros expostos são sanitizados. Nenhum valor secreto foi registrado nos testes reais.
+
+Pendências: o token ainda é enviado ao fornecedor por query string; as rotas públicas não possuem limitação própria; o status considera token presente como provider online; e não há observabilidade sanitizada de cota, cache, latência ou status. O plano Free permite um ticker por chamada, enquanto o Vestra forma lotes de até 20, aumentando falhas e consumo imprevisível. Qualquer evolução deve manter redaction, adotar o mecanismo oficial mais seguro suportado pela BRAPI e impedir exposição de respostas brutas.
+
+Situação após implementação: as rotas possuem limite best-effort de 60 requisições/minuto por IP e aceitam apenas operações/tickers/ranges fechados; plano Free usa um ticker por chamada; status separa configuração de conectividade; `/mercado` e `/api/market` deixam de executar chamadas Supabase desnecessárias no Proxy. O contador em memória não é compartilhado entre instâncias serverless e não substitui proteção de borda. O token permanece em query string até existir confirmação documental segura para mudança do mecanismo oficial.
+
 ## CORE-12.1 — atualização validada em 2026-08-07
 
 O Next.js foi atualizado de 16.2.12 para 16.3.0, sem `npm audit fix --force`. A cadeia passou a usar PostCSS 8.5.23 e Sharp 0.35.3. `npm audit` passou com **0 vulnerabilidades**.

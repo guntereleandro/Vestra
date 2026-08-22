@@ -134,6 +134,16 @@ Gate de importação real fechado tecnicamente em 2026-08-11: eventos corporativ
 
 Patch de compatibilidade: domínio, engine, backup schema 6, repository, migration e SDK foram validados no Development para os casos conhecidos. O bloqueador A permanece somente até a reconciliação do arquivo real completo; fixtures não substituem os saldos de origem.
 
+## CORE-13 — Mercado 2.0
+
+Estado: implementação concluída e validada localmente em 2026-08-22.
+
+Entrega documental: inventário de arquitetura e campos, cobertura real por ações/FIIs/ETFs, limites do plano BRAPI, histórico, eventos, cache, fallback, segurança, UX e fontes complementares em `MARKET_DATA_AUDIT.md`.
+
+Sequência proposta: (1) corrigir classificação/nulls/loading/lote; (2) registry de capacidades e proveniência; (3) cotação básica completa por classe e cache; (4) histórico; (5) dividendos/eventos estruturados; (6) fundamentos somente após decisão de plano/fonte. Cada item é uma entrega independente com validadores, lint, build e documentação.
+
+Resultado: problemas A fechados; Quote 2.0, classificação, capabilities, proveniência, histórico 1M/3M, gráfico, fila Free, cache/deduplicação, retry, status e rate limit implementados. Recomendação, score, valor justo, análise fundamentalista, composição profunda e proventos automáticos permanecem fora do Core. CORE-14 pode consumir os contratos de dividendos/eventos, mas precisa definir fonte, idempotência, reconciliação e consentimento antes de persistir.
+
 ## Dependências críticas
 
 ```text

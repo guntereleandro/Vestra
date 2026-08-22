@@ -1,5 +1,11 @@
 # Decisoes Arquiteturais
 
+## 2026-08-22 — Mercado evolui por capacidades, classe e proveniência
+
+Busca, cotação, perfil, fundamentos, histórico, dividendos, eventos e composição são capacidades distintas. Provider, fonte, timestamp, indisponibilidade, limite de plano e cache devem sobreviver à normalização; ausência não pode virar zero nem horário atual. O Local permanece fallback rastreável. A decisão permanente está na ADR-019 e a evidência em `MARKET_DATA_AUDIT.md`.
+
+Implementação: o plano Free fixa lote remoto em um ticker e concorrência três; histórico público usa somente 1M/3M e `close`; `adjustedClose` permanece separado; rotas públicas de Mercado não renovam Auth; o rate limit em memória é proteção best-effort. Nenhum desses dados entra automaticamente em operações ou proventos.
+
 ## 2026-08-11 — Fonte única para semântica de proventos
 
 `lib/domain/operations/passiveIncome.js` determina se uma operação pertence a Proventos. Ajustes `RENDIMENTO` de Caixa Remunerado e Renda Fixa continuam como retorno econômico, mas não alimentam totais, records, diagnostics ou snapshots de proventos. Decisão permanente: ADR-018.
