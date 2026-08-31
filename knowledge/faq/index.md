@@ -14,7 +14,11 @@ Após 30 dias consecutivos de uso real sem depender do Investidor10 para funçõ
 
 ## Proventos possuem sincronização separada?
 
-Não. Dividendos, JCP e rendimentos são operações e acompanham a fonte Local ou Supabase escolhida.
+Recebimentos continuam sendo operações da fonte escolhida. A descoberta automática usa uma camada separada de expectativas, sem alterar patrimônio ou performance até confirmação/vínculo explícito.
+
+## Um anúncio da empresa já conta como provento recebido?
+
+Não. Evento de mercado, expectativa da carteira e recebimento confirmado são fatos diferentes. Data de pagamento também não confirma crédito.
 
 ## Toda operação RENDIMENTO é um provento?
 

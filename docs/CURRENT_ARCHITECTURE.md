@@ -180,6 +180,12 @@ A auditoria real identificou quatro fronteiras prioritárias: limite de lote inc
 
 Quote Contract 2.0 preserva OHLCV, `null` e proveniência. `marketCapabilities` descreve capacidades Local/BRAPI; `assetClassification` resolve classe por metadata, catálogo e provider; histórico possui contrato, rota e gráfico para 1M/3M. O plano Free usa uma chamada por ticker com concorrência três, deduplicação, cache e falha parcial. Rotas públicas possuem rate limit best-effort e não aguardam Supabase Auth no Proxy. Detalhes: `MARKET_DATA.md`, `MARKET_CAPABILITIES.md` e `MARKET_HISTORY.md`.
 
+### Auditoria de Proventos Automáticos
+
+O runtime possui somente proventos recebidos como operações. Não existem evento global, expectativa “A receber”, aliases externos, lifecycle de correção/cancelamento ou vínculo de reconciliação. A coleção de dividendos do Mercado é informativa e nunca cria `portfolio_operations`.
+
+A proposta preserva evento global versionado, expectativa privada por carteira e operação confirmada. A BRAPI atual cobriu no teste real apenas as exceções PETR4 e MXRF11; os demais ativos receberam restrição de plano ou contrato não aplicável. Evidência em `AUTOMATIC_INCOME_AUDIT.md`; modelo em `INCOME_EVENT_MODEL.md`.
+
 ## Configuração
 
 `lib/config/brandConfig.js` centraliza identidade e URLs. `publicEnvConfig.js` lê URL e publishable key Supabase, mantendo fallback para a anon key legada; `envConfig.js` concentra a secret key administrativa, seu fallback legado server-only e BRAPI. `supabaseConfig.js` combina a configuração por contexto e valida somente quando um cliente é criado.
@@ -203,3 +209,8 @@ Produção: Next, React, React DOM, Tailwind/PostCSS, `lucide-react`, `@supabase
 - `test:database-sdk`: validação controlada dos repositories e RLS pela Data API.
 - `test:brapi`: integração real, dependente de token e rede.
 - `next build`: compilação e geração das rotas.
+# CORE-14 — Proventos automáticos
+
+`lib/domain/income` normaliza eventos e identidade; `lib/engine/incomeEligibility.js`, `incomeExpectation.js` e `incomeMatching.js` mantêm regras puras. O adapter BRAPI server-only alimenta `/api/income/sync`, que exige autenticação, carteira ativa, owner/editor e fonte Supabase. Eventos globais, aliases, expectativas e links são separados do ledger. `/proventos` possui Recebidos (operações) e A receber (expectativas). Confirmação/vínculo usa RPC atômica; somente a operação resultante passa à engine existente.
+
+Estado remoto após auditoria forense: CORE-14 não aplicada. O Development correto é `mwdogrezcpuzpohpeirs`, branch `main`; após o compute ficar `Healthy`, foram confirmados 1 usuário Auth, o schema de negócio predecessor e 109 operações. A leitura vazia anterior ocorreu durante a inicialização transitória do compute.

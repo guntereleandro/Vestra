@@ -1,0 +1,18 @@
+begin;
+select plan(14);
+select has_table('public', 'corporate_income_events');
+select has_table('public', 'corporate_income_event_aliases');
+select has_table('public', 'portfolio_income_expectations');
+select has_table('public', 'income_reconciliation_links');
+select has_column('public', 'corporate_income_events', 'canonical_identity');
+select has_column('public', 'portfolio_income_expectations', 'eligible_quantity');
+select has_column('public', 'portfolio_income_expectations', 'expected_net_amount');
+select has_column('public', 'income_reconciliation_links', 'operation_id');
+select is((select relrowsecurity from pg_class where oid = 'public.corporate_income_events'::regclass), true, 'events RLS');
+select is((select relrowsecurity from pg_class where oid = 'public.corporate_income_event_aliases'::regclass), true, 'aliases RLS');
+select is((select relrowsecurity from pg_class where oid = 'public.portfolio_income_expectations'::regclass), true, 'expectations RLS');
+select is((select relrowsecurity from pg_class where oid = 'public.income_reconciliation_links'::regclass), true, 'links RLS');
+select has_function('public', 'confirm_income_expectation', array['uuid', 'date', 'numeric', 'text']);
+select has_function('public', 'link_income_expectation', array['uuid', 'uuid']);
+select * from finish();
+rollback;

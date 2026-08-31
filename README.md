@@ -34,6 +34,7 @@ As fontes oficiais de governança são:
 ## Funcionalidades atuais
 
 - Proventos operacionais com totais, filtros, agrupamentos e CRUD Local/Supabase, sem persistência duplicada.
+- Auditoria de Proventos Automáticos concluída: evento público, expectativa “A receber” e recebimento permanecem separados; anúncios não criam operações. Consulte [`AUTOMATIC_INCOME_AUDIT.md`](docs/AUTOMATIC_INCOME_AUDIT.md) e [`INCOME_EVENT_MODEL.md`](docs/INCOME_EVENT_MODEL.md).
 
 - Dashboard 2.0 refinado, com hero patrimonial premium, grafico em destaque, cards padronizados, alocacao com legenda lateral, resumo em mini cards, carteira em cards e ultimas 5 operacoes.
 - Experiencia diaria do Dashboard na versao 0.4.2, com Timeline, recordes, jornada, insights por regras e conquistas discretas.
@@ -228,9 +229,14 @@ npm run test:auth
 npm run build
 ```
 
+## Proventos automáticos
+
+A área Proventos separa **Recebidos**, derivados do ledger, de **A receber**, derivado de eventos públicos e posição histórica. A atualização é manual e conservadora; nenhuma expectativa vira dinheiro recebido sem confirmação ou vínculo. Consulte `docs/AUTOMATIC_INCOME.md`.
+
 ## Limitacoes atuais
 
-- Sem dividendos automaticos.
+- Proventos automáticos aguardam aplicação e validação da migration no Supabase Development; o caminho Local e os recebidos atuais permanecem compatíveis.
+- A auditoria forense localizou o Development no projeto `mwdogrezcpuzpohpeirs`, branch `main`. A leitura vazia inicial ocorreu enquanto o compute estava em `Coming up…`; após `Healthy`, Auth, schema e as 109 operações foram confirmados. A migration CORE-14 permanece não aplicada.
 - Sem corretoras.
 - Sem painel administrativo funcional.
 - Sem recomendacoes de investimento.

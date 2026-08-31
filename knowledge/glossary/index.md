@@ -6,6 +6,12 @@ Caixa remunerado: saldo de liquidez diária com aportes e retiradas por valor fi
 
 Provento: renda passiva convencional registrada como DIVIDENDO, JCP ou RENDIMENTO elegível pelo domínio do ativo. Retorno econômico interno de Caixa Remunerado ou Renda Fixa não é provento.
 
+Evento de provento: anúncio global de mercado, independente de qualquer carteira.
+
+Expectativa de provento: cálculo privado e ainda não realizado do possível direito de uma carteira em uma data de corte histórica.
+
+Conciliação de provento: vínculo auditável entre uma expectativa e uma operação efetivamente recebida.
+
 Retorno econômico: variação positiva do investimento que pode compor performance sem necessariamente ser um provento.
 
 Conflito de operação: o mesmo UUID existe no Local e no Supabase com conteúdos diferentes. A CORE-07 informa o conflito e não escolhe automaticamente um vencedor.

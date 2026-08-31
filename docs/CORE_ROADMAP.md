@@ -144,6 +144,16 @@ Sequência proposta: (1) corrigir classificação/nulls/loading/lote; (2) regist
 
 Resultado: problemas A fechados; Quote 2.0, classificação, capabilities, proveniência, histórico 1M/3M, gráfico, fila Free, cache/deduplicação, retry, status e rate limit implementados. Recomendação, score, valor justo, análise fundamentalista, composição profunda e proventos automáticos permanecem fora do Core. CORE-14 pode consumir os contratos de dividendos/eventos, mas precisa definir fonte, idempotência, reconciliação e consentimento antes de persistir.
 
+## CORE-14 — Proventos Automáticos
+
+Estado: implementação local concluída em 2026-08-30; validação remota pendente. A auditoria forense confirmou o Development em `mwdogrezcpuzpohpeirs/main`, com Auth, schemas predecessores e 109 operações. A leitura vazia anterior ocorreu enquanto o compute estava em `Coming up…`. Nenhuma migration CORE-14 foi aplicada.
+
+Auditoria: domínio recebido preservado; cobertura BRAPI insuficiente; identidade, lifecycle, elegibilidade, expectativa, reconciliação, multicarteria, RLS, idempotência, cache e UX definidos em `AUTOMATIC_INCOME_AUDIT.md` e `INCOME_EVENT_MODEL.md`.
+
+Sequência: (1) contratos puros e fixtures; (2) migrations/RLS de eventos, aliases, expectativas e links; (3) adapter BRAPI v2 por capability; (4) sincronização manual e expectativas sem operações; (5) UI Recebidos/A receber; (6) confirmação transacional; (7) dry-run da carteira real e matriz de correções/cancelamentos.
+
+Gate: migration/RLS remotos, teste SDK, dry-run da carteira real, primeira sincronização e repetição idempotente ainda não foram executados. Crédito automático, cron e conciliação de extrato permanecem pós-Core. A fonte precisa de cobertura e licença suficientes para sair do sandbox.
+
 ## Dependências críticas
 
 ```text

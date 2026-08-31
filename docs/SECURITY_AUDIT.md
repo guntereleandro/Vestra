@@ -1,5 +1,13 @@
 # Auditoria de Segurança de Dependências
 
+## CORE-14 — desenho de segurança de proventos automáticos
+
+A auditoria de 2026-08-30 não criou migration, job, provider ou dado. Tokens foram lidos somente no servidor e chamadas reais produziram resumos sanitizados. Nenhuma resposta bruta, posição completa ou total de carteira foi persistido.
+
+O desenho futuro exige eventos globais sem `portfolio_id`; escrita por backend controlado; expectativas e links protegidos por membership; viewer somente leitura; confirmação por owner/editor; operação e vínculo na mesma transação; unicidade idempotente; logs sem token, payload financeiro completo ou carteira. A licença governa se eventos globais podem ter leitura pública.
+
+Riscos abertos: cobertura do provider, aliases sem ID externo, conflitos entre fontes, replay concorrente, operação manual duplicada e exposição entre carteiras. Todos bloqueiam automação antes de RLS e testes negativos.
+
 ## CORE-13 — npm audit em 2026-08-22
 
 `npm audit`, executado com certificados do sistema, reportou quatro vulnerabilidades altas agregadas em `nanoid`, `postcss`, `@tailwindcss/postcss` e `next`. Advisory principal: `GHSA-2v37-7h3g-55p8`, custom generators do nanoid podem entrar em loop quando recebem tamanho zero. O relatório informa **No fix available**.
@@ -110,3 +118,11 @@ Evidência remota em 2026-07-30:
 ## Relatório npm de 2026-07-30
 
 `npm audit --json` reportou 3 vulnerabilidades de severidade alta: `next` como dependência direta e `postcss`/`sharp` transitivas. A sugestão automática indica downgrade major incompatível do Next.js, portanto nenhuma correção automática ou `--force` foi aplicada nesta etapa. O risco permanece registrado para atualização controlada e reteste separado.
+# CORE-14
+
+- BRAPI e Supabase admin permanecem server-only; respostas e logs não incluem tokens nem valores completos da carteira.
+- A rota de sincronização deriva usuário e carteira da sessão e recusa viewer, fonte Local e portfolio arbitrário.
+- Eventos/aliases aceitam escrita somente pelo backend; expectativas e links são isolados por membership.
+- Confirmação e vínculo validam owner/editor, lifecycle, tipo e igualdade de carteira em uma transação.
+- Validação remota de policies e RPCs permanece pendente devido a falha de conexão antes do dry-run em 2026-08-30.
+- O gate CORE-14.1 acessou o ref correto durante o estado `Coming up…` e recebeu uma leitura transitória incompleta. Após `Healthy`, Auth, schemas predecessores e 109 operações foram confirmados. A migration CORE-14 não foi escrita e permanece sujeita a novo preflight seguro.

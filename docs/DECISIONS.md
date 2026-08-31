@@ -1,5 +1,16 @@
 # Decisoes Arquiteturais
 
+## 2026-08-30 — Implementação conservadora de proventos automáticos
+
+A CORE-14 materializa a ADR-020 sem crédito automático: atualização manual descobre eventos, reconstrói elegibilidade histórica e cria expectativas. Somente confirmação ou vínculo atômico afeta operações. A implementação local foi aprovada; a etapa permanece aberta até migration, RLS, SDK e idempotência reais passarem no Development.
+
+
+## 2026-08-30 — Evento, expectativa e recebimento separados
+
+Proventos Automáticos não criam operações a partir de anúncios. Evento global, expectativa privada da carteira e operação efetivamente recebida terão identidades, ciclos e persistências separados. O Core começará com atualização manual, cálculo histórico de elegibilidade e confirmação/vínculo conservador. Decisão permanente: ADR-020; evidência e modelo em `AUTOMATIC_INCOME_AUDIT.md` e `INCOME_EVENT_MODEL.md`.
+
+---
+
 ## 2026-08-22 — Mercado evolui por capacidades, classe e proveniência
 
 Busca, cotação, perfil, fundamentos, histórico, dividendos, eventos e composição são capacidades distintas. Provider, fonte, timestamp, indisponibilidade, limite de plano e cache devem sobreviver à normalização; ausência não pode virar zero nem horário atual. O Local permanece fallback rastreável. A decisão permanente está na ADR-019 e a evidência em `MARKET_DATA_AUDIT.md`.

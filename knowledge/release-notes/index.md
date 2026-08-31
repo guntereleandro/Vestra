@@ -1,5 +1,11 @@
 # Release Notes
 
+## 2026-08-30 — Preparação de Proventos Automáticos
+
+Foram adicionados contratos conservadores para eventos, expectativas, elegibilidade histórica e conciliação assistida, além da divisão Recebidos/A receber. A ativação remota continua condicionada à migration e aos testes reais; nenhuma expectativa cria recebimento automaticamente.
+
+O gate remoto foi interrompido com segurança durante uma leitura transitória incompleta enquanto o compute estava em `Coming up…`. A auditoria posterior confirmou o Development correto, com Auth, schema e 109 operações após o estado `Healthy`. Nenhuma migration ou dado financeiro foi alterado.
+
 ## 2026-08-11 — Semântica única de proventos
 
 Dashboard, Proventos e diagnósticos agora compartilham a mesma classificação de domínio. Remunerações internas de Caixa Remunerado e Renda Fixa continuam no retorno econômico sem gerar recordes, concentração ou dependência de proventos.

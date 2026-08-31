@@ -472,3 +472,34 @@ O Proxy usa `getClaims()` para validar e renovar a identidade; páginas protegid
 **Consequências:** histórico remoto é portátil e protegido por RLS; a mesma data é atualizada idempotentemente; carteira nova começa no primeiro estado observado; importação exige prévia e confirmação.
 
 **Alternativas consideradas:** recalcular todo o passado apenas por operações, misturar histórico Local com operações remotas, criar tabelas de recordes/visitas e executar cron. Rejeitadas por ausência de cotações históricas confiáveis, risco de mistura e complexidade desnecessária.
+
+## ADR-020 — Evento, expectativa e recebimento são fatos distintos
+
+### Contexto
+
+Providers informam anúncios e pagamentos públicos, mas não comprovam posição elegível nem crédito na conta. Converter anúncio diretamente em operação duplicaria registros manuais e contaminaria snapshots e performance.
+
+### Decisão
+
+Proventos automáticos serão separados em evento global versionado, expectativa privada por carteira e operação recebida. Somente a operação confirmada integra a fonte da verdade. O Core começa com sincronização manual, expectativas idempotentes e confirmação ou vínculo manual.
+
+Identidade combina instrumento, tipo, datas, parcela/período, taxa, moeda e aliases. Correções criam versões; cancelamentos não apagam histórico; UUID manual é preservado.
+
+### Consequências
+
+- expectativas não entram em totais realizados, snapshots, diagnostics ou performance;
+- evento global não é duplicado por carteira;
+- RLS protege expectativas e reconciliações por membership;
+- cobertura, licença e lifecycle da fonte precedem crédito automático;
+- Caixa Remunerado, Renda Fixa, amortizações e eventos patrimoniais permanecem fora de Proventos.
+
+### Alternativas consideradas
+
+- criar operação no anúncio: rejeitada porque anúncio não comprova recebimento;
+- guardar expectativas em `portfolio_operations`: rejeitada por contaminar a fonte da verdade;
+- deduplicar por ticker/data/valor: rejeitada por fundir eventos legítimos;
+- usar quantidade atual em eventos históricos: rejeitada por produzir elegibilidade incorreta.
+
+### Estado de implementação
+
+Implementado localmente na CORE-14 com contratos puros, quatro tabelas versionadas em migration, RLS, adapter BRAPI por capability, cálculo histórico, matching, confirmação/vínculo transacional e UI Recebidos/A receber. A aplicação remota permanece pendente porque a conexão PostgreSQL falhou antes do dry-run; nenhuma tabela ou dado remoto foi alterado.

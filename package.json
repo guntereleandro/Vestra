@@ -24,6 +24,7 @@
     "test:snapshots": "node scripts/validate-snapshots.mjs",
     "test:income": "node scripts/validate-income.mjs",
     "test:passive-income-semantics": "node scripts/validate-passive-income-semantics.mjs",
+    "test:automatic-income": "node scripts/validate-automatic-income.mjs",
     "test:import-compatibility": "node scripts/validate-import-compatibility.mjs",
     "test:core-stability": "node scripts/validate-core-stability.mjs",
     "test:brapi": "node --use-system-ca scripts/validate-brapi-integration.mjs"

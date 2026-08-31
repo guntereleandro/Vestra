@@ -4,6 +4,8 @@ Durante a validação de 30 dias, registre diariamente o uso do Dashboard, opera
 
 Em Proventos, registre dividendos, JCP e rendimentos, filtre por ativo, tipo, ano e mês e acompanhe totais. Esses registros são operações da fonte ativa.
 
+Na aba **A receber**, use **Atualizar proventos** para descobrir expectativas quando a fonte Supabase estiver ativa. Revise quantidade, corte, valor e origem. A expectativa só vira recebimento depois de **Confirmar recebimento** ou **Vincular existente**; sincronizar nunca cria operação automaticamente.
+
 Rendimentos convencionais pertencem a Proventos. Remunerações internas de Caixa Remunerado e Renda Fixa aumentam saldo e retorno econômico, mas não aparecem como proventos nem geram diagnósticos de concentração de renda passiva.
 
 O histórico patrimonial segue a fonte ativa. Na Conta, use **Gerar prévia** em “Importar snapshots locais” antes de confirmar uma cópia manual para a carteira Supabase. Datas divergentes são exibidas como conflito e não são substituídas.

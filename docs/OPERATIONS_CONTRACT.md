@@ -8,6 +8,8 @@ Operações são a única fonte persistida para posições, custo, preço médio
 
 Proventos são operações e não constituem uma segunda fonte de verdade. Página, Dashboard, ativo, snapshots e performance consomem a mesma coleção operacional da fonte ativa.
 
+Eventos externos e expectativas futuras não são operações. Um anúncio de mercado só pode chegar a `portfolio_operations` após confirmação ou conciliação explícita, conforme `INCOME_EVENT_MODEL.md`. A existência de data de pagamento ou valor por unidade não comprova crédito.
+
 ## Tipos canônicos
 
 | Tipo | Quantidade | Preço unitário | Taxas | Valor recebido |
@@ -73,6 +75,8 @@ As regras de triagem e retenção da carteira real estão em `REAL_PORTFOLIO_IMP
 
 `portfolioId`, `createdBy`, timestamps, `source` e `externalId` são metadados de infraestrutura e não entram na engine.
 
+Um futuro vínculo com evento externo deve preservar o UUID da operação manual. Identidade econômica de evento, versão e aliases pertencem ao domínio de eventos/conciliação; não devem ser comprimidos em `externalId` nem usados para apagar e recriar operações.
+
 ## Ordenação e edição
 
 A engine ordena por data e, na mesma data, processa compra antes de venda e renda. A listagem remota ordena por data e UUID. Edição preserva o ID; no banco também preserva carteira e autor. Exclusão é física e explícita.
@@ -90,3 +94,6 @@ Novos registros recebem `crypto.randomUUID()`. Registros legados sem UUID recebe
 ## Dados não persistidos
 
 Preço médio, quantidade mantida, custo atual, lucro realizado ou não realizado, posição, patrimônio, rentabilidade e totais globais permanecem derivados pela engine.
+# Proventos automáticos
+
+Evento externo e expectativa não são operações. Apenas confirmação ou vínculo explícito produz/reconcilia `DIVIDENDO`, `JCP` ou `RENDIMENTO`. A sincronização nunca escreve no ledger; logo expectativas não alteram patrimônio, performance, snapshots ou diagnósticos.
